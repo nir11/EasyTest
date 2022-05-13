@@ -2,46 +2,74 @@ import React, { useState, useEffect } from "react";
 import DatePicker, { registerLocale } from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
+import { useDispatch, useSelector } from "react-redux";
 
-const MyDatePicker = ({ selectedGagrage }) => {
-  const [startDate, setStartDate] = useState(
-    new Date("2022-05-15T12:08:08.007+00:00")
-  );
+import moment from 'moment'
 
-  let handleColor = (time) => {
-    return time.getHours() > 7.5 && time.getHours() < 16.5
-      ? "text-error"
-      : "text-success";
-  };
+//redux
+import { getAppointments } from "../../redux/appointment/appointment-actions";
 
-  useEffect(() => {
-    console.log("selectedGagrage", selectedGagrage[0].name);
-  }, [selectedGagrage]);
+const MyDatePicker = ({ selectedGagrage, setAppointmentDateTime }) => {
 
-  let handleDays = (day) => {};
-  //   const isWeekday = (date) => {
-  //     const day = getDay(date);
-  //     return day !== 0 && day !== 6;
-  //   };
-  return (
-    <DatePicker
-      className="form-control"
-      placeholderText="בחר/י תאריך פנוי"
-      //   selected={startDate}
-      dayClassName={handleDays}
-      showTimeSelect
-      timeClassName={handleColor}
-      onChange={(date) => setStartDate(date)}
-      shouldCloseOnSelect={false}
-      //   filterDate={isWeekday}
-      timeIntervals={15}
-      //   minDate={new Date()}
-      //   maxDate={new Date("2022-05-15T12:08:08.007+00:00")}
-      includeDates={[new Date(), new Date("2022-05-15T12:08:08.007+00:00")]}
-      includeTimes={[new Date("2022-05-15T12:15:08.007+00:00")]}
-      //   openToDate={new Date("1993/09/28")}
-    />
-  );
-};
+    const dispatch = useDispatch()
+    const [indexOfDay, setIndexOfDay] = useState(0)
 
-export default MyDatePicker;
+    const appointmentTimes = useSelector((state) => state.appointmentReducer.appointmentTimes)
+
+
+    // let handleColor = (time) => {
+    //     return time.getHours() > 7.5 && time.getHours() < 16.5 ? "text-error" : "text-success";
+    // };
+
+    const isWeekday = (date) => {
+        const day = date.getDay() + 1;
+        return selectedGagrage[0].WorkDays.some(w => w.DayIndex == day)
+    };
+
+    const changeHandler = (date) => {
+        console.log('date', date);
+        setIndexOfDay(date.getDay())
+        setAppointmentDateTime(date)
+
+        dispatch(getAppointments(selectedGagrage[0]._id, date.getDay()))
+            .then((res) => {
+                console.log('res', res);
+            })
+            .catch(error => alert(error))
+    }
+
+    useEffect(() => {
+        console.log('appointmentTimes', appointmentTimes);
+
+    }, [appointmentTimes])
+    return (
+        <>
+            {
+                selectedGagrage.length > 0 &&
+                <DatePicker
+                    // className="form-control"
+                    // placeholderText="בחר/י תאריך פנוי"
+                    //   selected={startDate}
+                    showTimeSelect
+                    // timeClassName={handleColor}
+                    onChange={changeHandler}
+                    // onYearChange
+                    // onMonthChange
+                    shouldCloseOnSelect={false}
+                    filterDate={isWeekday}
+
+                    timeIntervals={15}
+
+                    minTime={new Date(`08/05/2022 ${selectedGagrage[0].WorkDays[indexOfDay].StartTime}`)}
+                    maxTime={new Date(`08/05/2022 ${selectedGagrage[0].WorkDays[indexOfDay].EndTime}`)}
+                    excludeTimes={[new Date("08/05/2022 11:30")]}
+                // excludeTimes={appointmentTimes.map(a => moment(a, 'YYYY-MM-DD')._i)}
+                />
+            }
+
+        </>
+
+    )
+}
+
+export default MyDatePicker

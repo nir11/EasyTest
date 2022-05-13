@@ -11,10 +11,7 @@ env.config();
 
 // setting up cors config
 app.use(
-  cors({
-    credentials: true,
-    origin: "http://localhost:3000",
-  })
+  cors()
 );
 
 app.use(express.json());
