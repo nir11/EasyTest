@@ -36,6 +36,10 @@ const AppointmentSchema = new Schema({
     type: String,
     required: true,
   },
+  Datetime: {
+    type: Date,
+    required: true,
+  },
   Garage: { type: Schema.Types.ObjectId, ref: "Garage" },
 });
 
