@@ -33,10 +33,8 @@ const Geolocation = ({ setLat, setLng }) => {
 
         function error() {
             status.textContent = 'Unable to retrieve your location';
-
-            setLng(34.781769)
-            setLat(32.085300)
-
+            setLat(31.768318)
+            setLng(35.213711)
         }
 
         if (!navigator.geolocation) {

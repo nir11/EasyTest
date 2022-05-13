@@ -1,0 +1,16 @@
+.infoWindow {
+  text-align: right;
+}
+.infoWindow b {
+  font-weight: bold !important;
+}
+.gm-style .gm-style-iw + div {
+  display: none; /* <-- this will generally work on the fly. */
+  visibility: hidden; /* this 2 lines below are just for hard hiding. :) */
+  opacity: 0;
+}
+button.gm-ui-hover-effect {
+  position: absolute;
+  left: 0 !important;
+  top: 0 !important;
+}

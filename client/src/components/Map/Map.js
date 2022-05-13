@@ -1,18 +1,24 @@
 import React, { useEffect, useState } from 'react'
 import { GoogleMap, InfoWindow, Marker, useJsApiLoader } from '@react-google-maps/api';
+import { useSelector } from 'react-redux';
+
+import './map.css'
 
 const containerStyle = {
     width: '600px',
     height: '600px'
 };
 
-const MyMap = ({ lat, setLat, lng, setLng, center, setCenter, garages }) => {
+const MyMap = ({ lat, setLat, lng, setLng, center, setCenter }) => {
 
     const [isGargeSelected, setIsGargeSelected] = useState(false)
-    // useEffect(() => {
-    //     setLat(31.768318)
-    //     setLng(35.213711)
-    // }, [])
+
+    const garages = useSelector((state) => state.garagesReducer.garages)
+
+
+    useEffect(() => {
+        console.log('garages', garages);
+    }, [garages])
 
 
     const { isLoaded } = useJsApiLoader({
@@ -32,83 +38,98 @@ const MyMap = ({ lat, setLat, lng, setLng, center, setCenter, garages }) => {
         setMap(null)
     }, [])
 
-    return isLoaded ? (
-        <GoogleMap
-            mapContainerStyle={containerStyle}
-            center={center}
-            zoom={7}
-            onLoad={onLoad}
-            onUnmount={onUnmount}
-        >
-            { /* Child components, such as markers, info windows, etc. */}
+    return isLoaded && garages != undefined ?
+        (
+            <GoogleMap
+                mapContainerStyle={containerStyle}
+                // center={center}
+                defaultZoom={20}
+                zoom={7}
+                onLoad={onLoad}
+                onUnmount={onUnmount}
+                defaultCenter={{ lat: lat, lng: lng }}
+                center={{ lat: lat, lng: lng }}
 
-            {
-                garages.map(garage => {
+            >
+                { /* Child components, such as markers, info windows, etc. */}
 
-                    return <React.Fragment key={garage.id}>
+                {
+                    garages.map(garage => {
+                        // console.log('garage', garage);
 
-                        <Marker
-                            animation={window.google.maps.Animation.DROP}
-                            key={1}
-                            position={{
-                                lat: lat,
-                                lng: lng,
-                            }}
-
-                            // key={result._id}
-                            // position={{
-                            //     lat: result.Y_Coordinate,
-                            //     lng: result.X_Coordinate,
-                            // }}
-
-                            onClick={() => {
-                                // setSelectedATM(result)
-                                setLat(garage.lat)
-                                setLng(garage.lng)
-                                setIsGargeSelected(true)
-                                // props.setZoom(18)
-                            }}
-
-                        // icon={{
-                        //     url: `../images/atm.jpg`,
-                        //     scaledSize: new window.google.maps.Size(15, 25)
-                        // }}
-                        />
+                        return <React.Fragment key={garage._id}>
 
 
-                        {
-                            isGargeSelected &&
-                            <InfoWindow
-
+                            <Marker
+                                animation={window.google.maps.Animation.DROP}
                                 position={{
-                                    lat: lat,
-                                    lng: lng
+                                    lat: Number(garage.Latitude),
+                                    lng: Number(garage.Longitude),
+
+                                    // lat,
+                                    // lng
                                 }}
-                                onCloseClick={() => {
-                                    setIsGargeSelected(false)
+
+                                // key={result._id}
+                                // position={{
+                                //     lat: result.Y_Coordinate,
+                                //     lng: result.X_Coordinate,
+                                // }}
+
+                                onClick={() => {
+                                    // setSelectedATM(result)
+                                    setLat(garage.Latitude)
+                                    setLng(garage.Longitude)
+                                    setIsGargeSelected(true)
+                                    // props.setZoom(18)
                                 }}
 
-                            >
-                                <div className='infoWindow'>
+                            // icon={{
+                            //     url: `../images/atm.jpg`,
+                            //     scaledSize: new window.google.maps.Size(15, 25)
+                            // }}
+                            />
 
-                                    <h2>{garage.name}</h2>
-                                    <p><b>שעות פתיחה</b></p>
-                                    {/* <p>{selectedATM.ATM_Address} | {selectedATM.ATM_Location}</p>
-                                <p>{selectedATM.ATM_Type}</p> */}
 
-                                </div>
+                            {
+                                // !isGargeSelected &&
+                                // <InfoWindow
+                                //     position={{
+                                //         lat: Number(garage.Latitude),
+                                //         lng: Number(garage.Longitude),
+                                //     }}
+                                //     onCloseClick={() => {
+                                //         setIsGargeSelected(false)
+                                //     }}
 
-                            </InfoWindow>
-                        }
+                                // >
+                                //     <div className='infoWindow'>
 
-                    </React.Fragment>
+                                //         {/* <h2>{garage.Name}</h2> */}
+                                //         <p><b>{garage.Name}</b></p>
+                                //         <p> שעות פתיחה</p>
 
-                })
+                                //         {
+                                //             garage.WorkDays.map(w =>
+                                //                 <p key={w.DayIndex}>{w.DayIndex}: {w.StartTime} - {w.EndTime}</p>
+                                //             )}
+                                //         {/* <p>{selectedATM.ATM_Address} | {selectedATM.ATM_Location}</p>
+                                // <p>{selectedATM.ATM_Type}</p> */}
 
-            }
-            <></>
-        </GoogleMap>
-    ) : <></>
+                                //     </div>
+
+                                // </InfoWindow>
+                            }
+
+                        </React.Fragment>
+
+                    })
+
+                }
+                <></>
+            </GoogleMap>
+        ) : <>
+        </>
 }
 
 export default React.memo(MyMap)

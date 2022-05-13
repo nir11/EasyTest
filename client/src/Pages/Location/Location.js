@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Geolocation from '../../components/Geolocation/Geolocation'
 import Map from '../../components/Map/Map'
-import Api from '../../utilis/Api'
 
 const Location = () => {
 
@@ -13,26 +12,6 @@ const Location = () => {
         lng
     })
 
-    useEffect(() => {
-        Api.get(`garages`)
-            .then((res) => {
-                if (res.request.status == 200) {
-                    console.log('res', res);
-                }
-            })
-            .catch(error => console.log(error))
-
-    }, [])
-
-
-    const garages = [
-        {
-            id: 1,
-            name: "מ.מ.מ בדיקות רכב ורישוי",
-            lat: 31.748754158296734,
-            lng: 35.21171274479499
-        }
-    ]
     return (
         <div>
             <h1>Location</h1>
@@ -40,8 +19,6 @@ const Location = () => {
             <Geolocation
                 setLat={setLat}
                 setLng={setLng}
-            // setCityKey={setCityKey}
-            // setCityName={setCityName}
             />
 
             <Map
@@ -51,7 +28,6 @@ const Location = () => {
                 setLng={setLng}
                 center={center}
                 setCenter={setCenter}
-                garages={garages}
             />
         </div>
     )
