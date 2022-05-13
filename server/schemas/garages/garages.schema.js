@@ -12,11 +12,11 @@ const DayTime = new Schema({
     required: true,
   },
   StartTime: {
-    type: Date,
+    type: String,
     require: true,
   },
   EndTime: {
-    type: Date,
+    type: String,
     require: true,
   },
 });
