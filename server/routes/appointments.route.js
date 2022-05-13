@@ -1,10 +1,38 @@
 const router = require("express").Router();
 const Appointment = require("../schemas/appointments/appointments.schema");
 const Garage = require("../schemas/garages/garages.schema");
+const moment = require("moment");
 
 router.get("/", async (req, res) => {
   const appointments = await Appointment.find();
   res.send({ appointments });
+});
+
+router.get("/:garage/:month", async (req, res) => {
+  try {
+    let month = parseInt(req.params?.month);
+    if (month < 1 || month > 12) return res.status(400).send("Invalid month");
+    const bookedAppointments = await Appointment.find({
+      Garage: req.params.garage,
+      $expr: { $eq: [{ $month: "$Datetime" }, req.params.month] },
+    });
+
+    const ll = bookedAppointments.map((app) =>
+      moment(app.Datetime).local().format("DD/MM/YYYY HH:mm")
+    );
+    console.log({ ll });
+    const ExcludeDatetime = [
+      ...new Set(
+        bookedAppointments.map((app) =>
+          moment(app.Datetime).local().format("DD/MM/YYYY HH:mm")
+        )
+      ),
+    ];
+
+    res.send({ ExcludeDatetime });
+  } catch (err) {
+    res.status(400).send("Error");
+  }
 });
 
 router.post("/", async (req, res) => {
