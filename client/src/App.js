@@ -6,6 +6,7 @@ import Home from './Pages/Home/Home';
 import Location from './Pages/Location/Location';
 
 import Nav from './components/Nav/Nav'
+import Summary from './components/Summary/Summary';
 function App() {
   return (
     <div>
@@ -13,6 +14,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/location" element={<Location />} />
+        <Route path="/appointment-saved" element={<Summary />} />
       </Routes>
     </div >
   );

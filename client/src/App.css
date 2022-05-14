@@ -2,6 +2,13 @@ body {
   direction: rtl !important;
   text-align: right !important;
 }
+/* .container-fluid {
+  background-image: url("./utilis/background-garage.jpeg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  min-height: 100vh;
+} */
 h1 {
   text-align: center;
 }

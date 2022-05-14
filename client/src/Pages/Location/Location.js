@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Geolocation from '../../components/Geolocation/Geolocation'
 import Map from '../../components/Map/Map'
-import Calculate from './Calculate'
+import Calculate from '../../components/Calculate/Calculate'
 
 const Location = () => {
 
@@ -28,7 +28,7 @@ const Location = () => {
                             lat={lat}
                             lng={lng}
                         />
-                        : "טוען..."
+                        : <p>אנא הפעל מיקום כדי לקבל תורים מומלצים עבורך</p>
                 }
 
 

@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import './map.css'
 
 const containerStyle = {
-    width: '600px',
+    width: '100%',
     height: '600px'
 };
 
@@ -29,7 +29,7 @@ const MyMap = ({ lat, setLat, lng, setLng, center, setCenter }) => {
     const [map, setMap] = React.useState(null)
 
     const onLoad = React.useCallback(function callback(map) {
-        const bounds = new window.google.maps.LatLngBounds(center);
+        const bounds = new window.google.maps.LatLngBounds(Number(center));
         map.fitBounds(bounds);
         setMap(map)
     }, [])
@@ -37,6 +37,11 @@ const MyMap = ({ lat, setLat, lng, setLng, center, setCenter }) => {
     const onUnmount = React.useCallback(function callback(map) {
         setMap(null)
     }, [])
+
+    useEffect(() => {
+        console.log("lng", lng);
+        console.log("lat", lat);
+    }, [lat, lng])
 
     return isLoaded && garages != undefined ?
         (
@@ -63,18 +68,12 @@ const MyMap = ({ lat, setLat, lng, setLng, center, setCenter }) => {
                             <Marker
                                 animation={window.google.maps.Animation.DROP}
                                 position={{
-                                    lat: Number(garage.Latitude),
-                                    lng: Number(garage.Longitude),
+                                    // lat: Number(garage.Latitude),
+                                    // lng: Number(garage.Longitude),
 
-                                    // lat,
-                                    // lng
+                                    lat,
+                                    lng
                                 }}
-
-                                // key={result._id}
-                                // position={{
-                                //     lat: result.Y_Coordinate,
-                                //     lng: result.X_Coordinate,
-                                // }}
 
                                 onClick={() => {
                                     // setSelectedATM(result)
@@ -92,33 +91,35 @@ const MyMap = ({ lat, setLat, lng, setLng, center, setCenter }) => {
 
 
                             {
-                                // !isGargeSelected &&
-                                // <InfoWindow
-                                //     position={{
-                                //         lat: Number(garage.Latitude),
-                                //         lng: Number(garage.Longitude),
-                                //     }}
-                                //     onCloseClick={() => {
-                                //         setIsGargeSelected(false)
-                                //     }}
+                                isGargeSelected &&
+                                <InfoWindow
+                                    position={{
+                                        // lat: Number(garage.Latitude),
+                                        // lng: Number(garage.Longitude),
+                                        lat,
+                                        lng
+                                    }}
+                                    onCloseClick={() => {
+                                        setIsGargeSelected(false)
+                                    }}
 
-                                // >
-                                //     <div className='infoWindow'>
+                                >
+                                    <div className='infoWindow'>
 
-                                //         {/* <h2>{garage.Name}</h2> */}
-                                //         <p><b>{garage.Name}</b></p>
-                                //         <p> שעות פתיחה</p>
+                                        {/* <h2>{garage.Name}</h2> */}
+                                        <p><b>{garage.Name}</b></p>
+                                        <p> שעות פתיחה</p>
 
-                                //         {
-                                //             garage.WorkDays.map(w =>
-                                //                 <p key={w.DayIndex}>{w.DayIndex}: {w.StartTime} - {w.EndTime}</p>
-                                //             )}
-                                //         {/* <p>{selectedATM.ATM_Address} | {selectedATM.ATM_Location}</p>
-                                // <p>{selectedATM.ATM_Type}</p> */}
+                                        {
+                                            garage.WorkDays.map(w =>
+                                                <p key={w.DayIndex}>{w.DayIndex}: {w.StartTime} - {w.EndTime}</p>
+                                            )}
+                                        {/* <p>{selectedATM.ATM_Address} | {selectedATM.ATM_Location}</p>
+                                <p>{selectedATM.ATM_Type}</p> */}
 
-                                //     </div>
+                                    </div>
 
-                                // </InfoWindow>
+                                </InfoWindow>
                             }
 
                         </React.Fragment>

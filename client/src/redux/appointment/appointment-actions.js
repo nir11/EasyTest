@@ -10,7 +10,7 @@ export const createAppointment = (data) => async dispatch => {
             payload: res.data
         })
 
-        if (data.status == 200)
+        if (res.status == 200)
             return Promise.resolve(res.data);
         else
             return Promise.reject(res.data);

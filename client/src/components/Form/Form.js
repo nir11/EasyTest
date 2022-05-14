@@ -8,10 +8,12 @@ import PersonalDetails from './PersonalDetails'
 import { MDBInput } from 'mdbreact'
 
 import { createAppointment } from '../../redux/appointment/appointment-actions'
+import { useNavigate } from 'react-router-dom'
+import Spinner from '../Spinner.js/Spinner'
 
 // import './form.scss'
 
-const MyForm = (setAppointmentData, setStep) => {
+const MyForm = () => {
 
     const [city, setCity] = useState('')
     const [selectedGagrage, setSelectedGagrage] = useState("")
@@ -24,9 +26,9 @@ const MyForm = (setAppointmentData, setStep) => {
 
     //form fields
     const [appointmentDateTime, setAppointmentDateTime] = useState(new Date());
-
+    const [showSpinner, setShowSpinner] = useState(true)
     const dispatch = useDispatch()
-
+    const navigate = useNavigate()
     const garages = useSelector((state) => state.garagesReducer.garages)
 
 
@@ -34,9 +36,14 @@ const MyForm = (setAppointmentData, setStep) => {
         dispatch(getGarages())
     }, [])
 
+    useEffect(() => {
+        if (garages.length > 0)
+            setShowSpinner(false)
+    }, [garages])
 
     const submitForm = (e) => {
         e.preventDefault();
+        setShowSpinner(true)
         const data = {
             User: {
                 "FirstName": firstName,
@@ -52,66 +59,75 @@ const MyForm = (setAppointmentData, setStep) => {
         console.log('data', data);
         dispatch(createAppointment(data))
             .then(() => {
-                alert("התור נשמר בהצלחה!")
-                setAppointmentData(data)
-                setStep(2)
+                setShowSpinner(false)
+                navigate("/appointment-saved")
             })
             .catch(error => alert(error))
     }
 
 
+
     return (
         <div>
-            <Form onSubmit={submitForm}>
-
-                <h2>בחירת מוסך</h2>
-                <MDBInput label="* שם עיר" outline
-                    group type={"text"}
-                    value={city}
-                    onChange={e => setCity(e.target.value)}
-                    icon="city"
-                    required
-                />
-
-                <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                    <select className='form-control' onChange={e => setSelectedGagrage(e.target.value)} required>
-                        <option value={0}>בחר/י מוסך</option>
-                        {
-                            garages != undefined &&
-                            garages.map(garage => {
-                                return (
-                                    <option key={garage._id} value={garage._id}>{garage.Name}</option>
-                                )
-                            })
-                        }
-                    </select>
-                </Form.Group>
-                {
-                    selectedGagrage != "" &&
-                    <MyDatePicker
-                        selectedGagrage={garages.filter(g => g._id == selectedGagrage)}
-                        setAppointmentDateTime={setAppointmentDateTime}
-                        appointmentDateTime={appointmentDateTime}
-                    />
-                }
-                {/* <br /> <br /> */}
-                {/* <p>{`${appointmentDateTime}`}</p> */}
-                <hr />
-                <PersonalDetails
-                    id={id} setId={setId}
-                    firstName={firstName} setFirstName={setFirstName}
-                    lastName={lastName} setLastName={setLastName}
-                    phone={phone} setPhone={setPhone}
-                    email={email} setEmail={setEmail}
-                    carNumber={carNumber} setCarNumber={setCarNumber}
-                />
-
-                <Button variant="primary" type="submit">
-                    סיום
-                </Button>
-            </Form>
+            <h2>בחירת מוסך</h2>
+            {
+                !showSpinner ?
+                    <>
+                        <Form onSubmit={submitForm}>
 
 
+
+
+                            <label >בחר/י עיר</label>
+                            <Form.Group className="mb-3" controlId="formBasicCheckbox">
+                                <select className='form-control' required onChange={e => setCity(e.target.value)}>
+                                    <option value={""}></option>
+                                    <option value={"ירושלים"}>ירושלים</option>
+
+                                </select>
+                            </Form.Group>
+                            <label >בחר/י מוסך</label>
+                            <Form.Group className="mb-3" controlId="formBasicCheckbox">
+                                <select className='form-control' onChange={e => setSelectedGagrage(e.target.value)} required>
+                                    <option value={0}></option>
+                                    {
+                                        garages != undefined &&
+                                        garages.map(garage => {
+                                            return (
+                                                <option key={garage._id} value={garage._id}>{garage.Name}</option>
+                                            )
+                                        })
+                                    }
+                                </select>
+                            </Form.Group>
+                            {
+                                selectedGagrage != "" &&
+                                <MyDatePicker
+                                    selectedGagrage={garages.filter(g => g._id == selectedGagrage)}
+                                    setAppointmentDateTime={setAppointmentDateTime}
+                                    appointmentDateTime={appointmentDateTime}
+                                />
+                            }
+                            {/* <br /> <br /> */}
+                            {/* <p>{`${appointmentDateTime}`}</p> */}
+                            <hr />
+                            <PersonalDetails
+                                id={id} setId={setId}
+                                firstName={firstName} setFirstName={setFirstName}
+                                lastName={lastName} setLastName={setLastName}
+                                phone={phone} setPhone={setPhone}
+                                email={email} setEmail={setEmail}
+                                carNumber={carNumber} setCarNumber={setCarNumber}
+                            />
+
+                            <Button variant="primary" type="submit">
+                                סיום
+                            </Button>
+                        </Form>
+                    </>
+
+                    : <Spinner />
+            }
 
         </div >
     )
