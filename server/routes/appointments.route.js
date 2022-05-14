@@ -136,7 +136,6 @@ const calculateBestRecommendedAppointments = (garagesRecs) => {
       const appointmentScore = garage.Distance + minutesToAppointment;
       // console.log({ appointmentScore });
       scores.push(appointmentScore);
-      console.log();
       if (!bestAppointment) {
         bestAppointment = {
           Id: garage.Id,
@@ -231,7 +230,8 @@ const findNextFreeAppointmentOfGarage = async (garageId) => {
       date,
       garage._id
     );
-    // console.log({ bookedAppointmentOfDate });
+    console.log("garage.Name", garage.Name);
+    console.log({ bookedAppointmentOfDate });
 
     let startTimeOfDate = garage.WorkDays[dayIndex - 1].StartTime;
     const endTimeOfDate = garage.WorkDays[dayIndex - 1].EndTime;
@@ -309,13 +309,14 @@ const findFreeAppointmentsInDay = (
 
   const startTimeMoment = moment(date + " " + startTime);
   const endTimeMoment = moment(date + " " + endTime);
-  console.log({ startTimeMoment });
-  console.log({ endTimeMoment });
+  // console.log({ startTimeMoment });
+  // console.log({ endTimeMoment });
   // console.log({ bookedAppointments });
 
-  let currentTime = startTimeMoment;
+  let currentTime = startTimeMoment.utc();
 
   while (currentTime.isBefore(endTimeMoment)) {
+    // console.log("currentTime", currentTime.format("HH:mm"));
     if (!bookedAppointments.includes(currentTime.format("HH:mm"))) {
       const addDate = currentTime.clone();
       recommendedAppointments.push(addDate);
