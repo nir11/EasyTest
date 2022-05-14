@@ -43,7 +43,7 @@ router.get("/:garage/:year/:month", async (req, res) => {
     const ExcludeDatetime = [
       ...new Set(
         bookedAppointments.map((app) =>
-          moment(app.Datetime).local().format("DD/MM/YYYY HH:mm")
+          moment(app.Datetime).format("DD/MM/YYYY HH:mm")
         )
       ),
     ];
@@ -55,8 +55,8 @@ router.get("/:garage/:year/:month", async (req, res) => {
 });
 
 const calculateDistanceToGarage = (userLocation, garageLocation) => {
-  console.log("userLocation", userLocation)
-  console.log("garageLocation", garageLocation)
+  // console.log("userLocation", userLocation);
+  // console.log("garageLocation", garageLocation);
   // const myLocation = {
   //   latitude: 32.38996950755073,
   //   longitude: 34.98740266931584,
@@ -72,9 +72,9 @@ const calculateDistanceToGarage = (userLocation, garageLocation) => {
   // };
   const distance =
     geolib.getPreciseDistance(userLocation, garageLocation) / 1000;
-  const distanceInKm = distance.toFixed(1)
-  console.log('distanceInKm', distanceInKm)
-  return distanceInKm
+  const distanceInKm = parseFloat(distance.toFixed(1));
+  // console.log("distanceInKm", distanceInKm);
+  return distanceInKm;
 };
 
 router.put("/recommended", async (req, res) => {
@@ -112,33 +112,36 @@ router.put("/recommended", async (req, res) => {
     })
   );
   const Recommendations = calculateBestRecommendedAppointments(
-    userLocation,
     allGaragesRecommendedAppointments
   );
 
   res.send({ Recommendations });
 });
 
-const calculateBestRecommendedAppointments = (userLocation, garagesRecs) => {
+const calculateBestRecommendedAppointments = (garagesRecs) => {
   const result = [];
   let scores = [];
   let bestAppointment = null;
   let secondBestAppointment = null;
 
-  garagesRecs.forEach((garagesRec) => {
-    garagesRec.Appointments.forEach((appointment) => {
+  garagesRecs.forEach((garage) => {
+    // console.log({ garage });
+    garage.Appointments.forEach((appointment) => {
       // console.log({ appointment });
-      const minutesToAppointment = appointment.diff(moment(), "minutes");
+      const minutesToAppointment = parseInt(
+        appointment.diff(moment(), "minutes")
+      );
       // console.log({ minutesToAppointment });
-      // console.log("garagesRec.DistanceRank", garagesRec.DistanceRank);
-      const appointmentScore =
-        parseInt(garagesRec.DistanceRank) + minutesToAppointment;
+      // console.log("garagesRec.Distance", garagesRec.Distance);
+      const appointmentScore = garage.Distance + minutesToAppointment;
+      // console.log({ appointmentScore });
       scores.push(appointmentScore);
+      console.log();
       if (!bestAppointment) {
         bestAppointment = {
-          Id: garagesRec.Id,
-          Name: garagesRec.Name,
-          Distance: garagesRec.Distance,
+          Id: garage.Id,
+          Name: garage.Name,
+          Distance: garage.Distance,
           Score: appointmentScore,
           Datetime: appointment,
         };
@@ -147,61 +150,47 @@ const calculateBestRecommendedAppointments = (userLocation, garagesRecs) => {
       if (!secondBestAppointment) {
         // console.log({ appointmentScore });
         // console.log("bestAppointment.Score", bestAppointment.Score);
-        if (
-          appointmentScore < bestAppointment.Score ||
-          (appointmentScore === bestAppointment.Score &&
-            appointment.Distance < bestAppointment.Distance)
-        ) {
+        if (appointmentScore < bestAppointment.Score) {
           secondBestAppointment = { ...bestAppointment };
           bestAppointment = {
-            Id: garagesRec.Id,
-            Name: garagesRec.Name,
-            Distance: garagesRec.Distance,
+            Id: garage.Id,
+            Name: garage.Name,
+            Distance: garage.Distance,
             Score: appointmentScore,
             Datetime: appointment,
           };
           return;
         }
         secondBestAppointment = {
-          Id: garagesRec.Id,
-          Name: garagesRec.Name,
-          Distance: garagesRec.Distance,
+          Id: garage.Id,
+          Name: garage.Name,
+          Distance: garage.Distance,
           Score: appointmentScore,
           Datetime: appointment,
         };
         return;
       }
 
-      if (appointment.Score <= secondBestAppointment.Score) {
-        if (
-          appointmentScore < bestAppointment.Score ||
-          (appointmentScore === bestAppointment.Score &&
-            appointment.Distance < bestAppointment.Distance)
-        ) {
+      if (appointmentScore < secondBestAppointment.Score) {
+        if (appointmentScore < bestAppointment.Score) {
           secondBestAppointment = { ...bestAppointment };
           bestAppointment = {
-            Id: garagesRec.Id,
-            Name: garagesRec.Name,
-            Distance: garagesRec.Distance,
+            Id: garage.Id,
+            Name: garage.Name,
+            Distance: garage.Distance,
             Score: appointmentScore,
             Datetime: appointment,
           };
           return;
         }
-        if (
-          appointmentScore < secondBestAppointment.Score ||
-          (appointmentScore === secondBestAppointment.Score &&
-            appointment.Distance < secondBestAppointment.Distance)
-        ) {
-          secondBestAppointment = {
-            Id: garagesRec.Id,
-            Name: garagesRec.Name,
-            Distance: garagesRec.Distance,
-            Score: appointmentScore,
-            Datetime: appointment,
-          };
-          return;
-        }
+        secondBestAppointment = {
+          Id: garage.Id,
+          Name: garage.Name,
+          Distance: garage.Distance,
+          Score: appointmentScore,
+          Datetime: appointment,
+        };
+        return;
       }
     });
   });
@@ -228,11 +217,11 @@ const findNextFreeAppointmentOfGarage = async (garageId) => {
   // console.log({ dayIndex });
   let count = 1;
   while (count !== 7) {
-    console.log({ dayIndex });
-    console.log({ date });
+    // console.log({ dayIndex });
+    // console.log({ date });
     const isDayIndexExistsForGarage = garage.WorkDays[dayIndex - 1];
     if (!isDayIndexExistsForGarage) {
-      console.log("day not exists");
+      // console.log("day not exists");
       date = date.clone().add(1, "days");
       dayIndex = date.clone().day() + 1;
       count++;
@@ -248,16 +237,15 @@ const findNextFreeAppointmentOfGarage = async (garageId) => {
     const endTimeOfDate = garage.WorkDays[dayIndex - 1].EndTime;
 
     // check if it's today
-    const now = moment().format("YYYY-MM-DD");
     // console.log("date before inserting", date);
     // console.log(moment().isSame(date.format("YYYY-MM-DD"), "day"));
-    if (moment().isSame(date.format("YYYY-MM-DD"), "day")) {
-      startTimeOfDate = date.clone();
-      const remainder = 15 - (startTimeOfDate.minute() % 15); // round to the next 15 min
-      startTimeOfDate = moment(startTimeOfDate)
-        .add(remainder, "minutes")
-        .format("hh:mm");
-      // console.log({ startTimeOfDate });
+    // console.log({ date });
+    const isDateIsToday = moment().isSame(date.format("YYYY-MM-DD"), "day");
+    // console.log({ isDayIsToday });
+    if (isDateIsToday) {
+      const roundedUp = Math.ceil(moment().minute() / 15) * 15;
+      startTimeOfDate = moment().minute(roundedUp).format("HH:mm");
+      // console.log("start modified", startTimeOfDate);
     }
 
     recommendedAppointments = findFreeAppointmentsInDay(
@@ -318,16 +306,17 @@ const findFreeAppointmentsInDay = (
   endTime
 ) => {
   const recommendedAppointments = [];
+
   const startTimeMoment = moment(date + " " + startTime);
   const endTimeMoment = moment(date + " " + endTime);
-  // console.log({ startTimeMoment });
-  // console.log({ endTimeMoment });
+  console.log({ startTimeMoment });
+  console.log({ endTimeMoment });
   // console.log({ bookedAppointments });
 
   let currentTime = startTimeMoment;
 
   while (currentTime.isBefore(endTimeMoment)) {
-    if (!bookedAppointments.includes(currentTime.format("hh:mm"))) {
+    if (!bookedAppointments.includes(currentTime.format("HH:mm"))) {
       const addDate = currentTime.clone();
       recommendedAppointments.push(addDate);
       if (recommendedAppointments.length === 2) return recommendedAppointments;
@@ -361,7 +350,7 @@ router.post("/", async (req, res) => {
     Garage: req.body.GarageId,
   });
   await newAppointment.save();
-  res.send({ Id: newAppointment._id });
+  res.send({ Appointment: newAppointment });
 });
 
 module.exports = router;
