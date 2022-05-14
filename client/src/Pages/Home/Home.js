@@ -1,22 +1,25 @@
 import React, { useState } from 'react'
 import MyForm from '../../components/Form/Form'
-
-import DatePicker from "react-datepicker";
-
-import "react-datepicker/dist/react-datepicker.css";
-
+import Summary from '../../components/Summary/Summary'
 
 const Home = () => {
 
-    const [startDate, setStartDate] = useState(new Date());
-    const [hours, setHours] = useState(new Date())
-    const [minutes, setMinutes] = useState("")
-
+    const [step, setStep] = useState(1)
+    const [appointmentData, setAppointmentData] = useState([])
     return (
         <div className='container-fluid'>
-            <div className='container'>
-                <h1>EastTest</h1>
-                <MyForm />
+            <div className='container card'>
+                <h1>קביעת תור לטסט לרכב</h1>
+
+                {
+                    step == 1 ?
+                        <MyForm
+                            setStep={setStep}
+                            setAppointmentData={setAppointmentData}
+                        />
+                        : step == 2
+                        && <Summary />
+                }
             </div>
 
             {/* <DatePicker

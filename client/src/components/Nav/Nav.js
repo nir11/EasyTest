@@ -2,19 +2,23 @@ import React from 'react'
 import { Nav } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
+import { useNavigate } from 'react-router-dom'
+
 const MyNav = () => {
+    const navigate = useNavigate()
+    const pushTo = (path) => {
+        navigate(path)
+    }
     return (
         <Nav
             activeKey="/"
         >
             <Nav.Item>
-                {/* <Nav.Link href="/">בית</Nav.Link> */}
-                <Link to={"/"}>בית</Link>
+                <Nav.Link onClick={() => pushTo("/")}>קביעת תור</Nav.Link>
             </Nav.Item>
 
             <Nav.Item>
-                {/* <Nav.Link href="/location">מיקום</Nav.Link> */}
-                <Link to={"/location"}>מיקום</Link>
+                <Nav.Link onClick={() => pushTo("/location")}> המלצה לפי מיקום</Nav.Link>
 
             </Nav.Item>
             {/* <Nav.Item>
@@ -25,7 +29,7 @@ const MyNav = () => {
                     Disabled
                 </Nav.Link>
             </Nav.Item> */}
-        </Nav>
+        </Nav >
     )
 }
 

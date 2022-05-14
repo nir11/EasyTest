@@ -1,34 +1,46 @@
 import React, { useEffect, useState } from 'react'
 import Geolocation from '../../components/Geolocation/Geolocation'
 import Map from '../../components/Map/Map'
+import Calculate from './Calculate'
 
 const Location = () => {
 
     //set to lat & lng of Jerusalem 
-    const [lat, setLat] = useState(31.768318)
-    const [lng, setLng] = useState(35.213711)
+    const [lat, setLat] = useState(null)
+    const [lng, setLng] = useState(null)
     const [center, setCenter] = useState({
         lat,
         lng
     })
 
     return (
-        <div>
-            <h1>Location</h1>
+        <div className='container-fluid'>
+            <div className='container'>
+                <h1>תורים מומלצים</h1>
 
-            <Geolocation
-                setLat={setLat}
-                setLng={setLng}
-            />
+                <Geolocation
+                    setLat={setLat}
+                    setLng={setLng}
+                />
+                {
+                    lat != null && lng != null ?
+                        <Calculate
+                            lat={lat}
+                            lng={lng}
+                        />
+                        : "טוען..."
+                }
 
-            <Map
+
+                {/* <Map
                 lat={lat}
                 setLat={setLat}
                 lng={lng}
                 setLng={setLng}
                 center={center}
                 setCenter={setCenter}
-            />
+            /> */}
+            </div>
         </div>
     )
 }

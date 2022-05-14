@@ -1,7 +1,46 @@
 body {
-  direction: rtl;
-  text-align: right;
+  direction: rtl !important;
+  text-align: right !important;
 }
 h1 {
   text-align: center;
+}
+.flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* form fields */
+.md-form .prefix ~ label {
+  margin-left: -10px !important;
+}
+.md-form .prefix ~ label {
+  width: 100%;
+  text-align: right;
+}
+form i.fa.fa {
+  left: 0;
+}
+.md-form .prefix {
+  width: inherit;
+  text-align: left;
+}
+form input:focus,
+textarea:focus {
+  border: 3px solid #a6c !important;
+}
+form .md-form label.active {
+  transform: translateY(-24px) scale(0.8) !important;
+}
+form input:focus,
+textarea:focus {
+  border: 3px solid #a6c !important;
+}
+form input,
+textarea {
+  background-color: transparent !important;
+  border: 2px solid !important;
+  border-radius: 5px !important;
+  padding-right: 2% !important;
 }
