@@ -77,6 +77,61 @@ const calculateDistanceToGarage = (userLocation, garageLocation) => {
   return distanceInKm;
 };
 
+router.get("/free", async (req, res) => {
+  const userLocation = {
+    latitude: req.body.Latitude,
+    longitude: req.body.Longitude,
+  };
+  const garages = await Garage.find();
+  let allGaragesRecommendedAppointments = [];
+
+  await Promise.all(
+    garages.map(async (garage, i) => {
+      try {
+        const recAppointments = await findNextFreeAppointmentOfGarage(
+          garage._id
+        );
+        // console.log({ recAppointments });
+        if (recAppointments.length > 0) {
+          allGaragesRecommendedAppointments.push({
+            Id: garage._id,
+            Name: garage.Name,
+            Appointments: recAppointments,
+          });
+          // console.log({ allGaragesRecommendedAppointments });
+        }
+      } catch (error) {
+        console.log("error" + error);
+      }
+    })
+  );
+  let bestAppointment = null;
+  allGaragesRecommendedAppointments.forEach((garage) => {
+    garage.Appointments.forEach((appointment) => {
+      if (!bestAppointment) {
+        bestAppointment = {
+          Id: garage.Id,
+          Name: garage.Name,
+          Distance: garage.Distance,
+          Datetime: appointment,
+        };
+        return;
+      }
+      if (appointment.isBefore(bestAppointment.Datetime)) {
+        bestAppointment = {
+          Id: garage.Id,
+          Name: garage.Name,
+          Distance: garage.Distance,
+          Datetime: appointment,
+        };
+      }
+    });
+    // console.log({ garage });
+  });
+
+  res.send({ Appointments: [bestAppointment] });
+});
+
 router.put("/recommended", async (req, res) => {
   // calculateDistanceToGarage();
   const userLocation = {
@@ -230,8 +285,8 @@ const findNextFreeAppointmentOfGarage = async (garageId) => {
       date,
       garage._id
     );
-    console.log("garage.Name", garage.Name);
-    console.log({ bookedAppointmentOfDate });
+    // console.log("garage.Name", garage.Name);
+    // console.log({ bookedAppointmentOfDate });
 
     let startTimeOfDate = garage.WorkDays[dayIndex - 1].StartTime;
     const endTimeOfDate = garage.WorkDays[dayIndex - 1].EndTime;
