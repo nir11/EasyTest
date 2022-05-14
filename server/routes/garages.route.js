@@ -22,7 +22,6 @@ router.get("/", async (req, res) => {
 });
 
 router.put("/:id", async (req, res) => {
-  console.log("nir");
   const garage = await Garage.findById(req.params.id);
   if (!garage) res.status(400).send("Garage not found");
 
