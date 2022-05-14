@@ -9,7 +9,9 @@ export default function appointmentReducer(state = initialState, action) {
         case "CREATE_APPOINTMENT":
             return state;
         case "GET_APPOINTMENT":
-            return { appointmentTimes: action.payload.ExcludeDatetime };
+            return { ...state, appointmentTimes: action.payload.ExcludeDatetime };
+        case "GET_REACOMMENDED_APPOINTMENT":
+            return { ...state, appointments: action.payload.Recommendations };
 
         default:
             return state;

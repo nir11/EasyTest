@@ -44,6 +44,8 @@ router.get("/:garage/:year/:month", async (req, res) => {
 });
 
 const calculateDistanceToGarage = (userLocation, garageLocation) => {
+  console.log("userLocation", userLocation)
+  console.log("garageLocation", garageLocation)
   // const myLocation = {
   //   latitude: 32.38996950755073,
   //   longitude: 34.98740266931584,
@@ -59,14 +61,16 @@ const calculateDistanceToGarage = (userLocation, garageLocation) => {
   // };
   const distance =
     geolib.getPreciseDistance(userLocation, garageLocation) / 1000;
-  console.log("distance", distance.toFixed(1) + " km");
+  const distanceInKm = distance.toFixed(1)
+  console.log('distanceInKm', distanceInKm)
+  return distanceInKm
 };
 
-router.get("/recommended", async (req, res) => {
-  calculateDistanceToGarage();
+router.put("/recommended", async (req, res) => {
+  // calculateDistanceToGarage();
   const userLocation = {
-    Latitude: req.body.Latitude,
-    Longitude: req.body.Longitude,
+    latitude: req.body.Latitude,
+    longitude: req.body.Longitude,
   };
   const garages = await Garage.find();
   let allGaragesRecommendedAppointments = [];
@@ -83,8 +87,8 @@ router.get("/recommended", async (req, res) => {
             Id: garage._id,
             Name: garage.Name,
             Distance: calculateDistanceToGarage(userLocation, {
-              Latitude: garage.Latitude,
-              Longitude: garage.Longitude,
+              latitude: garage.Latitude,
+              longitude: garage.Longitude,
             }),
             DistanceRank: i + 1,
             Appointments: recAppointments,

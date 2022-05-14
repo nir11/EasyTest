@@ -21,10 +21,10 @@ export const createAppointment = (data) => async dispatch => {
         return Promise.reject(e);
     }
 }
-export const getAppointments = (garageId, dateNumber) => async dispatch => {
+export const getAppointments = (garageId, dateYear, dateNumber) => async dispatch => {
     try {
 
-        const res = await Api.get(`appointments/${garageId}/${dateNumber}`)
+        const res = await Api.get(`appointments/${garageId}/${dateYear}/${dateNumber}`)
 
         dispatch({
             type: 'GET_APPOINTMENT',
@@ -42,3 +42,27 @@ export const getAppointments = (garageId, dateNumber) => async dispatch => {
         return Promise.reject(e);
     }
 }
+
+export const getRecommendedAppointments = (userLoction) => async dispatch => {
+    try {
+
+        console.log("userLoction", userLoction)
+        const res = await Api.put(`/appointments/recommended`, userLoction)
+
+        dispatch({
+            type: 'GET_REACOMMENDED_APPOINTMENT',
+            payload: res.data
+        })
+
+        if (res.status == 200)
+            return Promise.resolve(res.data);
+        else
+            Promise.reject(res.data);
+
+    }
+    catch (e) {
+        // console.log(e);
+        return Promise.reject(e);
+    }
+}
+
