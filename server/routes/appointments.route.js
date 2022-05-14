@@ -43,21 +43,22 @@ router.get("/:garage/:year/:month", async (req, res) => {
   }
 });
 
-const calculateDistanceToGarage = () => {
-  const myLocation = {
-    latitude: 32.38996950755073,
-    longitude: 34.98740266931584,
-  };
-  const garageLocation = {
-    // hadera
-    // latitude: 32.43479838895164,
-    // longitude: 34.92068461774575,
+const calculateDistanceToGarage = (userLocation, garageLocation) => {
+  // const myLocation = {
+  //   latitude: 32.38996950755073,
+  //   longitude: 34.98740266931584,
+  // };
+  // const garageLocation = {
+  //   // hadera
+  //   // latitude: 32.43479838895164,
+  //   // longitude: 34.92068461774575,
 
-    // netanua
-    latitude: 32.32840407146948,
-    longitude: 34.864968630378215,
-  };
-  const distance = geolib.getPreciseDistance(myLocation, garageLocation) / 1000;
+  //   // netanua
+  //   latitude: 32.32840407146948,
+  //   longitude: 34.864968630378215,
+  // };
+  const distance =
+    geolib.getPreciseDistance(userLocation, garageLocation) / 1000;
   console.log("distance", distance.toFixed(1) + " km");
 };
 
@@ -81,7 +82,10 @@ router.get("/recommended", async (req, res) => {
           allGaragesRecommendedAppointments.push({
             Id: garage._id,
             Name: garage.Name,
-            Distance: i + 1,
+            Distance: calculateDistanceToGarage(userLocation, {
+              Latitude: garage.Latitude,
+              Longitude: garage.Longitude,
+            }),
             DistanceRank: i + 1,
             Appointments: recAppointments,
           });
