@@ -77,6 +77,61 @@ const calculateDistanceToGarage = (userLocation, garageLocation) => {
   return distanceInKm;
 };
 
+router.get("/free", async (req, res) => {
+  const userLocation = {
+    latitude: req.body.Latitude,
+    longitude: req.body.Longitude,
+  };
+  const garages = await Garage.find();
+  let allGaragesRecommendedAppointments = [];
+
+  await Promise.all(
+    garages.map(async (garage, i) => {
+      try {
+        const recAppointments = await findNextFreeAppointmentOfGarage(
+          garage._id
+        );
+        // console.log({ recAppointments });
+        if (recAppointments.length > 0) {
+          allGaragesRecommendedAppointments.push({
+            Id: garage._id,
+            Name: garage.Name,
+            Appointments: recAppointments,
+          });
+          // console.log({ allGaragesRecommendedAppointments });
+        }
+      } catch (error) {
+        console.log("error" + error);
+      }
+    })
+  );
+  let bestAppointment = null;
+  allGaragesRecommendedAppointments.forEach((garage) => {
+    garage.Appointments.forEach((appointment) => {
+      if (!bestAppointment) {
+        bestAppointment = {
+          Id: garage.Id,
+          Name: garage.Name,
+          Distance: garage.Distance,
+          Datetime: appointment,
+        };
+        return;
+      }
+      if (appointment.isBefore(bestAppointment.Datetime)) {
+        bestAppointment = {
+          Id: garage.Id,
+          Name: garage.Name,
+          Distance: garage.Distance,
+          Datetime: appointment,
+        };
+      }
+    });
+    // console.log({ garage });
+  });
+
+  res.send({ Appointments: [bestAppointment] });
+});
+
 router.put("/recommended", async (req, res) => {
   // calculateDistanceToGarage();
   const userLocation = {
@@ -136,7 +191,6 @@ const calculateBestRecommendedAppointments = (garagesRecs) => {
       const appointmentScore = garage.Distance + minutesToAppointment;
       // console.log({ appointmentScore });
       scores.push(appointmentScore);
-      console.log();
       if (!bestAppointment) {
         bestAppointment = {
           Id: garage.Id,
@@ -231,6 +285,7 @@ const findNextFreeAppointmentOfGarage = async (garageId) => {
       date,
       garage._id
     );
+    // console.log("garage.Name", garage.Name);
     // console.log({ bookedAppointmentOfDate });
 
     let startTimeOfDate = garage.WorkDays[dayIndex - 1].StartTime;
@@ -309,13 +364,14 @@ const findFreeAppointmentsInDay = (
 
   const startTimeMoment = moment(date + " " + startTime);
   const endTimeMoment = moment(date + " " + endTime);
-  console.log({ startTimeMoment });
-  console.log({ endTimeMoment });
+  // console.log({ startTimeMoment });
+  // console.log({ endTimeMoment });
   // console.log({ bookedAppointments });
 
-  let currentTime = startTimeMoment;
+  let currentTime = startTimeMoment.utc();
 
   while (currentTime.isBefore(endTimeMoment)) {
+    // console.log("currentTime", currentTime.format("HH:mm"));
     if (!bookedAppointments.includes(currentTime.format("HH:mm"))) {
       const addDate = currentTime.clone();
       recommendedAppointments.push(addDate);
