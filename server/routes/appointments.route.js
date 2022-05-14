@@ -17,17 +17,28 @@ router.post("/email", (req, res) => {
 
 router.get("/:garage/:year/:month", async (req, res) => {
   try {
-    let month = parseInt(req.params?.month);
+    const month = parseInt(req.params?.month);
     if (month < 1 || month > 12) return res.status(400).send("Invalid month");
-    const bookedAppointments = await Appointment.find({
-      Garage: req.params.garage,
-      $expr: { $eq: [{ $month: "$Datetime" }, req.params.month] },
-      $expr: { $eq: [{ $year: "$Datetime" }, req.params.year] },
+
+    let startDate = moment({
+      year: parseInt(req.params.year),
+      month: month - 1,
+      day: 1,
     });
 
-    // const ll = bookedAppointments.map((app) =>
-    //   moment(app.Datetime).local().format("DD/MM/YYYY HH:mm")
-    // );
+    let endDate = moment({
+      year: parseInt(req.params.year),
+      month: month,
+      day: 1,
+    });
+
+    const bookedAppointments = await Appointment.find({
+      Garage: req.params.garage,
+      $and: [{ Datetime: { $gte: startDate } }, { Datetime: { $lt: endDate } }],
+      // $expr: { $eq: [{ $month: "$Datetime" }, req.params.month] },
+      // $expr: { $eq: [{ $year: "$Datetime" }, req.params.year] },
+    });
+
     // console.log({ ll });
     const ExcludeDatetime = [
       ...new Set(
@@ -53,7 +64,7 @@ const calculateDistanceToGarage = (userLocation, garageLocation) => {
   //   // latitude: 32.43479838895164,
   //   // longitude: 34.92068461774575,
 
-  //   // netanua
+  //   // netanya
   //   latitude: 32.32840407146948,
   //   longitude: 34.864968630378215,
   // };
