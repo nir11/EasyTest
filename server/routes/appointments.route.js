@@ -2,10 +2,16 @@ const router = require("express").Router();
 const Appointment = require("../schemas/appointments/appointments.schema");
 const Garage = require("../schemas/garages/garages.schema");
 const moment = require("moment");
+const { sendEmail } = require("../utils/email");
 
 router.get("/", async (req, res) => {
   const appointments = await Appointment.find();
   res.send({ appointments });
+});
+
+router.post("/email", (req, res) => {
+  sendEmail(req.body.Subject, req.body.Body, req.body.Email);
+  res.send("done");
 });
 
 router.get("/:garage/:year/:month", async (req, res) => {
