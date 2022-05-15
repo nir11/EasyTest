@@ -58,7 +58,7 @@ const Summary = () => {
             <div className='container'>
                 <h1>פרטי התור</h1>
 
-                <MDBCard>
+                <div>
                     {
                         !showSpinner ?
                             <MDBRow>
@@ -98,7 +98,7 @@ const Summary = () => {
                             : <Spinner />
                     }
 
-                </MDBCard>
+                </div>
             </div>
         </div>
     )

@@ -15,6 +15,7 @@ const Location = () => {
   return (
     <div className="container-fluid">
       <div className="container">
+
         <h1>תורים מומלצים</h1>
 
         <Geolocation setLat={setLat} setLng={setLng} />

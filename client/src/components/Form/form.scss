@@ -1,3 +1,16 @@
 .react-datepicker-popper {
-  right: 20% !important;
+  right: 2% !important;
+  // transform: translate(500px, 314px);
+}
+.example-custom-input {
+  cursor: pointer;
+  padding: 5px 15px;
+  border: 0;
+  border-radius: 4px;
+  background-color: #216ba5;
+  font: inherit;
+  color: #fff;
+}
+.react-datepicker-wrapper i {
+  margin-right: 15px;
 }

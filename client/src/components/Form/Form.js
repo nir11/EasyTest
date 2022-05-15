@@ -11,7 +11,7 @@ import { createAppointment } from '../../redux/appointment/appointment-actions'
 import { useNavigate } from 'react-router-dom'
 import Spinner from '../Spinner.js/Spinner'
 
-// import './form.scss'
+import './form.scss'
 
 const MyForm = () => {
 
@@ -69,7 +69,7 @@ const MyForm = () => {
 
     return (
         <div>
-            <h2>בחירת מוסך</h2>
+            {/* <h2>בחירת מוסך</h2> */}
             {
                 !showSpinner ?
                     <>
@@ -100,6 +100,7 @@ const MyForm = () => {
                                     }
                                 </select>
                             </Form.Group>
+                            <label>בחר/י מועד תור</label>
                             {
                                 selectedGagrage != "" &&
                                 <MyDatePicker
@@ -120,7 +121,7 @@ const MyForm = () => {
                                 carNumber={carNumber} setCarNumber={setCarNumber}
                             />
 
-                            <Button variant="primary" type="submit">
+                            <Button variant="white" type="submit">
                                 סיום
                             </Button>
                         </Form>

@@ -14,7 +14,7 @@ const PersonalDetails = ({
     return (
         <MDBRow>
             <MDBCol sm="12">
-                <h2>הזן פרטים אישיים</h2>
+                <h2>פרטים אישיים</h2>
                 <MDBInput label="* תעודת זהות" outline
                     group type={"number"}
                     value={id}

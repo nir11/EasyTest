@@ -1,0 +1,18 @@
+.nav {
+  box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%) !important;
+  height: 70px;
+  align-items: center;
+  padding-right: 50px;
+}
+.nav a {
+  color: #fff !important;
+  font-size: large;
+}
+.nav .active-nav-item {
+  font-weight: bold;
+}
+.nav h2 {
+  position: absolute;
+  left: 70px;
+  font-weight: bold;
+}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, forwardRef } from "react";
 import DatePicker, { registerLocale } from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
@@ -16,6 +16,15 @@ const MyDatePicker = ({
   const dispatch = useDispatch();
   const [indexOfDay, setIndexOfDay] = useState(0);
   const [excludeDatetimes, setExcludeDatetimes] = useState([]);
+  const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
+    <>
+      <button className="example-custom-input" onClick={onClick} ref={ref}>
+        {value}
+      </button>
+      <i className="fas fa-calendar-alt"></i>
+    </>
+
+  ));
   const appointmentTimes = useSelector(
     (state) => state.appointmentReducer.appointmentTimes
   );
@@ -78,13 +87,16 @@ const MyDatePicker = ({
           // className="form-control"
           // placeholderText="בחר/י תאריך פנוי"
           selected={appointmentDateTime}
-          showTimeSelect
+          dateFormat="HH:mm  dd/MM/yyyy"
+
           // timeClassName={handleColor}
           onChange={changeHandler}
           onMonthChange={changeMonthHandler}
           // onYearChange
           // onMonthChange
-          shouldCloseOnSelect={false}
+          // shouldCloseOnSelect={false}
+          timeFormat="HH:mm"
+          showTimeSelect
           filterDate={isWeekday}
           timeIntervals={15}
           minTime={
@@ -100,9 +112,11 @@ const MyDatePicker = ({
           // minTime={new Date(`08/05/2022 07:00`)}
           // maxTime={new Date(`08/05/2022 16:00`)}
           excludeTimes={excludeDatetimes.filter(
-            (e) => moment(e, "DD/MM/YYYY HH:mm").weekday() == indexOfDay
+            (e) => moment(e, "DD /MM/YYYY HH:mm").weekday() == indexOfDay
           )}
-          // excludeTimes={appointmentTimes.map(a => moment(a, 'YYYY-MM-DD')._i)}
+          customInput={<ExampleCustomInput />}
+
+        // excludeTimes={appointmentTimes.map(a => moment(a, 'YYYY-MM-DD')._i)}
         />
       )}
     </>

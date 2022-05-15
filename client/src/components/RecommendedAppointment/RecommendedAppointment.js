@@ -10,6 +10,7 @@ import {
 import Moment from "moment";
 import { extendMoment } from "moment-range";
 
+import { MDBAnimation } from "mdbreact";
 import {
   Card,
   Accordion,
@@ -36,6 +37,7 @@ const RecommendedAppointment = ({ lat, lng }) => {
   const [isToggleOpen, setIsToggleOpen] = useState(false);
 
   const [showSpinner, setShowSpinner] = useState(true);
+  const [icon, setIcon] = useState("fas fa-chevron-down")
 
   const appointments = useSelector(
     (state) => state.appointmentReducer.appointments
@@ -59,7 +61,7 @@ const RecommendedAppointment = ({ lat, lng }) => {
   const submitForm = (e, appointment) => {
     e.preventDefault();
 
-    console.log(id);
+    // console.log(id);
     const data = {
       User: {
         FirstName: firstName,
@@ -72,7 +74,7 @@ const RecommendedAppointment = ({ lat, lng }) => {
       Datetime: appointment.Datetime,
       GarageId: appointment.Id,
     };
-    console.log("data", data);
+    // console.log("data", data);
     dispatch(createAppointment(data))
       .then(() => {
         navigate("/appointment-saved");
@@ -102,16 +104,18 @@ const RecommendedAppointment = ({ lat, lng }) => {
   return (
     <div>
       <div className="row">
+
         {!showSpinner ? (
-          <>
+          <MDBAnimation type="fadeIn" delay="0.5s">
+
             {appointments.map((appointment, index) => {
-              console.log("appointment.Datetime", appointment.Datetime);
+              // console.log("appointment.Datetime", appointment.Datetime);
               let dateOfAppointment = new Date(appointment.Datetime);
               let todayDate = new Date();
               let difference =
                 dateOfAppointment.getTime() - todayDate.getTime();
               let TotalDays = Math.ceil(difference / (1000 * 3600 * 24)) - 1;
-              console.log({ TotalDays });
+              // console.log({ TotalDays });
               let daysLeftText = null;
               switch (TotalDays) {
                 case 0:
@@ -144,47 +148,66 @@ const RecommendedAppointment = ({ lat, lng }) => {
                 <Accordion
                   key={index}
                   className="accordion-card"
-                  //   defaultActiveKey="1"
+                //   defaultActiveKey="1"
                 >
                   <Card>
                     <Card.Header>
-                      <div className="col-sm-5">
-                        <Card.Title>{appointment.Name}</Card.Title>
-                        <Card.Subtitle className="mb-2 text-muted">
-                          מרחק: {appointment.Distance} ק"מ
-                        </Card.Subtitle>
-                        <Card.Text>
-                          תאריך:{" "}
-                          {moment(appointment.Datetime).format("DD/MM/YYYY")}
-                        </Card.Text>
-                        <Card.Text>
-                          יום:{" "}
-                          {getDayNameInHebrew(
-                            moment(appointment.Datetime).format("dddd")
-                          )}
-                        </Card.Text>
-                        <Card.Text>
-                          שעה: {moment(appointment.Datetime).format("HH:mm")}
-                        </Card.Text>
-                      </div>
-                      {/* <div className="col-sm-5">בעוד {TotalDays} ימים</div> */}
-                      <div className="col-sm-2 flex">
-                        {/* <p>הזמנת תור</p> */}
-                        {/* <p>
-                          הזמנת תור <i className="fas fa-angle-double-left"></i>
-                        </p> */}
+                      <div>
+
+                        <div className="row">
+                          <div className="col-sm-12">
+                            {/* <Card.Title>{appointment.Name}</Card.Title>
+                            <Card.Subtitle className="mb-2 font-weight-bold">
+
+                              מרחק: {appointment.Distance} ק"מ
+                            </Card.Subtitle> */}
+
+                            <div className="nine">
+                              <h2>{appointment.Name}<span>הנשיא 1</span></h2>
+                            </div>
+
+
+
+                            <div className="row">
+                              <div className="col-sm-4">
+                                <div className="mb-2 font-weight-bold">
+
+                                  מרחק: {appointment.Distance} ק"מ
+                                </div>
+                                יום&nbsp;
+                                {getDayNameInHebrew(
+                                  moment(appointment.Datetime).format("dddd")
+                                )} | &nbsp;
+                                {moment(appointment.Datetime).format("HH:mm")} | &nbsp;
+
+                                {moment(appointment.Datetime).format("DD/MM/YYYY")}
+
+                              </div>
+
+                              <div className="customToggle-button col-sm-4">
+                                <CustomToggle
+
+                                  eventKey="0"
+                                  setIsToggleOpen={setIsToggleOpen}
+                                >
+                                  {isToggleOpen ? "סגור" : "הזמן עכשיו!"}
+                                </CustomToggle>
+                              </div>
+                              <div className="customToggle-button col-sm-4">
+                              </div>
+                            </div>
+                          </div>
+
+
+                        </div>
+
                       </div>
 
-                      <CustomToggle
-                        eventKey="0"
-                        setIsToggleOpen={setIsToggleOpen}
-                      >
-                        {isToggleOpen ? "סגור" : "הזמן עכשיו!"}
-                      </CustomToggle>
 
-                      <div class="ribbon ribbon-top-left">
+                      <div className="ribbon ribbon-top-left">
                         <span>*{daysLeftText}*</span>
                       </div>
+
                     </Card.Header>
 
                     <Accordion.Collapse eventKey="0">
@@ -204,8 +227,11 @@ const RecommendedAppointment = ({ lat, lng }) => {
                             carNumber={carNumber}
                             setCarNumber={setCarNumber}
                           />
+                          <div style={{ textAlign: "center" }}>
+                            <Button type="submit">שלח</Button>
+                          </div>
+
                         </Form>
-                        <Button type="submit">שלח</Button>
                       </Card.Body>
                     </Accordion.Collapse>
                   </Card>
@@ -221,7 +247,8 @@ const RecommendedAppointment = ({ lat, lng }) => {
                 </Accordion>
               );
             })}
-          </>
+          </MDBAnimation>
+
         ) : (
           <Spinner text="מחשב תורים קרובים" />
         )}
