@@ -295,7 +295,10 @@ const findNextFreeAppointmentOfGarage = async (garageId) => {
     // console.log({ isDayIsToday });
     if (isDateIsToday) {
       const roundedUp = Math.ceil(moment().minute() / 15) * 15;
-      startTimeOfDate = moment().minute(roundedUp).format("HH:mm");
+      startTimeOfDate = moment()
+        .add(2, "hours")
+        .minute(roundedUp)
+        .format("HH:mm");
       // console.log("start modified", startTimeOfDate);
     }
 

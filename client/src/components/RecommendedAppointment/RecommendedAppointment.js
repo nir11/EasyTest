@@ -105,21 +105,35 @@ const RecommendedAppointment = ({ lat, lng }) => {
         {!showSpinner ? (
           <>
             {appointments.map((appointment, index) => {
+              console.log("appointment.Datetime", appointment.Datetime);
               let dateOfAppointment = new Date(appointment.Datetime);
               let todayDate = new Date();
               let difference =
                 dateOfAppointment.getTime() - todayDate.getTime();
               let TotalDays = Math.ceil(difference / (1000 * 3600 * 24)) - 1;
+              console.log({ TotalDays });
               let daysLeftText = null;
               switch (TotalDays) {
                 case 0:
-                  daysLeftText = "היום";
+                  if (dateOfAppointment.getDate() === todayDate.getDate()) {
+                    daysLeftText = "היום";
+                  } else {
+                    daysLeftText = "מחר";
+                  }
                   break;
                 case 1:
-                  daysLeftText = "מחר";
+                  if (dateOfAppointment.getDate() === todayDate.getDate() + 1) {
+                    daysLeftText = "מחר";
+                  } else {
+                    daysLeftText = "מחרתיים";
+                  }
                   break;
                 case 2:
-                  daysLeftText = "מחרתיים";
+                  if (dateOfAppointment.getDate() === todayDate.getDate() + 2) {
+                    daysLeftText = "מחרתיים";
+                  } else {
+                    daysLeftText = `בעוד ${TotalDays} ימים`;
+                  }
                   break;
                 default:
                   daysLeftText = `בעוד ${TotalDays} ימים`;
