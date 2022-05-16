@@ -5,11 +5,11 @@ import { useSelector } from 'react-redux';
 import './map.css'
 
 const containerStyle = {
-    width: '100%',
-    height: '600px'
+    width: '50%',
+    height: '500px'
 };
 
-const MyMap = ({ lat, setLat, lng, setLng, center, setCenter }) => {
+const MyMap = ({ lat, setLat, lng, setLng, center, setCenter, idOfGarage }) => {
 
     const [isGargeSelected, setIsGargeSelected] = useState(false)
 
@@ -48,7 +48,7 @@ const MyMap = ({ lat, setLat, lng, setLng, center, setCenter }) => {
             <GoogleMap
                 mapContainerStyle={containerStyle}
                 // center={center}
-                defaultZoom={20}
+                defaultZoom={7}
                 zoom={7}
                 onLoad={onLoad}
                 onUnmount={onUnmount}
@@ -91,7 +91,7 @@ const MyMap = ({ lat, setLat, lng, setLng, center, setCenter }) => {
 
 
                             {
-                                isGargeSelected &&
+                                isGargeSelected && garage._id == idOfGarage &&
                                 <InfoWindow
                                     position={{
                                         // lat: Number(garage.Latitude),
@@ -108,11 +108,14 @@ const MyMap = ({ lat, setLat, lng, setLng, center, setCenter }) => {
 
                                         {/* <h2>{garage.Name}</h2> */}
                                         <p><b>{garage.Name}</b></p>
-                                        <p> שעות פתיחה</p>
+                                        <p> שעות פתיחה:</p>
 
                                         {
                                             garage.WorkDays.map(w =>
-                                                <p key={w.DayIndex}>{w.DayIndex}: {w.StartTime} - {w.EndTime}</p>
+                                                <p key={w.DayIndex}
+                                                >{
+                                                        w.DayIndex == 1 ? "ראשון" : w.DayIndex == 2 ? "שני" : w.DayIndex == 3 ? "שלישי" : w.DayIndex == 4 ? "רביעי" : w.DayIndex == 5 ? "חמישי" : w.DayIndex == 6 ? "שישי" : ""
+                                                    }: {w.StartTime} - {w.EndTime}</p>
                                             )}
                                         {/* <p>{selectedATM.ATM_Address} | {selectedATM.ATM_Location}</p>
                                 <p>{selectedATM.ATM_Type}</p> */}

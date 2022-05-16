@@ -14,3 +14,11 @@ button.gm-ui-hover-effect {
   left: 0 !important;
   top: 0 !important;
 }
+.infoWindow {
+  color: black !important;
+  background-color: #fff !important;
+  padding: 15px;
+}
+.gm-style-iw.gm-style-iw-c {
+  padding: 0;
+}

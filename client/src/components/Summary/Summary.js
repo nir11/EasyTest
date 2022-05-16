@@ -63,10 +63,12 @@ const Summary = () => {
                         !showSpinner ?
                             <MDBRow>
 
-                                <MDBCol sm='12'>
+                                <MDBCol sm='12' style={{ border: "1px solid #fff", marginBottom: "20px" }}>
 
                                     <h2 className='text-center'>{appointment.User.FirstName} {appointment.User.LastName}</h2>
                                     <h3 className='text-center'> {moment(appointment.Datetime).format("DD/MM/YYYY HH:mm")}</h3>
+                                    <br />
+                                    <h4 className='text-center'>{garages.filter(g => g._id == appointment.Garage)[0].Name}</h4>
                                     <div className='row text-center'>
                                         <div className='col-sm-6'>
                                             <p>טלפון: {appointment.User.Phone} </p>
@@ -83,7 +85,7 @@ const Summary = () => {
 
                                 </MDBCol>
 
-                                <MDBCol sm='12'>
+                                <MDBCol sm='12' className='flex'>
                                     <Map
                                         lat={Number(lat)}
                                         setLat={setLat}
@@ -91,6 +93,7 @@ const Summary = () => {
                                         setLng={setLng}
                                         center={center}
                                         setCenter={setCenter}
+                                        idOfGarage={appointment.Garage}
                                     />
                                 </MDBCol>
                             </MDBRow>
@@ -100,7 +103,7 @@ const Summary = () => {
 
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
 
