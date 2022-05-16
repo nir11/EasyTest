@@ -9,18 +9,28 @@ const containerStyle = {
     height: '500px'
 };
 
-const MyMap = ({ lat, setLat, lng, setLng, center, setCenter, idOfGarage }) => {
+const MyMap = ({ lat, setLat, lng, setLng, center, setCenter, idOfGarage, zoom, setZoom }) => {
 
     const [isGargeSelected, setIsGargeSelected] = useState(false)
-
     const garages = useSelector((state) => state.garagesReducer.garages)
-
+    const [selectedGarage, setSelectedGarage] = useState([])
 
     useEffect(() => {
         console.log('garages', garages);
-    }, [garages])
+
+        let selectedGarageToUpdate = garages.filter(g => g._id == idOfGarage)
+        setLat(Number(selectedGarageToUpdate[0].Latitude))
+        setLng(Number(selectedGarageToUpdate[0].Longitude))
+        setZoom(7.5)
+        setSelectedGarage(selectedGarageToUpdate)
 
 
+
+    }, [idOfGarage])
+
+    // useEffect(() => {
+    //     setZoom(7.5)
+    // }, [map])
     const { isLoaded } = useJsApiLoader({
         id: 'google-map-script',
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_KEY
@@ -28,30 +38,30 @@ const MyMap = ({ lat, setLat, lng, setLng, center, setCenter, idOfGarage }) => {
 
     const [map, setMap] = React.useState(null)
 
-    const onLoad = React.useCallback(function callback(map) {
-        const bounds = new window.google.maps.LatLngBounds(Number(center));
-        map.fitBounds(bounds);
-        setMap(map)
-    }, [])
+    // const onLoad = React.useCallback(function callback(map) {
+    //     const bounds = new window.google.maps.LatLngBounds(Number(center));
+    //     map.fitBounds(bounds);
+    //     setMap(map)
+    // }, [])
 
     const onUnmount = React.useCallback(function callback(map) {
         setMap(null)
     }, [])
 
-    useEffect(() => {
-        console.log("lng", lng);
-        console.log("lat", lat);
-    }, [lat, lng])
+    // useEffect(() => {
+    //     console.log("lng", lng);
+    //     console.log("lat", lat);
+    // }, [lat, lng])
 
-    return isLoaded && garages != undefined ?
+    return isLoaded && selectedGarage.length > 0 ?
         (
             <GoogleMap
                 mapContainerStyle={containerStyle}
-                // center={center}
-                defaultZoom={7}
-                zoom={7}
-                onLoad={onLoad}
+                // onLoad={onLoad}
                 onUnmount={onUnmount}
+                dire
+                defaultZoom={zoom}
+                zoom={zoom}
                 defaultCenter={{ lat: lat, lng: lng }}
                 center={{ lat: lat, lng: lng }}
 
@@ -59,10 +69,10 @@ const MyMap = ({ lat, setLat, lng, setLng, center, setCenter, idOfGarage }) => {
                 { /* Child components, such as markers, info windows, etc. */}
 
                 {
-                    garages.map(garage => {
+                    selectedGarage.map(garage => {
                         // console.log('garage', garage);
 
-                        return <React.Fragment key={garage._id}>
+                        return <React.Fragment key={garage._id} >
 
 
                             <Marker
@@ -70,7 +80,6 @@ const MyMap = ({ lat, setLat, lng, setLng, center, setCenter, idOfGarage }) => {
                                 position={{
                                     // lat: Number(garage.Latitude),
                                     // lng: Number(garage.Longitude),
-
                                     lat,
                                     lng
                                 }}
@@ -80,7 +89,7 @@ const MyMap = ({ lat, setLat, lng, setLng, center, setCenter, idOfGarage }) => {
                                     setLat(garage.Latitude)
                                     setLng(garage.Longitude)
                                     setIsGargeSelected(true)
-                                    // props.setZoom(18)
+                                    setZoom(18)
                                 }}
 
                             // icon={{
@@ -91,7 +100,7 @@ const MyMap = ({ lat, setLat, lng, setLng, center, setCenter, idOfGarage }) => {
 
 
                             {
-                                isGargeSelected && garage._id == idOfGarage &&
+                                isGargeSelected &&
                                 <InfoWindow
                                     position={{
                                         // lat: Number(garage.Latitude),
@@ -109,17 +118,27 @@ const MyMap = ({ lat, setLat, lng, setLng, center, setCenter, idOfGarage }) => {
                                         {/* <h2>{garage.Name}</h2> */}
                                         <p><b>{garage.Name}</b></p>
                                         <p> שעות פתיחה:</p>
+                                        <table>
+                                            <tbody>
+                                                {
+                                                    garage.WorkDays.map(w =>
+                                                        <tr key={w.DayIndex}>
 
-                                        {
-                                            garage.WorkDays.map(w =>
-                                                <p key={w.DayIndex}
-                                                >{
-                                                        w.DayIndex == 1 ? "ראשון" : w.DayIndex == 2 ? "שני" : w.DayIndex == 3 ? "שלישי" : w.DayIndex == 4 ? "רביעי" : w.DayIndex == 5 ? "חמישי" : w.DayIndex == 6 ? "שישי" : ""
-                                                    }: {w.StartTime} - {w.EndTime}</p>
-                                            )}
-                                        {/* <p>{selectedATM.ATM_Address} | {selectedATM.ATM_Location}</p>
-                                <p>{selectedATM.ATM_Type}</p> */}
+                                                            <td>
+                                                                {
+                                                                    w.DayIndex == 1 ? "ראשון" : w.DayIndex == 2 ? "שני" : w.DayIndex == 3 ? "שלישי" : w.DayIndex == 4 ? "רביעי" : w.DayIndex == 5 ? "חמישי" : w.DayIndex == 6 ? "שישי" : ""
+                                                                }
+                                                                :</td>
 
+                                                            <td>&nbsp;
+                                                                {w.StartTime} - {w.EndTime}
+                                                            </td>
+
+                                                        </tr>
+                                                    )}
+
+                                            </tbody>
+                                        </table>
                                     </div>
 
                                 </InfoWindow>
@@ -131,7 +150,7 @@ const MyMap = ({ lat, setLat, lng, setLng, center, setCenter, idOfGarage }) => {
 
                 }
                 <></>
-            </GoogleMap>
+            </GoogleMap >
         ) : <>
         </>
 }

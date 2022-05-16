@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   createAppointment,
+  getFirstFreeAppointment,
   getRecommendedAppointments,
 } from "../../redux/appointment/appointment-actions";
 
@@ -25,7 +26,8 @@ import PersonalDetails from "../Form/PersonalDetails";
 import { useNavigate } from "react-router-dom";
 import Spinner from "../Spinner.js/Spinner";
 
-const RecommendedAppointment = ({ lat, lng }) => {
+const RecommendedAppointment = ({ lat, lng, isUserAllowedLocation }) => {
+
   const dispatch = useDispatch();
   // const [city, setCity] = useState('')
   const [id, setId] = useState("");
@@ -37,8 +39,6 @@ const RecommendedAppointment = ({ lat, lng }) => {
   const [isToggleOpen, setIsToggleOpen] = useState(false);
 
   const [showSpinner, setShowSpinner] = useState(true);
-  const [icon, setIcon] = useState("fas fa-chevron-down")
-
   const appointments = useSelector(
     (state) => state.appointmentReducer.appointments
   );
@@ -46,17 +46,29 @@ const RecommendedAppointment = ({ lat, lng }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(
-      getRecommendedAppointments({
-        Latitude: lat,
-        Longitude: lng,
-      })
-    );
-  }, []);
+    console.log('lat', lat);
+    console.log('lng', lng);
+
+    //when user allowed location on browser - get Appointments based on location
+    if (isUserAllowedLocation) {
+      dispatch(
+        getRecommendedAppointments({
+          Latitude: lat,
+          Longitude: lng,
+        })
+      )
+    }
+
+    //when didn't allow - get first free Appointment
+    else {
+      dispatch(getFirstFreeAppointment())
+    }
+  }, [isUserAllowedLocation]);
 
   useEffect(() => {
     if (appointments.length) setShowSpinner(false);
   }, [appointments]);
+
 
   const submitForm = (e, appointment) => {
     e.preventDefault();

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-const Geolocation = ({ setLat, setLng }) => {
+const Geolocation = ({ setLat, setLng, setIsUserAllowedLocation }) => {
 
     useEffect(() => {
 
@@ -28,6 +28,7 @@ const Geolocation = ({ setLat, setLng }) => {
             mapLink.href = `https://www.openstreetmap.org/#map=18/${latitude}/${longitude}`;
             // console.log(mapLink.href);
             // mapLink.textContent = `Latitude: ${latitude} °, Longitude: ${longitude} °`;
+            setIsUserAllowedLocation(true)
 
         }
 
@@ -40,9 +41,11 @@ const Geolocation = ({ setLat, setLng }) => {
         if (!navigator.geolocation) {
             // status.textContent = 'Geolocation is not supported by your browser';
             alert('Geolocation is not supported by your browser')
-        } else {
+        }
+        else {
             status.textContent = 'Locating…';
             navigator.geolocation.getCurrentPosition(success, error);
+
         }
 
     }

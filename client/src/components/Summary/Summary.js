@@ -18,6 +18,7 @@ const Summary = () => {
         lat,
         lng
     })
+    const [zoom, setZoom] = useState(7.5)
     useEffect(() => {
         const selectedGarage = garages.filter(g => g._id == appointment.Garage)
         console.log('selectedGarage', selectedGarage);
@@ -94,6 +95,8 @@ const Summary = () => {
                                         center={center}
                                         setCenter={setCenter}
                                         idOfGarage={appointment.Garage}
+                                        zoom={zoom}
+                                        setZoom={setZoom}
                                     />
                                 </MDBCol>
                             </MDBRow>

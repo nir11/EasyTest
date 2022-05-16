@@ -4,26 +4,32 @@ import Map from "../../components/Map/Map";
 import RecommendedAppointment from "../../components/RecommendedAppointment/RecommendedAppointment";
 
 const Location = () => {
-  //set to lat & lng of Jerusalem
+
+  const [isUserAllowedLocation, setIsUserAllowedLocation] = useState(false)
   const [lat, setLat] = useState(null);
   const [lng, setLng] = useState(null);
-  const [center, setCenter] = useState({
-    lat,
-    lng,
-  });
+  // const [center, setCenter] = useState({
+  //   lat,
+  //   lng,
+  // });
+
+  useEffect(() => {
+
+  }, [])
 
   return (
     <div className="container-fluid">
       <div className="container">
 
-        <h1>תורים מומלצים</h1>
+        <h1> תורים מומלצים {isUserAllowedLocation && "על בסיס מיקומך"}</h1>
 
-        <Geolocation setLat={setLat} setLng={setLng} />
-        {lat != null && lng != null ? (
-          <RecommendedAppointment lat={lat} lng={lng} />
-        ) : (
-          <p>אנא הפעל מיקום כדי לקבל תורים מומלצים עבורך</p>
-        )}
+        <Geolocation setLat={setLat} setLng={setLng} setIsUserAllowedLocation={setIsUserAllowedLocation} />
+        <RecommendedAppointment
+          lat={lat}
+          lng={lng}
+          isUserAllowedLocation={isUserAllowedLocation}
+        />
+
 
         {/* <Map
                 lat={lat}

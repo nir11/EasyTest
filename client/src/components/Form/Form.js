@@ -27,6 +27,7 @@ const MyForm = () => {
     //form fields
     const [appointmentDateTime, setAppointmentDateTime] = useState(new Date());
     const [showSpinner, setShowSpinner] = useState(true)
+    const [isUserSelectedDate, setIsUserSelectedDate] = useState(false)
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const garages = useSelector((state) => state.garagesReducer.garages)
@@ -43,26 +44,31 @@ const MyForm = () => {
 
     const submitForm = (e) => {
         e.preventDefault();
-        setShowSpinner(true)
-        const data = {
-            User: {
-                "FirstName": firstName,
-                "LastName": lastName,
-                "Phone": phone,
-                "Email": email,
-                "TZ": "123"
-            },
-            "CarNumber": carNumber,
-            "Datetime": appointmentDateTime,
-            "GarageId": selectedGagrage
+
+        if (!isUserSelectedDate)
+            alert("אנא בחר/י מועד תור")
+        else {
+            setShowSpinner(true)
+            const data = {
+                User: {
+                    "FirstName": firstName,
+                    "LastName": lastName,
+                    "Phone": phone,
+                    "Email": email,
+                    "TZ": "123"
+                },
+                "CarNumber": carNumber,
+                "Datetime": appointmentDateTime,
+                "GarageId": selectedGagrage
+            }
+            console.log('data', data);
+            dispatch(createAppointment(data))
+                .then(() => {
+                    setShowSpinner(false)
+                    navigate("/appointment-saved")
+                })
+                .catch(error => alert(error))
         }
-        console.log('data', data);
-        dispatch(createAppointment(data))
-            .then(() => {
-                setShowSpinner(false)
-                navigate("/appointment-saved")
-            })
-            .catch(error => alert(error))
     }
 
 
@@ -100,14 +106,19 @@ const MyForm = () => {
                                     }
                                 </select>
                             </Form.Group>
-                            <label>בחר/י מועד תור</label>
                             {
                                 selectedGagrage != "" &&
-                                <MyDatePicker
-                                    selectedGagrage={garages.filter(g => g._id == selectedGagrage)}
-                                    setAppointmentDateTime={setAppointmentDateTime}
-                                    appointmentDateTime={appointmentDateTime}
-                                />
+                                <>
+                                    <label>בחר/י מועד תור</label>
+                                    <MyDatePicker
+                                        selectedGagrage={garages.filter(g => g._id == selectedGagrage)}
+                                        setAppointmentDateTime={setAppointmentDateTime}
+                                        appointmentDateTime={appointmentDateTime}
+                                        setIsUserSelectedDate={setIsUserSelectedDate}
+                                        isUserSelectedDate={isUserSelectedDate}
+                                    />
+                                </>
+
                             }
                             {/* <br /> <br /> */}
                             {/* <p>{`${appointmentDateTime}`}</p> */}

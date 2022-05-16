@@ -12,22 +12,26 @@ const MyDatePicker = ({
   selectedGagrage,
   setAppointmentDateTime,
   appointmentDateTime,
+  setIsUserSelectedDate,
+  isUserSelectedDate
 }) => {
+
   const dispatch = useDispatch();
   const [indexOfDay, setIndexOfDay] = useState(0);
   const [excludeDatetimes, setExcludeDatetimes] = useState([]);
   const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
     <>
-      <button className="example-custom-input" onClick={onClick} ref={ref}>
-        {value}
+      <button className="example-custom-input" onClick={onClick} ref={ref} type="button">
+        {!isUserSelectedDate ? "תאריך" : value}
+        <i className="fas fa-calendar-alt"></i>
+
       </button>
-      <i className="fas fa-calendar-alt"></i>
     </>
 
   ));
-  const appointmentTimes = useSelector(
-    (state) => state.appointmentReducer.appointmentTimes
-  );
+  // const appointmentTimes = useSelector(
+  //   (state) => state.appointmentReducer.appointmentTimes
+  // );
 
   // let handleColor = (time) => {
   //     return time.getHours() > 7.5 && time.getHours() < 16.5 ? "text-error" : "text-success";
@@ -48,6 +52,7 @@ const MyDatePicker = ({
     console.log(date);
     setIndexOfDay(moment(date).weekday());
     setAppointmentDateTime(date);
+    setIsUserSelectedDate(true)
   };
 
   const changeMonthHandler = (date) => {
