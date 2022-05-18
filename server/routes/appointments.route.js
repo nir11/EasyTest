@@ -154,6 +154,7 @@ router.put("/recommended", async (req, res) => {
             }),
             DistanceRank: i + 1,
             Appointments: recAppointments,
+            Address: garage.Address,
           });
           // console.log({ allGaragesRecommendedAppointments });
         }
