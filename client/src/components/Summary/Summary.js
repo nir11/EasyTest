@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Map from '../Map/Map';
 import Spinner from '../Spinner.js/Spinner';
-
+import './summary.scss'
 const Summary = () => {
 
     const appointment = useSelector((state) => state.appointmentReducer.appointment)
@@ -64,7 +64,7 @@ const Summary = () => {
                         !showSpinner ?
                             <MDBRow>
 
-                                <MDBCol sm='12' style={{ border: "1px solid #fff", marginBottom: "20px" }}>
+                                <MDBCol sm='6' className="summary-card">
 
                                     <h2 className='text-center'>{appointment.User.FirstName} {appointment.User.LastName}</h2>
                                     <h3 className='text-center'> {moment(appointment.Datetime).format("DD/MM/YYYY HH:mm")}</h3>
@@ -86,7 +86,7 @@ const Summary = () => {
 
                                 </MDBCol>
 
-                                <MDBCol sm='12' className='flex'>
+                                <MDBCol sm='6' className='flex map-container' >
                                     <Map
                                         lat={Number(lat)}
                                         setLat={setLat}

@@ -5,8 +5,8 @@ import { useSelector } from 'react-redux';
 import './map.css'
 
 const containerStyle = {
-    width: '50%',
-    height: '500px'
+    width: '100%',
+    height: '600px'
 };
 
 const MyMap = ({ lat, setLat, lng, setLng, center, setCenter, idOfGarage, zoom, setZoom }) => {
@@ -21,7 +21,7 @@ const MyMap = ({ lat, setLat, lng, setLng, center, setCenter, idOfGarage, zoom, 
         let selectedGarageToUpdate = garages.filter(g => g._id == idOfGarage)
         setLat(Number(selectedGarageToUpdate[0].Latitude))
         setLng(Number(selectedGarageToUpdate[0].Longitude))
-        setZoom(7.5)
+        setZoom(12)
         setSelectedGarage(selectedGarageToUpdate)
 
 

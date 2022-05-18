@@ -9,8 +9,11 @@ button.accordion-button {
 .accordion-card.accordion {
   margin-bottom: 50px !important;
 }
+.accordion > .card > .card-header {
+  background-color: #00000059 !important;
+}
 .accordion > .card:hover {
-  background-color: #2c366a !important;
+  background-color: #00000059 !important;
 }
 .customToggle-button {
   display: flex;

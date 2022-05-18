@@ -14,12 +14,12 @@ const Home = () => {
                             <br />
                             <MyForm />
                         </div>
-                        <div className='col-lg-6'>
+                        {/* <div className='col-lg-6'>
                             <img src={image}
                                 width={"100%"}
                                 height={"80%"}
                             />
-                        </div>
+                        </div> */}
                     </div>
                 </MDBAnimation>
 

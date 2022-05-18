@@ -9,7 +9,7 @@ import Nav from './components/Nav/Nav'
 import Summary from './components/Summary/Summary';
 function App() {
   return (
-    <div>
+    <div className='rootBackround'>
       <Nav />
       <Routes>
         <Route path="/" element={<Home />} />

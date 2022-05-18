@@ -175,7 +175,7 @@ const RecommendedAppointment = ({ lat, lng, isUserAllowedLocation }) => {
                             </Card.Subtitle> */}
 
                             <div className="nine">
-                              <h2>{appointment.Name}<span>הנשיא 1</span></h2>
+                              <h2>{appointment.Name}<span>{appointment.Address}</span></h2>
                             </div>
 
 

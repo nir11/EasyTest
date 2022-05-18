@@ -20,7 +20,10 @@ const MyNav = () => {
                     setIsActive1(!isActive1)
                     setIsActive2(false)
                     pushTo("/")
-                }} className={isActive1 ? "active-nav-item" : ""}>קביעת תור</Nav.Link>
+                }} className={isActive1 ? "active-nav-item" : ""}>קביעת תור
+                    &nbsp;<i className="fas fa-calendar-check"></i>
+                </Nav.Link>
+
             </Nav.Item>
 
             <Nav.Item>
@@ -28,8 +31,9 @@ const MyNav = () => {
                     setIsActive1(false)
                     setIsActive2(!isActive2)
                     pushTo("/location")
-                }} className={isActive2 ? "active-nav-item" : ""}> המלצה לפי מיקום</Nav.Link>
-
+                }} className={isActive2 ? "active-nav-item" : ""}> המלצה לפי מיקום
+                    &nbsp;<i className="fas fa-map-marker-alt"></i>
+                </Nav.Link>
             </Nav.Item>
             {/* <Nav.Item>
                 <Nav.Link eventKey="link-2">Link</Nav.Link>
