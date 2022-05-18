@@ -93,6 +93,8 @@ router.get("/free", async (req, res) => {
             Id: garage._id,
             Name: garage.Name,
             Appointments: recAppointments,
+            Address: garage.Address,
+            City: garage.City,
           });
           // console.log({ allGaragesRecommendedAppointments });
         }
@@ -110,6 +112,8 @@ router.get("/free", async (req, res) => {
           Name: garage.Name,
           Distance: garage.Distance,
           Datetime: appointment,
+          Address: garage.Address,
+          City: garage.City,
         };
         return;
       }
@@ -119,6 +123,8 @@ router.get("/free", async (req, res) => {
           Name: garage.Name,
           Distance: garage.Distance,
           Datetime: appointment,
+          Address: garage.Address,
+          City: garage.City,
         };
       }
     });
@@ -134,7 +140,13 @@ router.put("/recommended", async (req, res) => {
     latitude: req.body.Latitude,
     longitude: req.body.Longitude,
   };
-  const garages = await Garage.find();
+  let garages = [];
+  if (req.body?.Garages?.length > 0)
+    garages = await Garage.find({ _id: { $in: req.body.Garages } });
+  else {
+    garages = await Garage.find();
+  }
+
   let allGaragesRecommendedAppointments = [];
 
   await Promise.all(
@@ -266,12 +278,13 @@ const calculateBestRecommendedAppointments = (garagesRecs) => {
 
 const findNextFreeAppointmentOfGarage = async (garageId) => {
   let recommendedAppointments = [];
+
+  // get current date
   let date = moment();
-  // console.log({ date });
   const garage = await Garage.findOne({ _id: garageId });
   if (!garage) return null;
-  // console.log({ garage });
 
+  // get day index
   let dateIndexOfWeek = date.clone().day() + 1;
   // console.log({ dateIndexOfWeek });
 
@@ -293,11 +306,18 @@ const findNextFreeAppointmentOfGarage = async (garageId) => {
       date,
       garage._id
     );
-    // console.log("garage.Name", garage.Name);
-    // console.log({ bookedAppointmentOfDate });
 
-    let startTimeOfDate = garage.WorkDays[dayIndex - 1].StartTime;
-    const endTimeOfDate = garage.WorkDays[dayIndex - 1].EndTime;
+    let startTimeOfDate = moment(
+      date.clone().format("YYYY-MM-DD") +
+        " " +
+        garage.WorkDays[dayIndex - 1].StartTime
+    );
+    const endTimeOfDate = moment(
+      date.clone().format("YYYY-MM-DD") +
+        " " +
+        garage.WorkDays[dayIndex - 1].EndTime
+    );
+    console.log({ endTimeOfDate });
 
     // check if it's today
     // console.log("date before inserting", date);
@@ -307,12 +327,9 @@ const findNextFreeAppointmentOfGarage = async (garageId) => {
     // console.log({ isDayIsToday });
     if (isDateIsToday) {
       const roundedUp = Math.ceil(moment().minute() / 15) * 15;
-      startTimeOfDate = moment()
-        .add(2, "hours")
-        .minute(roundedUp)
-        .format("HH:mm");
-      // console.log("start modified", startTimeOfDate);
+      startTimeOfDate = moment().add(2, "hours").minute(roundedUp);
     }
+    console.log({ startTimeOfDate });
 
     recommendedAppointments = findFreeAppointmentsInDay(
       date.clone().format("YYYY-MM-DD"),
@@ -324,14 +341,13 @@ const findNextFreeAppointmentOfGarage = async (garageId) => {
     // console.log({ recommendedAppointments });
     if (recommendedAppointments.length === 2) return recommendedAppointments;
 
-    if (dateIndexOfWeek == 7) {
-      dateIndexOfWeek = 1;
+    if (dayIndex == 6) {
+      dayIndex = 0;
     } else {
-      dateIndexOfWeek++;
+      dayIndex++;
     }
-    // console.log({ dateIndexOfWeek });
     date = date.clone().add(1, "days");
-    dayIndex = date.clone().day() + 1;
+    // dayIndex = date.clone().day() + 1;
     count++;
   }
   return recommendedAppointments;
@@ -368,18 +384,18 @@ const getBookedAppointmentsOfDay = async (date, garageId) => {
 const findFreeAppointmentsInDay = (
   date,
   bookedAppointments,
-  startTime,
-  endTime
+  startTimeMoment,
+  endTimeMoment
 ) => {
   const recommendedAppointments = [];
 
-  const startTimeMoment = moment(date + " " + startTime);
-  const endTimeMoment = moment(date + " " + endTime);
+  // const startTimeMoment = moment(date + " " + startTime);
+  // const endTimeMoment = moment(date + " " + endTime);
   // console.log({ startTimeMoment });
   // console.log({ endTimeMoment });
   // console.log({ bookedAppointments });
 
-  let currentTime = startTimeMoment.utc();
+  let currentTime = startTimeMoment;
 
   while (currentTime.isBefore(endTimeMoment)) {
     // console.log("currentTime", currentTime.format("HH:mm"));

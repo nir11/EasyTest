@@ -22,11 +22,16 @@ import {
 
 import "./RecommendedAppointment.scss";
 
-import PersonalDetails from "../Form/PersonalDetails";
 import { useNavigate } from "react-router-dom";
 import Spinner from "../Spinner.js/Spinner";
+import PersonalDetails from "../AppointmentForm/PersonalDetails";
 
-const RecommendedAppointment = ({ lat, lng, isUserAllowedLocation }) => {
+const RecommendedAppointment = ({
+  lat,
+  lng,
+  isUserAllowedLocation,
+  isSharingLocationTested,
+}) => {
   const dispatch = useDispatch();
   // const [city, setCity] = useState('')
   const [id, setId] = useState("");
@@ -47,6 +52,7 @@ const RecommendedAppointment = ({ lat, lng, isUserAllowedLocation }) => {
   useEffect(() => {
     console.log("lat", lat);
     console.log("lng", lng);
+    console.log({ isUserAllowedLocation });
 
     //when user allowed location on browser - get Appointments based on location
     if (isUserAllowedLocation) {
@@ -62,7 +68,7 @@ const RecommendedAppointment = ({ lat, lng, isUserAllowedLocation }) => {
     else {
       dispatch(getFirstFreeAppointment());
     }
-  }, [isUserAllowedLocation]);
+  }, [isSharingLocationTested]);
 
   useEffect(() => {
     if (appointments.length) setShowSpinner(false);
@@ -251,8 +257,10 @@ const RecommendedAppointment = ({ lat, lng, isUserAllowedLocation }) => {
               );
             })}
           </MDBAnimation>
-        ) : (
+        ) : isUserAllowedLocation ? (
           <Spinner text="מחשב תורים קרובים" />
+        ) : (
+          <Spinner text="מחשב את התור הקרוב ביותר" />
         )}
       </div>
     </div>

@@ -1,89 +1,72 @@
-import Api from "../../utilis/Api";
+import Api from "../../utils/Api";
 
-export const createAppointment = (data) => async dispatch => {
+export const createAppointment = (data) => async (dispatch) => {
+  try {
+    const res = await Api.post(`appointments`, data);
+
+    dispatch({
+      type: "CREATE_APPOINTMENT",
+      payload: res.data,
+    });
+
+    if (res.status == 200) return Promise.resolve(res.data);
+    else return Promise.reject(res.data);
+  } catch (e) {
+    // console.log(e);
+    return Promise.reject(e);
+  }
+};
+export const getAppointments =
+  (garageId, dateYear, dateNumber) => async (dispatch) => {
     try {
+      const res = await Api.get(
+        `appointments/${garageId}/${dateYear}/${dateNumber}`
+      );
 
-        const res = await Api.post(`appointments`, data)
+      dispatch({
+        type: "GET_APPOINTMENT",
+        payload: res.data,
+      });
 
-        dispatch({
-            type: 'CREATE_APPOINTMENT',
-            payload: res.data
-        })
-
-        if (res.status == 200)
-            return Promise.resolve(res.data);
-        else
-            return Promise.reject(res.data);
-
+      if (res.status == 200) return Promise.resolve(res.data);
+      else Promise.reject(res.data);
+    } catch (e) {
+      // console.log(e);
+      return Promise.reject(e);
     }
-    catch (e) {
-        // console.log(e);
-        return Promise.reject(e);
-    }
-}
-export const getAppointments = (garageId, dateYear, dateNumber) => async dispatch => {
-    try {
+  };
 
-        const res = await Api.get(`appointments/${garageId}/${dateYear}/${dateNumber}`)
+export const getRecommendedAppointments = (userLoction) => async (dispatch) => {
+  try {
+    // console.log("userLoction", userLoction)
+    const res = await Api.put(`/appointments/recommended`, userLoction);
 
-        dispatch({
-            type: 'GET_APPOINTMENT',
-            payload: res.data
-        })
+    dispatch({
+      type: "GET_REACOMMENDED_APPOINTMENT",
+      payload: res.data,
+    });
 
-        if (res.status == 200)
-            return Promise.resolve(res.data);
-        else
-            Promise.reject(res.data);
+    if (res.status == 200) return Promise.resolve(res.data);
+    else Promise.reject(res.data);
+  } catch (e) {
+    // console.log(e);
+    return Promise.reject(e);
+  }
+};
 
-    }
-    catch (e) {
-        // console.log(e);
-        return Promise.reject(e);
-    }
-}
+export const getFirstFreeAppointment = () => async (dispatch) => {
+  try {
+    const res = await Api.get(`appointments/free`);
 
-export const getRecommendedAppointments = (userLoction) => async dispatch => {
-    try {
+    dispatch({
+      type: "GET_FIRST_FREE_APPOINTMENT",
+      payload: res.data,
+    });
 
-        // console.log("userLoction", userLoction)
-        const res = await Api.put(`/appointments/recommended`, userLoction)
-
-        dispatch({
-            type: 'GET_REACOMMENDED_APPOINTMENT',
-            payload: res.data
-        })
-
-        if (res.status == 200)
-            return Promise.resolve(res.data);
-        else
-            Promise.reject(res.data);
-
-    }
-    catch (e) {
-        // console.log(e);
-        return Promise.reject(e);
-    }
-}
-
-export const getFirstFreeAppointment = () => async dispatch => {
-    try {
-
-        const res = await Api.get(`appointments/free`)
-
-        dispatch({
-            type: 'GET_FIRST_FREE_APPOINTMENT',
-            payload: res.data
-        })
-
-        if (res.status == 200)
-            return Promise.resolve(res.data);
-        else
-            Promise.reject(res.data);
-
-    }
-    catch (e) {
-        // console.log(e);
-        return Promise.reject(e);
-    }
-}
+    if (res.status == 200) return Promise.resolve(res.data);
+    else Promise.reject(res.data);
+  } catch (e) {
+    // console.log(e);
+    return Promise.reject(e);
+  }
+};

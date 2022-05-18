@@ -4,8 +4,8 @@ import Map from "../../components/Map/Map";
 import RecommendedAppointment from "../../components/RecommendedAppointment/RecommendedAppointment";
 
 const Location = () => {
-
-  const [isUserAllowedLocation, setIsUserAllowedLocation] = useState(false)
+  const [isUserAllowedLocation, setIsUserAllowedLocation] = useState(false);
+  const [isSharingLocationTested, setIsSharingLocationTested] = useState(false);
   const [lat, setLat] = useState(null);
   const [lng, setLng] = useState(null);
   // const [center, setCenter] = useState({
@@ -13,23 +13,30 @@ const Location = () => {
   //   lng,
   // });
 
-  useEffect(() => {
-
-  }, [])
+  useEffect(() => {}, []);
 
   return (
     <div className="container-fluid">
       <div className="container">
-
         <h1> תורים מומלצים {isUserAllowedLocation && "על בסיס מיקומך"}</h1>
-
-        <Geolocation setLat={setLat} setLng={setLng} setIsUserAllowedLocation={setIsUserAllowedLocation} />
-        <RecommendedAppointment
-          lat={lat}
-          lng={lng}
+        {!isUserAllowedLocation && (
+          <p>אנא אפשר שיתוף מיקום לקבלת המלצות בהתאם למיקומך</p>
+        )}
+        <Geolocation
+          setLat={setLat}
+          setLng={setLng}
+          setIsUserAllowedLocation={setIsUserAllowedLocation}
+          setIsSharingLocationTested={setIsSharingLocationTested}
           isUserAllowedLocation={isUserAllowedLocation}
         />
-
+        {isSharingLocationTested && (
+          <RecommendedAppointment
+            lat={lat}
+            lng={lng}
+            isUserAllowedLocation={isUserAllowedLocation}
+            isSharingLocationTested={isSharingLocationTested}
+          />
+        )}
 
         {/* <Map
                 lat={lat}
