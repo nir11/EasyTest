@@ -194,6 +194,7 @@ const calculateBestRecommendedAppointments = (garagesRecs) => {
           Distance: garage.Distance,
           Score: appointmentScore,
           Datetime: appointment,
+          Address: garage.Address,
         };
         return;
       }
@@ -208,6 +209,7 @@ const calculateBestRecommendedAppointments = (garagesRecs) => {
             Distance: garage.Distance,
             Score: appointmentScore,
             Datetime: appointment,
+            Address: garage.Address,
           };
           return;
         }
@@ -217,6 +219,7 @@ const calculateBestRecommendedAppointments = (garagesRecs) => {
           Distance: garage.Distance,
           Score: appointmentScore,
           Datetime: appointment,
+          Address: garage.Address,
         };
         return;
       }
@@ -230,6 +233,7 @@ const calculateBestRecommendedAppointments = (garagesRecs) => {
             Distance: garage.Distance,
             Score: appointmentScore,
             Datetime: appointment,
+            Address: garage.Address,
           };
           return;
         }
@@ -239,6 +243,7 @@ const calculateBestRecommendedAppointments = (garagesRecs) => {
           Distance: garage.Distance,
           Score: appointmentScore,
           Datetime: appointment,
+          Address: garage.Address,
         };
         return;
       }
