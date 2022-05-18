@@ -9,7 +9,7 @@ body {
 }
 #root {
   /* background-image: url("./utilis/Background.png"); */
-  background-image: url("./utilis/bg.jpeg");
+  background-image: url("./assets/images/bg.jpeg");
   /* background-color: #2c366a !important; */
   background-repeat: no-repeat;
   background-size: cover;

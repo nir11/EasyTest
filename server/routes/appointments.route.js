@@ -155,6 +155,7 @@ router.put("/recommended", async (req, res) => {
             DistanceRank: i + 1,
             Appointments: recAppointments,
             Address: garage.Address,
+            City: garage.City,
           });
           // console.log({ allGaragesRecommendedAppointments });
         }
@@ -196,6 +197,7 @@ const calculateBestRecommendedAppointments = (garagesRecs) => {
           Score: appointmentScore,
           Datetime: appointment,
           Address: garage.Address,
+          City: garage.City,
         };
         return;
       }
@@ -211,6 +213,7 @@ const calculateBestRecommendedAppointments = (garagesRecs) => {
             Score: appointmentScore,
             Datetime: appointment,
             Address: garage.Address,
+            City: garage.City,
           };
           return;
         }
@@ -221,6 +224,7 @@ const calculateBestRecommendedAppointments = (garagesRecs) => {
           Score: appointmentScore,
           Datetime: appointment,
           Address: garage.Address,
+          City: garage.City,
         };
         return;
       }
@@ -235,6 +239,7 @@ const calculateBestRecommendedAppointments = (garagesRecs) => {
             Score: appointmentScore,
             Datetime: appointment,
             Address: garage.Address,
+            City: garage.City,
           };
           return;
         }
@@ -245,6 +250,7 @@ const calculateBestRecommendedAppointments = (garagesRecs) => {
           Score: appointmentScore,
           Datetime: appointment,
           Address: garage.Address,
+          City: garage.City,
         };
         return;
       }

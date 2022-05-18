@@ -27,7 +27,6 @@ import { useNavigate } from "react-router-dom";
 import Spinner from "../Spinner.js/Spinner";
 
 const RecommendedAppointment = ({ lat, lng, isUserAllowedLocation }) => {
-
   const dispatch = useDispatch();
   // const [city, setCity] = useState('')
   const [id, setId] = useState("");
@@ -46,8 +45,8 @@ const RecommendedAppointment = ({ lat, lng, isUserAllowedLocation }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log('lat', lat);
-    console.log('lng', lng);
+    console.log("lat", lat);
+    console.log("lng", lng);
 
     //when user allowed location on browser - get Appointments based on location
     if (isUserAllowedLocation) {
@@ -56,19 +55,18 @@ const RecommendedAppointment = ({ lat, lng, isUserAllowedLocation }) => {
           Latitude: lat,
           Longitude: lng,
         })
-      )
+      );
     }
 
     //when didn't allow - get first free Appointment
     else {
-      dispatch(getFirstFreeAppointment())
+      dispatch(getFirstFreeAppointment());
     }
   }, [isUserAllowedLocation]);
 
   useEffect(() => {
     if (appointments.length) setShowSpinner(false);
   }, [appointments]);
-
 
   const submitForm = (e, appointment) => {
     e.preventDefault();
@@ -104,11 +102,11 @@ const RecommendedAppointment = ({ lat, lng, isUserAllowedLocation }) => {
         return "שלישי";
       case "Wednesday":
         return "רביעי";
-      case "thursday":
+      case "Thursday":
         return "חמישי";
       case "Friday":
         return "שישי";
-      case "saturday":
+      case "Saturday":
         return "שבת";
     }
   };
@@ -116,10 +114,8 @@ const RecommendedAppointment = ({ lat, lng, isUserAllowedLocation }) => {
   return (
     <div>
       <div className="row">
-
         {!showSpinner ? (
           <MDBAnimation type="fadeIn" delay="0.5s">
-
             {appointments.map((appointment, index) => {
               // console.log("appointment.Datetime", appointment.Datetime);
               let dateOfAppointment = new Date(appointment.Datetime);
@@ -160,12 +156,11 @@ const RecommendedAppointment = ({ lat, lng, isUserAllowedLocation }) => {
                 <Accordion
                   key={index}
                   className="accordion-card"
-                //   defaultActiveKey="1"
+                  //   defaultActiveKey="1"
                 >
                   <Card>
                     <Card.Header>
                       <div>
-
                         <div className="row">
                           <div className="col-sm-12">
                             {/* <Card.Title>{appointment.Name}</Card.Title>
@@ -175,51 +170,48 @@ const RecommendedAppointment = ({ lat, lng, isUserAllowedLocation }) => {
                             </Card.Subtitle> */}
 
                             <div className="nine">
-                              <h2>{appointment.Name}<span>{appointment.Address}</span></h2>
+                              <h2>
+                                {appointment.Name}
+                                <span>
+                                  {appointment.Address}, {appointment.City}
+                                </span>
+                              </h2>
                             </div>
-
-
 
                             <div className="row">
                               <div className="col-sm-4">
                                 <div className="mb-2 font-weight-bold">
-
                                   מרחק: {appointment.Distance} ק"מ
                                 </div>
                                 יום&nbsp;
                                 {getDayNameInHebrew(
                                   moment(appointment.Datetime).format("dddd")
-                                )} | &nbsp;
-                                {moment(appointment.Datetime).format("HH:mm")} | &nbsp;
-
-                                {moment(appointment.Datetime).format("DD/MM/YYYY")}
-
+                                )}{" "}
+                                | &nbsp;
+                                {moment(appointment.Datetime).format("HH:mm")} |
+                                &nbsp;
+                                {moment(appointment.Datetime).format(
+                                  "DD/MM/YYYY"
+                                )}
                               </div>
 
                               <div className="customToggle-button col-sm-4">
                                 <CustomToggle
-
                                   eventKey="0"
                                   setIsToggleOpen={setIsToggleOpen}
                                 >
                                   {isToggleOpen ? "סגור" : "הזמן עכשיו!"}
                                 </CustomToggle>
                               </div>
-                              <div className="customToggle-button col-sm-4">
-                              </div>
+                              <div className="customToggle-button col-sm-4"></div>
                             </div>
                           </div>
-
-
                         </div>
-
                       </div>
-
 
                       <div className="ribbon ribbon-top-left">
                         <span>*{daysLeftText}*</span>
                       </div>
-
                     </Card.Header>
 
                     <Accordion.Collapse eventKey="0">
@@ -242,7 +234,6 @@ const RecommendedAppointment = ({ lat, lng, isUserAllowedLocation }) => {
                           <div style={{ textAlign: "center" }}>
                             <Button type="submit">שלח</Button>
                           </div>
-
                         </Form>
                       </Card.Body>
                     </Accordion.Collapse>
@@ -260,7 +251,6 @@ const RecommendedAppointment = ({ lat, lng, isUserAllowedLocation }) => {
               );
             })}
           </MDBAnimation>
-
         ) : (
           <Spinner text="מחשב תורים קרובים" />
         )}

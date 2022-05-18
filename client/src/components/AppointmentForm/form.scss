@@ -2,7 +2,7 @@
   right: 2% !important;
   // transform: translate(500px, 314px);
 }
-.example-custom-input {
+.appointment-date-button {
   cursor: pointer;
   padding: 5px 15px;
   border: 0;
@@ -10,6 +10,9 @@
   background-color: #216ba5;
   font: inherit;
   color: #fff;
+  &.disabled {
+    pointer-events: none;
+  }
 }
 .react-datepicker-wrapper i {
   margin-right: 15px;
@@ -17,4 +20,10 @@
 form {
   background-color: #00000059 !important;
   padding: 40px;
+}
+
+.garage-select {
+  &.disabled {
+    pointer-events: none;
+  }
 }

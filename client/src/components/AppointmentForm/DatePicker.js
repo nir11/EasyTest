@@ -1,33 +1,35 @@
-import React, { useState, useEffect, forwardRef } from "react";
-import DatePicker, { registerLocale } from "react-datepicker";
-
-import "react-datepicker/dist/react-datepicker.css";
-import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
-
+import React, { forwardRef, useEffect, useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { useDispatch } from "react-redux";
 //redux
 import { getAppointments } from "../../redux/appointment/appointment-actions";
+import "./form.scss";
 
 const MyDatePicker = ({
   selectedGagrage,
   setAppointmentDateTime,
   appointmentDateTime,
   setIsUserSelectedDate,
-  isUserSelectedDate
+  isUserSelectedDate,
+  disabled,
 }) => {
-
   const dispatch = useDispatch();
   const [indexOfDay, setIndexOfDay] = useState(0);
   const [excludeDatetimes, setExcludeDatetimes] = useState([]);
-  const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
+  const DatePickerButton = forwardRef(({ value, onClick }, ref) => (
     <>
-      <button className="example-custom-input" onClick={onClick} ref={ref} type="button">
+      <button
+        className={"appointment-date-button" + (disabled ? " disabled" : "")}
+        onClick={onClick}
+        ref={ref}
+        type="button"
+      >
         {!isUserSelectedDate ? "תאריך" : value}
         <i className="fas fa-calendar-alt"></i>
-
       </button>
     </>
-
   ));
   // const appointmentTimes = useSelector(
   //   (state) => state.appointmentReducer.appointmentTimes
@@ -38,10 +40,12 @@ const MyDatePicker = ({
   // };
 
   useEffect(() => {
-    const today = new Date();
-    changeMonthHandler(today);
-    setIndexOfDay(moment(today).weekday());
-  }, []);
+    if (!disabled) {
+      const today = new Date();
+      changeMonthHandler(today);
+      setIndexOfDay(moment(today).weekday());
+    }
+  }, [selectedGagrage]);
 
   const isWeekday = (date) => {
     const day = date.getDay() + 1;
@@ -52,7 +56,7 @@ const MyDatePicker = ({
     console.log(date);
     setIndexOfDay(moment(date).weekday());
     setAppointmentDateTime(date);
-    setIsUserSelectedDate(true)
+    setIsUserSelectedDate(true);
   };
 
   const changeMonthHandler = (date) => {
@@ -86,45 +90,48 @@ const MyDatePicker = ({
   //     console.log("selectedGagrage", selectedGagrage);
   // }, [selectedGagrage])
   return (
-    <>
-      {selectedGagrage.length > 0 && (
-        <DatePicker
-          // className="form-control"
-          // placeholderText="בחר/י תאריך פנוי"
-          selected={appointmentDateTime}
-          dateFormat="HH:mm  dd/MM/yyyy"
-
-          // timeClassName={handleColor}
-          onChange={changeHandler}
-          onMonthChange={changeMonthHandler}
-          // onYearChange
-          // onMonthChange
-          // shouldCloseOnSelect={false}
-          timeFormat="HH:mm"
-          showTimeSelect
-          filterDate={isWeekday}
-          timeIntervals={15}
-          minTime={
-            new Date(
+    <DatePicker
+      // className="form-control"
+      // placeholderText="בחר/י תאריך פנוי"
+      selected={appointmentDateTime}
+      dateFormat="HH:mm  dd/MM/yyyy"
+      // timeClassName={handleColor}
+      onChange={changeHandler}
+      onMonthChange={changeMonthHandler}
+      // onYearChange
+      // onMonthChange
+      // shouldCloseOnSelect={false}
+      timeFormat="HH:mm"
+      showTimeSelect
+      filterDate={isWeekday}
+      timeIntervals={15}
+      minTime={
+        disabled
+          ? new Date()
+          : new Date(
               `08/05/2022 ${selectedGagrage[0].WorkDays[indexOfDay].StartTime}`
             )
-          }
-          maxTime={
-            new Date(
+      }
+      maxTime={
+        disabled
+          ? new Date()
+          : new Date(
               `08/05/2022 ${selectedGagrage[0].WorkDays[indexOfDay].EndTime}`
             )
-          }
-          // minTime={new Date(`08/05/2022 07:00`)}
-          // maxTime={new Date(`08/05/2022 16:00`)}
-          excludeTimes={excludeDatetimes.filter(
-            (e) => moment(e, "DD /MM/YYYY HH:mm").weekday() == indexOfDay
-          )}
-          customInput={<ExampleCustomInput />}
+      }
+      // minTime={new Date(`08/05/2022 07:00`)}
+      // maxTime={new Date(`08/05/2022 16:00`)}
+      excludeTimes={
+        disabled
+          ? []
+          : excludeDatetimes.filter(
+              (e) => moment(e, "DD /MM/YYYY HH:mm").weekday() == indexOfDay
+            )
+      }
+      customInput={<DatePickerButton />}
 
-        // excludeTimes={appointmentTimes.map(a => moment(a, 'YYYY-MM-DD')._i)}
-        />
-      )}
-    </>
+      // excludeTimes={appointmentTimes.map(a => moment(a, 'YYYY-MM-DD')._i)}
+    />
   );
 };
 
