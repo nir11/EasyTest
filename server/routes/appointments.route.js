@@ -78,7 +78,7 @@ const calculateDistanceToGarage = (userLocation, garageLocation) => {
   return distanceInKm;
 };
 
-router.get("/free", async (req, res) => {
+router.put("/free", async (req, res) => {
   let garages = [];
   if (req.body?.Garages?.length > 0)
     garages = await Garage.find({ _id: { $in: req.body.Garages } });
@@ -309,13 +309,13 @@ const findNextFreeAppointmentOfGarage = async (garageId) => {
 
     let startTimeOfDate = moment(
       date.clone().format("YYYY-MM-DD") +
-        " " +
-        garage.WorkDays[dayIndex - 1].StartTime
+      " " +
+      garage.WorkDays[dayIndex - 1].StartTime
     );
     const endTimeOfDate = moment(
       date.clone().format("YYYY-MM-DD") +
-        " " +
-        garage.WorkDays[dayIndex - 1].EndTime
+      " " +
+      garage.WorkDays[dayIndex - 1].EndTime
     );
     // console.log({ endTimeOfDate });
 

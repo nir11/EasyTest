@@ -54,9 +54,10 @@ export const getRecommendedAppointments = (userLoction) => async (dispatch) => {
   }
 };
 
-export const getFirstFreeAppointment = () => async (dispatch) => {
+export const getFirstFreeAppointment = (selectedGarages) => async (dispatch) => {
+  console.log('selectedGarages', selectedGarages);
   try {
-    const res = await Api.get(`appointments/free`);
+    const res = await Api.put(`appointments/free`, selectedGarages);
 
     dispatch({
       type: "GET_FIRST_FREE_APPOINTMENT",

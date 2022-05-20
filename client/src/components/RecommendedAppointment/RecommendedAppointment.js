@@ -27,6 +27,7 @@ import Spinner from "../Spinner.js/Spinner";
 import PersonalDetails from "../AppointmentForm/PersonalDetails";
 
 import Modal from "../Modal/Modal";
+import _ from "lodash";
 
 const RecommendedAppointment = ({
   lat,
@@ -47,6 +48,7 @@ const RecommendedAppointment = ({
   //helper fields
   const [modalShow, setModalShow] = React.useState(false);
   const [showSpinner, setShowSpinner] = useState(true);
+  const [showGarages, setShowGarages] = useState(false)
   const [selectedGarages, setSelectedGarages] = useState([])
   const moment = extendMoment(Moment);
   const navigate = useNavigate();
@@ -73,12 +75,15 @@ const RecommendedAppointment = ({
 
     //when didn't allow - get first free Appointment
     else {
-      dispatch(getFirstFreeAppointment());
+      dispatch(getFirstFreeAppointment({ Garages: selectedGarages }));
     }
   }, [isSharingLocationTested]);
 
   useEffect(() => {
-    if (appointments.length) setShowSpinner(false);
+    if (appointments.length) {
+      setShowSpinner(false)
+      setShowGarages(true)
+    }
   }, [appointments]);
 
   const submitForm = (e, appointment) => {
@@ -143,32 +148,79 @@ const RecommendedAppointment = ({
     console.log('updatedSelectedGarages', updatedSelectedGarages);
 
     setSelectedGarages(updatedSelectedGarages)
+
+    debounceFindFind(updatedSelectedGarages)
+
   }
 
-  const getReccomendedOfSelected = e => {
-    e.preventDefault();
-    console.log(selectedGarages);
-  }
+
+  //Serach after 0.5 second of typing
+  const debounceFindFind = _.debounce((updatedSelectedGarages) => {
+    setShowSpinner(true)
+
+    //when user allowed location on browser - get Appointments based on location
+    if (isUserAllowedLocation) {
+      dispatch(
+        getRecommendedAppointments({
+          Latitude: lat,
+          Longitude: lng,
+          Garages: updatedSelectedGarages
+        })
+      )
+        .then(() => setShowSpinner(false))
+
+    }
+
+    // when didn't allow - get first free Appointment
+    else {
+      dispatch(getFirstFreeAppointment({ Garages: updatedSelectedGarages }))
+        .then(() => setShowSpinner(false))
+    }
+  }, 1000);
+
   return (
-    <div>
+    <MDBAnimation type="fadeIn" delay="0.5s">
+
+      <div className="flex">
+        {showGarages &&
+          <div className="flex-column">
+            <h2 className="text-center">סינון תורים קרובים לפי מוסכים</h2>
+
+            {
+              garages.map(garage => {
+
+                let border = "";
+                let color = "";
+                let background = "";
+
+                if (selectedGarages.some(s => s == garage._id)) {
+                  border = "3px solid black"
+                  color = 'black';
+                  background = "#c5a9a9"
+                }
+                else
+                  background = "#fff"
+
+                return <Button
+                  variant="white"
+                  style={{ border, color, background }}
+                  className="btn"
+                  key={garage._id}
+                  id={garage._id}
+                  value={garage.Name}
+                  onClick={handleSelectedGarages}>{garage.Name}
+                </Button>
+              })
+            }
+
+          </div>
+        }
+      </div>
+      <br />
       <div className="row">
         {!showSpinner && garages.length > 0 ? (
-          <MDBAnimation type="fadeIn" delay="0.5s">
+          <div>
 
-            <div className="flex">
-              {
-                garages.map(garage => {
-                  return <Button
-                    className="btn btn-white"
-                    key={garage._id}
-                    id={garage._id}
-                    value={garage.Name}
-                    onClick={handleSelectedGarages}>{garage.Name}
-                  </Button>
-                })
-              }
-            </div>
-            <Button onClick={getReccomendedOfSelected}>שליחה</Button>
             {appointments.map((appointment, index) => {
               // console.log("appointment.Datetime", appointment.Datetime);
               let dateOfAppointment = new Date(appointment.Datetime);
@@ -316,14 +368,14 @@ const RecommendedAppointment = ({
                 </Accordion>
               );
             })}
-          </MDBAnimation>
+          </div>
         ) : isUserAllowedLocation ? (
           <Spinner text="מחשב תורים קרובים" />
         ) : (
           <Spinner text="מחשב את התור הקרוב ביותר" />
         )}
       </div>
-    </div >
+    </MDBAnimation>
   );
 };
 
