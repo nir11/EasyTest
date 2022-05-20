@@ -107,9 +107,12 @@ const MyDatePicker = ({
       showTimeSelect
       filterDate={isWeekday}
       timeIntervals={15}
-      minDate={moment().toDate()}
+      minDate={new Date()}
+      // minDate={moment().toDate()}
       minTime={
         disabled
+          ? new Date()
+          : new Date().toDateString() === appointmentDateTime.toDateString()
           ? new Date()
           : new Date(
               `08/05/2022 ${selectedGagrage[0].WorkDays[indexOfDay].StartTime}`
