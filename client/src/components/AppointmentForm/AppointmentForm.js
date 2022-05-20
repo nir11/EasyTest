@@ -55,9 +55,14 @@ const AppointmentForm = () => {
     const appointmentMinutes = parseInt(
       moment(appointmentDateTime).format("mm")
     );
-    if (![0, 15, 30, 45].includes(appointmentMinutes)) alert("לא נבחר תור");
-    if (!isUserSelectedDate) alert("אנא בחר/י מועד תור");
-    else {
+    if (![0, 15, 30, 45].includes(appointmentMinutes)) {
+      alert("לא נבחר תור");
+      return;
+    }
+    if (!isUserSelectedDate) {
+      alert("אנא בחר/י מועד תור");
+      return;
+    } else {
       setShowSpinner(true);
       const data = {
         User: {
