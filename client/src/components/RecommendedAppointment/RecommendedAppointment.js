@@ -50,6 +50,7 @@ const RecommendedAppointment = ({
   const [showSpinner, setShowSpinner] = useState(true);
   const [showGarages, setShowGarages] = useState(false)
   const [selectedGarages, setSelectedGarages] = useState([])
+  const [selectedGarage, setSelectedGarage] = useState([])
   const moment = extendMoment(Moment);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -139,31 +140,26 @@ const RecommendedAppointment = ({
 
   const handleSelectedGarages = e => {
     e.preventDefault();
-
     const { id } = e.target
 
-    console.log(id);
-
-    console.log(document.getElementsByClassName(`button${id}`));
-
+    //html button tag
     let tagOfParent = document.getElementsByClassName(`button${id}`)[0];
 
+    //when button was unmarked - mark it
     if (tagOfParent.className.includes("selected-recommended-button"))
       tagOfParent.classList.remove("selected-recommended-button")
+    //when button was marked - umnarked it
     else
       tagOfParent.classList.add("selected-recommended-button")
 
-
     let updatedSelectedGarages = selectedGarages;
 
-    if (updatedSelectedGarages.some(u => u == id.toString())) {
-      console.log("has");
+    //when user marked a grarage name
+    if (updatedSelectedGarages.some(u => u == id.toString()))
       updatedSelectedGarages = updatedSelectedGarages.filter(u => u != id.toString())
-    }
+    //when user unmarked a grarage name 
     else
       updatedSelectedGarages.push(id.toString())
-
-    console.log('updatedSelectedGarages', updatedSelectedGarages);
 
     setSelectedGarages(updatedSelectedGarages)
 
@@ -196,6 +192,11 @@ const RecommendedAppointment = ({
     }
   }, 1000);
 
+  const handleModalShow = (id) => {
+    setSelectedGarage(garages.filter(g => g._id == id))
+    setModalShow(true)
+  }
+
   return (
     <MDBAnimation type="fadeIn" delay="0.5s">
 
@@ -214,34 +215,40 @@ const RecommendedAppointment = ({
                 else
                   classNameOfButton = "recommended-button"
 
-                return <><div
-                  className={`button${garage._id} ${classNameOfButton}`}
-                >
-                  <button
-                    // style={{ border, color, background }}
-                    key={garage._id}
-                    id={garage._id}
-                    value={garage.Name}
-                    onClick={handleSelectedGarages}>{garage.Name}
+                return <React.Fragment key={garage._id}>
 
-                  </button>
+                  <div
+                    className={`button${garage._id} ${classNameOfButton}`}
+                  >
+                    <button
+                      // style={{ border, color, background }}
+                      id={garage._id}
+                      value={garage.Name}
+                      onClick={handleSelectedGarages}>{garage.Name}
 
-                  <Modal
-                    show={modalShow}
-                    onHide={() => setModalShow(false)}
-                    idOfGarage={garage._id}
-                    garages={garages}
-                  />
-                </div>
-                  <i className="fas fa-question-circle" onClick={() => setModalShow(true)}></i>
+                    </button>
 
-                </>
+
+                  </div>
+                  <i className="fas fa-question-circle" onClick={() => handleModalShow(garage._id)}></i>
+
+                </React.Fragment>
               })
             }
 
           </div>
         }
       </div>
+      {console.log('selectedGarage', selectedGarage)}
+      {
+        modalShow &&
+        <Modal
+          show={modalShow}
+          onHide={() => setModalShow(false)}
+          idOfGarage={selectedGarage[0]._id}
+          garages={garages}
+        />
+      }
       <br />
       <div className="row">
         {!showSpinner && garages.length > 0 ? (
