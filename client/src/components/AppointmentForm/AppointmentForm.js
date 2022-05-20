@@ -88,7 +88,8 @@ const AppointmentForm = () => {
             <label>בחר/י מוסך</label>
             <Form.Group className="mb-3" controlId="formBasicCheckbox">
               <select
-                className="form-control"
+                disabled={!city}
+                className={"form-control garage-select"}
                 onChange={(e) => {
                   setSelectedGagrage(e.target.value);
                   if (!isGarageSelected) setIsGarageSelected(true);

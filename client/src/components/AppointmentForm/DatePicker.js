@@ -43,7 +43,7 @@ const MyDatePicker = ({
     if (!disabled) {
       const today = new Date();
       changeMonthHandler(today);
-      setIndexOfDay(moment(today).weekday());
+      // setIndexOfDay(moment(today).weekday());
     }
   }, [selectedGagrage]);
 
@@ -54,6 +54,7 @@ const MyDatePicker = ({
 
   const changeHandler = (date) => {
     console.log(date);
+    console.log("moment(date).weekday()", moment(date).weekday());
     setIndexOfDay(moment(date).weekday());
     setAppointmentDateTime(date);
     setIsUserSelectedDate(true);
@@ -89,6 +90,7 @@ const MyDatePicker = ({
   // useEffect(() => {
   //     console.log("selectedGagrage", selectedGagrage);
   // }, [selectedGagrage])
+
   return (
     <DatePicker
       // className="form-control"
@@ -105,6 +107,7 @@ const MyDatePicker = ({
       showTimeSelect
       filterDate={isWeekday}
       timeIntervals={15}
+      minDate={moment().toDate()}
       minTime={
         disabled
           ? new Date()

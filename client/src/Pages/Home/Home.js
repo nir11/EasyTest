@@ -9,6 +9,7 @@ const Home = () => {
           <div className="row">
             <div className="col-lg-6 ">
               <h1>קביעת תור לטסט לרכב</h1>
+              {/* <h1>טסט הרכב הבא שלך מתחיל כאן!</h1> */}
               <br />
               <AppointmentForm />
             </div>

@@ -135,17 +135,17 @@ router.get("/free", async (req, res) => {
 });
 
 router.put("/recommended", async (req, res) => {
-  // calculateDistanceToGarage();
-  const userLocation = {
-    latitude: req.body.Latitude,
-    longitude: req.body.Longitude,
-  };
   let garages = [];
   if (req.body?.Garages?.length > 0)
     garages = await Garage.find({ _id: { $in: req.body.Garages } });
   else {
     garages = await Garage.find();
   }
+
+  const userLocation = {
+    latitude: req.body.Latitude,
+    longitude: req.body.Longitude,
+  };
 
   let allGaragesRecommendedAppointments = [];
 
@@ -192,7 +192,7 @@ const calculateBestRecommendedAppointments = (garagesRecs) => {
   garagesRecs.forEach((garage) => {
     // console.log({ garage });
     garage.Appointments.forEach((appointment) => {
-      // console.log({ appointment });
+      console.log({ appointment });
       const minutesToAppointment = parseInt(
         appointment.diff(moment(), "minutes")
       );
@@ -201,79 +201,74 @@ const calculateBestRecommendedAppointments = (garagesRecs) => {
       const appointmentScore = garage.Distance + minutesToAppointment;
       // console.log({ appointmentScore });
       scores.push(appointmentScore);
-      if (!bestAppointment) {
-        bestAppointment = {
-          Id: garage.Id,
-          Name: garage.Name,
-          Distance: garage.Distance,
-          Score: appointmentScore,
-          Datetime: appointment,
-          Address: garage.Address,
-          City: garage.City,
-        };
+      if (!result[0]) {
+        result[0] = addNewRecommendedAppointment(
+          garage,
+          appointment,
+          appointmentScore
+        );
         return;
       }
-      if (!secondBestAppointment) {
+      if (!result[1]) {
         // console.log({ appointmentScore });
         // console.log("bestAppointment.Score", bestAppointment.Score);
-        if (appointmentScore < bestAppointment.Score) {
-          secondBestAppointment = { ...bestAppointment };
-          bestAppointment = {
-            Id: garage.Id,
-            Name: garage.Name,
-            Distance: garage.Distance,
-            Score: appointmentScore,
-            Datetime: appointment,
-            Address: garage.Address,
-            City: garage.City,
-          };
+        if (appointmentScore < result[0].Score) {
+          result[1] = { ...bestAppointment };
+          result[0] = addNewRecommendedAppointment(
+            garage,
+            appointment,
+            appointmentScore
+          );
           return;
         }
-        secondBestAppointment = {
-          Id: garage.Id,
-          Name: garage.Name,
-          Distance: garage.Distance,
-          Score: appointmentScore,
-          Datetime: appointment,
-          Address: garage.Address,
-          City: garage.City,
-        };
+        result[1] = addNewRecommendedAppointment(
+          garage,
+          appointment,
+          appointmentScore
+        );
         return;
       }
 
-      if (appointmentScore < secondBestAppointment.Score) {
-        if (appointmentScore < bestAppointment.Score) {
-          secondBestAppointment = { ...bestAppointment };
-          bestAppointment = {
-            Id: garage.Id,
-            Name: garage.Name,
-            Distance: garage.Distance,
-            Score: appointmentScore,
-            Datetime: appointment,
-            Address: garage.Address,
-            City: garage.City,
-          };
+      if (appointmentScore < result[1].Score) {
+        if (appointmentScore < result[0].Score) {
+          result[0] = addNewRecommendedAppointment(
+            garage,
+            appointment,
+            appointmentScore
+          );
           return;
         }
-        secondBestAppointment = {
-          Id: garage.Id,
-          Name: garage.Name,
-          Distance: garage.Distance,
-          Score: appointmentScore,
-          Datetime: appointment,
-          Address: garage.Address,
-          City: garage.City,
-        };
+        result[1] = addNewRecommendedAppointment(
+          garage,
+          appointment,
+          appointmentScore
+        );
         return;
       }
     });
   });
   // console.log({ bestAppointment });
   // console.log({ secondBestAppointment });
-  if (bestAppointment) result.push(bestAppointment);
-  if (secondBestAppointment) result.push(secondBestAppointment);
-  console.log({ scores });
+  // if (bestAppointment) result.push(bestAppointment);
+  // if (secondBestAppointment) result.push(secondBestAppointment);
+  // console.log({ scores });
   return result;
+};
+
+const addNewRecommendedAppointment = (
+  garage,
+  appointment,
+  appointmentScore
+) => {
+  return {
+    Id: garage.Id,
+    Name: garage.Name,
+    Distance: garage.Distance,
+    Score: appointmentScore,
+    Datetime: appointment,
+    Address: garage.Address,
+    City: garage.City,
+  };
 };
 
 const findNextFreeAppointmentOfGarage = async (garageId) => {
@@ -285,11 +280,9 @@ const findNextFreeAppointmentOfGarage = async (garageId) => {
   if (!garage) return null;
 
   // get day index
-  let dateIndexOfWeek = date.clone().day() + 1;
-  // console.log({ dateIndexOfWeek });
-
   let dayIndex = moment().day() + 1;
   // console.log({ dayIndex });
+
   let count = 1;
   while (count !== 7) {
     // console.log({ dayIndex });
@@ -306,6 +299,7 @@ const findNextFreeAppointmentOfGarage = async (garageId) => {
       date,
       garage._id
     );
+    // console.log({ bookedAppointmentOfDate });
 
     let startTimeOfDate = moment(
       date.clone().format("YYYY-MM-DD") +
@@ -317,7 +311,7 @@ const findNextFreeAppointmentOfGarage = async (garageId) => {
         " " +
         garage.WorkDays[dayIndex - 1].EndTime
     );
-    console.log({ endTimeOfDate });
+    // console.log({ endTimeOfDate });
 
     // check if it's today
     // console.log("date before inserting", date);
@@ -329,17 +323,32 @@ const findNextFreeAppointmentOfGarage = async (garageId) => {
       const roundedUp = Math.ceil(moment().minute() / 15) * 15;
       startTimeOfDate = moment().add(2, "hours").minute(roundedUp);
     }
-    console.log({ startTimeOfDate });
+    // console.log({ startTimeOfDate });
 
-    recommendedAppointments = findFreeAppointmentsInDay(
+    const recommendedAppointmentsInDay = findFreeAppointmentsInDay(
       date.clone().format("YYYY-MM-DD"),
       bookedAppointmentOfDate,
       startTimeOfDate,
       endTimeOfDate
     );
+    // console.log({ recommendedAppointmentsInDay });
+    if (recommendedAppointmentsInDay.length > 0)
+      recommendedAppointments = recommendedAppointments.concat(
+        recommendedAppointmentsInDay
+      );
 
-    // console.log({ recommendedAppointments });
-    if (recommendedAppointments.length === 2) return recommendedAppointments;
+    if (recommendedAppointments.length >= 2) {
+      if (recommendedAppointments.length > 2) {
+        recommendedAppointments = recommendedAppointments.sort(function (a, b) {
+          return new Date(a) - new Date(b);
+        });
+        recommendedAppointments = [
+          recommendedAppointments[0],
+          recommendedAppointments[1],
+        ];
+      }
+      return recommendedAppointments;
+    }
 
     if (dayIndex == 6) {
       dayIndex = 0;
@@ -358,13 +367,13 @@ const getBookedAppointmentsOfDay = async (date, garageId) => {
   const testDate = date
     .clone()
     .set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
-    .local()
+    // .local()
     .toISOString();
   const nextDate = date
     .clone()
     .add(1, "days")
     .set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
-    .local()
+    // .local()
     .toISOString();
 
   let bookedAppointmentsForDate = await Appointment.find({
@@ -376,7 +385,8 @@ const getBookedAppointmentsOfDay = async (date, garageId) => {
   });
   // console.log({ bookedAppointmentsForDate });
   bookedAppointmentsForDate = bookedAppointmentsForDate.map((app) =>
-    moment.utc(app.Datetime).format("HH:mm")
+    // moment.utc(app.Datetime).format("HH:mm")
+    moment(app.Datetime).format("HH:mm")
   );
   return bookedAppointmentsForDate;
 };
