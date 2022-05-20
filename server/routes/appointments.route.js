@@ -41,13 +41,28 @@ router.get("/:garage/:year/:month", async (req, res) => {
     });
 
     // console.log({ ll });
-    const ExcludeDatetime = [
+    let ExcludeDatetime = [
       ...new Set(
         bookedAppointments.map((app) =>
           moment(app.Datetime).format("DD/MM/YYYY HH:mm")
         )
       ),
     ];
+
+    let todayPastTime = [];
+    const minutesToAdd = 15;
+
+    const currentMonth = moment().month() + 1;
+    if (currentMonth === parseInt(req.params?.month)) {
+      let time = moment().startOf("day");
+      while (moment().isAfter(time)) {
+        todayPastTime.push(time.clone());
+        time = time.add(minutesToAdd, "minutes");
+      }
+      ExcludeDatetime = ExcludeDatetime.concat(
+        ...new Set(todayPastTime.map((date) => date.format("DD/MM/YYYY HH:mm")))
+      );
+    }
 
     res.send({ ExcludeDatetime });
   } catch (err) {
@@ -309,13 +324,13 @@ const findNextFreeAppointmentOfGarage = async (garageId) => {
 
     let startTimeOfDate = moment(
       date.clone().format("YYYY-MM-DD") +
-      " " +
-      garage.WorkDays[dayIndex - 1].StartTime
+        " " +
+        garage.WorkDays[dayIndex - 1].StartTime
     );
     const endTimeOfDate = moment(
       date.clone().format("YYYY-MM-DD") +
-      " " +
-      garage.WorkDays[dayIndex - 1].EndTime
+        " " +
+        garage.WorkDays[dayIndex - 1].EndTime
     );
     // console.log({ endTimeOfDate });
 

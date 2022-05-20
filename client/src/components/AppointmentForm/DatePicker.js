@@ -1,11 +1,14 @@
 import moment from "moment";
 import React, { forwardRef, useEffect, useState } from "react";
-import DatePicker from "react-datepicker";
+import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useDispatch } from "react-redux";
 //redux
 import { getAppointments } from "../../redux/appointment/appointment-actions";
 import "./form.scss";
+
+import he from "date-fns/locale/he";
+registerLocale("he", he);
 
 const MyDatePicker = ({
   selectedGagrage,
@@ -93,6 +96,7 @@ const MyDatePicker = ({
 
   return (
     <DatePicker
+      locale="he"
       // className="form-control"
       // placeholderText="בחר/י תאריך פנוי"
       selected={appointmentDateTime}
@@ -107,9 +111,12 @@ const MyDatePicker = ({
       showTimeSelect
       filterDate={isWeekday}
       timeIntervals={15}
-      minDate={moment().toDate()}
+      minDate={new Date()}
+      // minDate={moment().toDate()}
       minTime={
         disabled
+          ? new Date()
+          : new Date().toDateString() === appointmentDateTime.toDateString()
           ? new Date()
           : new Date(
               `08/05/2022 ${selectedGagrage[0].WorkDays[indexOfDay].StartTime}`

@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getGarages } from "../../redux/garages/garages-actions";
 import MyDatePicker from "./DatePicker";
 import PersonalDetails from "./PersonalDetails";
+import moment from "moment";
 
 import { MDBInput } from "mdbreact";
 
@@ -15,7 +16,6 @@ import "./form.scss";
 import Modal from "../Modal/Modal";
 
 const AppointmentForm = () => {
-
   //form fields
   const [city, setCity] = useState("");
   const [selectedGagrage, setSelectedGagrage] = useState("");
@@ -28,22 +28,22 @@ const AppointmentForm = () => {
   const [isGarageSelected, setIsGarageSelected] = useState(false);
 
   const [appointmentDateTime, setAppointmentDateTime] = useState(new Date());
-  const [load, setLoad] = useState(true)
+  const [load, setLoad] = useState(true);
   const [showSpinner, setShowSpinner] = useState(true);
   const [isUserSelectedDate, setIsUserSelectedDate] = useState(false);
   const [modalShow, setModalShow] = React.useState(false);
-
-
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const garages = useSelector((state) => state.garagesReducer.garages);
 
   useEffect(() => {
-    dispatch(getGarages())
-      .then((res) => {
-        sessionStorage.setItem("garages", JSON.stringify(res.garages.sort((a, b) => a.Name.localeCompare(b.Name))))
-      })
+    dispatch(getGarages()).then((res) => {
+      sessionStorage.setItem(
+        "garages",
+        JSON.stringify(res.garages.sort((a, b) => a.Name.localeCompare(b.Name)))
+      );
+    });
   }, []);
 
   useEffect(() => {
@@ -52,7 +52,10 @@ const AppointmentForm = () => {
 
   const submitForm = (e) => {
     e.preventDefault();
-
+    const appointmentMinutes = parseInt(
+      moment(appointmentDateTime).format("mm")
+    );
+    if (![0, 15, 30, 45].includes(appointmentMinutes)) alert("לא נבחר תור");
     if (!isUserSelectedDate) alert("אנא בחר/י מועד תור");
     else {
       setShowSpinner(true);
@@ -68,7 +71,7 @@ const AppointmentForm = () => {
         Datetime: appointmentDateTime,
         GarageId: selectedGagrage,
       };
-      console.log("data", data);
+      // console.log("data", data);
       dispatch(createAppointment(data))
         .then(() => {
           setShowSpinner(false);
@@ -84,8 +87,6 @@ const AppointmentForm = () => {
       {!load && (
         <>
           <Form onSubmit={submitForm}>
-
-
             <label>בחר/י עיר</label>
             <Form.Group className="mb-3" controlId="formBasicCheckbox">
               <select
@@ -120,10 +121,12 @@ const AppointmentForm = () => {
                     );
                   })}
               </select>
-              {
-                selectedGagrage.length > 0 &&
+              {selectedGagrage.length > 0 && (
                 <>
-                  <i className="fas fa-question-circle" onClick={() => setModalShow(true)}></i>
+                  <i
+                    className="fas fa-question-circle"
+                    onClick={() => setModalShow(true)}
+                  ></i>
                   <Modal
                     show={modalShow}
                     onHide={() => setModalShow(false)}
@@ -131,11 +134,8 @@ const AppointmentForm = () => {
                     garages={garages}
                   />
                 </>
-              }
-
-
+              )}
             </Form.Group>
-
 
             <label>בחר/י מועד תור</label>
             <MyDatePicker
