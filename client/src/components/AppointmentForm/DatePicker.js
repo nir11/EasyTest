@@ -19,7 +19,7 @@ const MyDatePicker = ({
   disabled,
 }) => {
   const dispatch = useDispatch();
-  const [indexOfDay, setIndexOfDay] = useState(0);
+  const [indexOfDay, setIndexOfDay] = useState(moment().weekday());
   const [excludeDatetimes, setExcludeDatetimes] = useState([]);
   const DatePickerButton = forwardRef(({ value, onClick }, ref) => (
     <>
@@ -56,8 +56,6 @@ const MyDatePicker = ({
   };
 
   const changeHandler = (date) => {
-    console.log(date);
-    console.log("moment(date).weekday()", moment(date).weekday());
     setIndexOfDay(moment(date).weekday());
     setAppointmentDateTime(date);
     setIsUserSelectedDate(true);
@@ -116,8 +114,6 @@ const MyDatePicker = ({
       minTime={
         disabled
           ? new Date()
-          : new Date().toDateString() === appointmentDateTime.toDateString()
-          ? new Date()
           : new Date(
               `08/05/2022 ${selectedGagrage[0].WorkDays[indexOfDay].StartTime}`
             )
@@ -126,7 +122,11 @@ const MyDatePicker = ({
         disabled
           ? new Date()
           : new Date(
-              `08/05/2022 ${selectedGagrage[0].WorkDays[indexOfDay].EndTime}`
+              moment(
+                `08/05/2022 ${selectedGagrage[0].WorkDays[indexOfDay].EndTime}`
+              )
+                .add(-15, "minutes")
+                .toDate()
             )
       }
       // minTime={new Date(`08/05/2022 07:00`)}
@@ -135,7 +135,7 @@ const MyDatePicker = ({
         disabled
           ? []
           : excludeDatetimes.filter(
-              (e) => moment(e, "DD /MM/YYYY HH:mm").weekday() == indexOfDay
+              (e) => moment(e, "DD/MM/YYYY HH:mm").weekday() == indexOfDay
             )
       }
       customInput={<DatePickerButton />}

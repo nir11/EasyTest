@@ -55,7 +55,8 @@ router.get("/:garage/:year/:month", async (req, res) => {
     const currentMonth = moment().month() + 1;
     if (currentMonth === parseInt(req.params?.month)) {
       let time = moment().startOf("day");
-      while (moment().isAfter(time)) {
+      const nowPlusTwoHours = moment().add(2, "hours");
+      while (nowPlusTwoHours.isAfter(time)) {
         todayPastTime.push(time.clone());
         time = time.add(minutesToAdd, "minutes");
       }
