@@ -79,7 +79,12 @@ const calculateDistanceToGarage = (userLocation, garageLocation) => {
 };
 
 router.get("/free", async (req, res) => {
-  const garages = await Garage.find();
+  let garages = [];
+  if (req.body?.Garages?.length > 0)
+    garages = await Garage.find({ _id: { $in: req.body.Garages } });
+  else {
+    garages = await Garage.find();
+  }
   let allGaragesRecommendedAppointments = [];
 
   await Promise.all(
