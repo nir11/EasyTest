@@ -2,7 +2,7 @@ const router = require("express").Router();
 const Appointment = require("../schemas/appointments/appointments.schema");
 const Garage = require("../schemas/garages/garages.schema");
 const moment = require("moment");
-const { sendEmail } = require("../utils/email");
+const { sendNewAppointmentEmail } = require("../utils/email");
 const geolib = require("geolib");
 
 router.get("/", async (req, res) => {
@@ -11,7 +11,8 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/email", (req, res) => {
-  sendEmail(req.body.Subject, req.body.Body, req.body.Email);
+  e;
+  sendNewAppointmentEmail({});
   res.send("done");
 });
 
@@ -420,8 +421,8 @@ const findFreeAppointmentsInDay = (
 };
 
 router.post("/", async (req, res) => {
-  const isGarageExists = await Garage.findById(req.body.GarageId);
-  if (!isGarageExists) return res.status(400).send("Garage not exists");
+  const garage = await Garage.findById(req.body.GarageId);
+  if (!garage) return res.status(400).send("Garage not exists");
 
   const isAppointmentDatetimeExists = await Appointment.findOne({
     Datetime: req.body.Datetime,
@@ -443,6 +444,7 @@ router.post("/", async (req, res) => {
     Garage: req.body.GarageId,
   });
   await newAppointment.save();
+  sendNewAppointmentEmail(newAppointment, garage);
   res.send({ Appointment: newAppointment });
 });
 
