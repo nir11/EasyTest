@@ -32,18 +32,24 @@ const AppointmentForm = () => {
   const [showSpinner, setShowSpinner] = useState(true);
   const [isUserSelectedDate, setIsUserSelectedDate] = useState(false);
   const [modalShow, setModalShow] = React.useState(false);
+  const [errorMessage, seterrorMessage] = useState("")
+
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const garages = useSelector((state) => state.garagesReducer.garages);
 
   useEffect(() => {
-    dispatch(getGarages()).then((res) => {
-      sessionStorage.setItem(
-        "garages",
-        JSON.stringify(res.garages.sort((a, b) => a.Name.localeCompare(b.Name)))
-      );
-    });
+    dispatch(getGarages())
+      .then((res) => {
+        sessionStorage.setItem(
+          "garages",
+          JSON.stringify(res.garages.sort((a, b) => a.Name.localeCompare(b.Name)))
+        );
+      })
+      .catch(() => {
+        seterrorMessage("אירעה שגיאה!")
+      })
   }, []);
 
   useEffect(() => {
@@ -82,16 +88,22 @@ const AppointmentForm = () => {
           setShowSpinner(false);
           navigate("/appointment-saved");
         })
-        .catch((error) => alert(error));
+        .catch((error) => {
+          seterrorMessage("אירעה שגיאה!")
+          // alert(error)
+        });
     }
   };
 
   return (
     <div>
       {/* <h2>בחירת מוסך</h2> */}
+      {errorMessage != "" && <p className="errror-message" >{errorMessage}</p>}
+
       {!load && (
         <>
           <Form onSubmit={submitForm}>
+
             <label>בחר/י עיר</label>
             <Form.Group className="mb-3" controlId="formBasicCheckbox">
               <select

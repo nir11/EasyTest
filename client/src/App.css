@@ -98,3 +98,8 @@ textarea {
 i {
   cursor: pointer;
 }
+.errror-message {
+  color: #ff3547 !important;
+  font-weight: bold;
+  font-size: 16pt;
+}
