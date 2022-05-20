@@ -144,6 +144,16 @@ const RecommendedAppointment = ({
 
     console.log(id);
 
+    console.log(document.getElementsByClassName(`button${id}`));
+
+    let tagOfParent = document.getElementsByClassName(`button${id}`)[0];
+
+    if (tagOfParent.className.includes("selected-recommended-button"))
+      tagOfParent.classList.remove("selected-recommended-button")
+    else
+      tagOfParent.classList.add("selected-recommended-button")
+
+
     let updatedSelectedGarages = selectedGarages;
 
     if (updatedSelectedGarages.some(u => u == id.toString())) {
@@ -197,27 +207,24 @@ const RecommendedAppointment = ({
             {
               garages.map(garage => {
 
-                let border = "";
-                let color = "";
-                let background = "";
+
                 let classNameOfButton = ""
-                if (selectedGarages.some(s => s == garage._id)) {
+                if (selectedGarages.some(s => s == garage._id))
                   classNameOfButton = "recommended-button selected-recommended-button"
-                }
                 else
                   classNameOfButton = "recommended-button"
 
-                return <div className={classNameOfButton}
+                return <><div
+                  className={`button${garage._id} ${classNameOfButton}`}
                 >
                   <button
-                    style={{ border, color, background }}
+                    // style={{ border, color, background }}
                     key={garage._id}
                     id={garage._id}
                     value={garage.Name}
                     onClick={handleSelectedGarages}>{garage.Name}
 
                   </button>
-                  <i className="fas fa-question-circle" onClick={() => setModalShow(true)} style={{ paddingRight: '10px' }}></i>
 
                   <Modal
                     show={modalShow}
@@ -226,6 +233,9 @@ const RecommendedAppointment = ({
                     garages={garages}
                   />
                 </div>
+                  <i className="fas fa-question-circle" onClick={() => setModalShow(true)}></i>
+
+                </>
               })
             }
 

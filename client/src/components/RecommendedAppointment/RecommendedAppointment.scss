@@ -225,10 +225,6 @@ button.accordion-button {
     border: none;
     color: #fff;
   }
-  i.fas.fa-question-circle:hover {
-    cursor: pointer;
-    opacity: 0.7;
-  }
 }
 
 .recommended-button:hover,
@@ -237,7 +233,11 @@ button.accordion-button {
   button {
     color: black !important;
   }
-  i.fas.fa-question-circle {
-    color: black !important;
-  }
+}
+i.fas.fa-question-circle {
+  margin-left: 10px;
+}
+i.fas.fa-question-circle:hover {
+  cursor: pointer;
+  opacity: 0.7;
 }

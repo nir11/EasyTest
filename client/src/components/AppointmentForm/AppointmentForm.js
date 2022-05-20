@@ -62,7 +62,7 @@ const AppointmentForm = () => {
           LastName: lastName,
           Phone: phone,
           Email: email,
-          TZ: "123",
+          TZ: id,
         },
         CarNumber: carNumber,
         Datetime: appointmentDateTime,
