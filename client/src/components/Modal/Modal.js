@@ -10,9 +10,10 @@ const MyModal = (props) => {
     const [lng, setLng] = useState(null);
     const [zoom, setZoom] = useState(20)
     const [garageName, setGarageName] = useState("")
-    const [selectedGarage, setSelectedGarage] = useState({})
+    const [selectedGarage, setSelectedGarage] = useState([])
 
     useEffect(() => {
+        console.log('in useEffect', props.idOfGarage);
         props.garages.filter(g => g._id == props.idOfGarage).map(s => {
             setLat(Number(s.Latitude))
             setLng(Number(s.Longitude))
@@ -30,34 +31,35 @@ const MyModal = (props) => {
             aria-labelledby="contained-modal-title-vcenter"
             centered
         >
-            <Modal.Header closeButton>{
-                selectedGarage.Name != undefined &&
-                <Modal.Title id="contained-modal-title-vcenter" style={{ color: "black" }}>
-                    <div className="nine">
-                        <h2>
-                            {selectedGarage.Name}
-                            <span>
-                                {selectedGarage.Address}, {selectedGarage.City}
-                            </span>
-                        </h2>
+            <Modal.Header closeButton>
+                {
+                    selectedGarage.Name != undefined &&
+                    <Modal.Title id="contained-modal-title-vcenter" style={{ color: "black" }}>
+                        <div className="nine">
+                            <h2>
+                                {selectedGarage.Name}
+                                <span>
+                                    {selectedGarage.Address}, {selectedGarage.City}
+                                </span>
+                            </h2>
 
-                        <div className='flex' style={{ justifyContent: " space-evenly" }}>
-                            <a
-                                href={`https://www.google.com/search?q=${selectedGarage.Name.replace("", "+")}`}
-                                target="_blank">
-                                <i className="fab fa-google" title={`https://www.google.com/search?q=${selectedGarage.Name.replace("", "+")}`}></i>
-                            </a>
+                            <div className='flex' style={{ justifyContent: " space-evenly" }}>
+                                <a
+                                    href={`https://www.google.com/search?q=${selectedGarage.Name.replace("", "+")}`}
+                                    target="_blank">
+                                    <i className="fab fa-google" title={`https://www.google.com/search?q=${selectedGarage.Name.replace("", "+")}`}></i>
+                                </a>
 
-                            <a
-                                href={`tel:${selectedGarage.Phone}`} >
-                                <i className="fas fa-phone" title={selectedGarage.Phone}></i>
-                            </a>
+                                <a
+                                    href={`tel:${selectedGarage.Phone}`} >
+                                    <i className="fas fa-phone" title={selectedGarage.Phone}></i>
+                                </a>
 
+                            </div>
                         </div>
-                    </div>
 
-                </Modal.Title>
-            }
+                    </Modal.Title>
+                }
 
             </Modal.Header>
             <Modal.Body>
