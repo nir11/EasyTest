@@ -2,7 +2,37 @@ const nodemailer = require("nodemailer");
 const { google } = require("googleapis");
 const OAuth2 = google.auth.OAuth2;
 const env = require("dotenv");
-// const moment = require("moment")
+const moment = require("moment");
+
+exports.sendNewAppointmentEmail = async (appointment, garage) => {
+  console.log({ appointment });
+  const date = moment(appointment.Datetime).format("DD/MM/YYYY");
+  const time = moment(appointment.Datetime).format("HH:mm");
+
+  const subject = `תור לטסט לרכב חדש נקבע עבור ${appointment.User.FirstName} ${appointment.User.LastName} `;
+  const body = `
+  <h3>טסט לרכב חדש נקבע לתאריך ${date} בשעה ${time}</h3>
+  <p style="font-weight: bold;">פרטי המוסך:</p>
+  <div style="margin-right: 5em;">
+    <p>${garage.Name}, ${garage.Address}, ${garage.City}</p>
+    <p>${garage.Phone}</p>
+  </div>
+  <p style="font-weight: bold;">פרטי המזמין:</p>
+  <div style="margin-right: 5em;">
+    <p>שם מלא: ${appointment.User.FirstName} ${appointment.User.LastName}</p>
+    <p>מספר זהות: ${appointment.User.TZ}</p>
+    <p>טלפון: ${appointment.User.Phone}</p>
+    <p>דואר אלקטרוני: ${appointment.User.Email}</p>
+    <p>מספר רכב: ${appointment.CarNumber}</p>
+  </div>
+`;
+  this.sendEmail(
+    subject,
+    body,
+    "nir.almog90@gmail.com"
+    //  appointment.User.Email
+  );
+};
 
 exports.sendEmail = (emailSubject, emailBody, emailAddress) => {
   let html = `
@@ -58,7 +88,8 @@ async function doSendEmail(subject, text, html, to) {
     });
 
     const mailOptions = {
-      from: "משק אלמוג <easytest.israel@gmail.com>",
+      from: "EasyTest <easytest.israel@gmail.com>",
+      replyTo: "noreply.easytest.israel@gmail.com",
       to: to,
       subject: subject,
       //text: text,
