@@ -30,7 +30,7 @@ body {
   ) !important;
   height: max-content;
   min-height: 100vh;
-  width: 100vw;
+  /* width: 100vw; */
 }
 .container,
 .container-lg,
@@ -50,6 +50,9 @@ body {
 }
 
 /* form fields */
+select {
+  width: calc(100% - 2rem) !important;
+}
 .md-form .prefix ~ label {
   margin-left: -10px !important;
 }
@@ -91,4 +94,7 @@ textarea {
   border: 2px solid !important;
   border-radius: 5px !important;
   padding-right: 2% !important;
+}
+i {
+  cursor: pointer;
 }

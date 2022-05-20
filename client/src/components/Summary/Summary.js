@@ -14,22 +14,24 @@ const Summary = () => {
     const navigate = useNavigate()
     const [lat, setLat] = useState(null)
     const [lng, setLng] = useState(null)
+    const [selectedGarage, setSelectedGarage] = useState([])
     const [center, setCenter] = useState({
         lat,
         lng
     })
     const [zoom, setZoom] = useState(7.5)
     useEffect(() => {
-        const selectedGarage = garages.filter(g => g._id == appointment.Garage)
+        const selectedGarageToUpdate = garages.filter(g => g._id == appointment.Garage)
         console.log('selectedGarage', selectedGarage);
+        setSelectedGarage(selectedGarageToUpdate)
 
-        if (selectedGarage.length == 0)
+        if (Object.values(selectedGarageToUpdate).length == 0)
             navigate("/")
 
         else {
 
-            setLat(selectedGarage[0].Latitude)
-            setLng(selectedGarage[0].Longitude)
+            setLat(selectedGarageToUpdate[0].Latitude)
+            setLng(selectedGarageToUpdate[0].Longitude)
 
             setShowSpinner(false)
         }
@@ -70,6 +72,8 @@ const Summary = () => {
                                     <h3 className='text-center'> {moment(appointment.Datetime).format("DD/MM/YYYY HH:mm")}</h3>
                                     <br />
                                     <h4 className='text-center'>{garages.filter(g => g._id == appointment.Garage)[0].Name}</h4>
+                                    <h5 className='text-center'> {selectedGarage[0].Address} | {selectedGarage[0].City}</h5>
+                                    <br />
                                     <div className='row text-center'>
                                         <div className='col-sm-6'>
                                             <p>טלפון: {appointment.User.Phone} </p>
@@ -78,7 +82,7 @@ const Summary = () => {
 
                                         <div className='col-sm-6'>
                                             <p>ת.ז: {appointment.User.TZ} </p>
-                                            <p>מספר מכונית: {appointment.CarNumber} </p>
+                                            <p>מספר רכב: {appointment.CarNumber} </p>
                                         </div>
                                     </div>
 
@@ -97,6 +101,7 @@ const Summary = () => {
                                         idOfGarage={appointment.Garage}
                                         zoom={zoom}
                                         setZoom={setZoom}
+                                        showInfoWindow={false}
                                     />
                                 </MDBCol>
                             </MDBRow>

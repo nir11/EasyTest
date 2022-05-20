@@ -12,8 +12,11 @@ import { useNavigate } from "react-router-dom";
 import Spinner from "../Spinner.js/Spinner";
 
 import "./form.scss";
+import Modal from "../Modal/Modal";
 
 const AppointmentForm = () => {
+
+  //form fields
   const [city, setCity] = useState("");
   const [selectedGagrage, setSelectedGagrage] = useState("");
   const [id, setId] = useState("");
@@ -24,20 +27,27 @@ const AppointmentForm = () => {
   const [carNumber, setCarNumber] = useState("");
   const [isGarageSelected, setIsGarageSelected] = useState(false);
 
-  //form fields
   const [appointmentDateTime, setAppointmentDateTime] = useState(new Date());
+  const [load, setLoad] = useState(true)
   const [showSpinner, setShowSpinner] = useState(true);
   const [isUserSelectedDate, setIsUserSelectedDate] = useState(false);
+  const [modalShow, setModalShow] = React.useState(false);
+
+
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const garages = useSelector((state) => state.garagesReducer.garages);
 
   useEffect(() => {
-    dispatch(getGarages());
+    dispatch(getGarages())
+      .then((res) => {
+        sessionStorage.setItem("garages", JSON.stringify(res.garages.sort((a, b) => a.Name.localeCompare(b.Name))))
+      })
   }, []);
 
   useEffect(() => {
-    if (garages.length > 0) setShowSpinner(false);
+    if (garages.length > 0) setLoad(false);
   }, [garages]);
 
   const submitForm = (e) => {
@@ -71,9 +81,11 @@ const AppointmentForm = () => {
   return (
     <div>
       {/* <h2>בחירת מוסך</h2> */}
-      {!showSpinner ? (
+      {!load && (
         <>
           <Form onSubmit={submitForm}>
+
+
             <label>בחר/י עיר</label>
             <Form.Group className="mb-3" controlId="formBasicCheckbox">
               <select
@@ -89,10 +101,12 @@ const AppointmentForm = () => {
             <Form.Group className="mb-3" controlId="formBasicCheckbox">
               <select
                 disabled={!city}
-                className={"form-control garage-select"}
+                className="form-control"
                 onChange={(e) => {
-                  setSelectedGagrage(e.target.value);
-                  if (!isGarageSelected) setIsGarageSelected(true);
+                  if (e.target.value != 0) {
+                    setSelectedGagrage(e.target.value);
+                    if (!isGarageSelected) setIsGarageSelected(true);
+                  }
                 }}
                 required
               >
@@ -106,7 +120,23 @@ const AppointmentForm = () => {
                     );
                   })}
               </select>
+              {
+                selectedGagrage.length > 0 &&
+                <>
+                  <i className="fas fa-question-circle" onClick={() => setModalShow(true)}></i>
+                  <Modal
+                    show={modalShow}
+                    onHide={() => setModalShow(false)}
+                    idOfGarage={selectedGagrage}
+                    garages={garages}
+                  />
+                </>
+              }
+
+
             </Form.Group>
+
+
             <label>בחר/י מועד תור</label>
             <MyDatePicker
               selectedGagrage={garages.filter((g) => g._id == selectedGagrage)}
@@ -139,8 +169,6 @@ const AppointmentForm = () => {
             </Button>
           </Form>
         </>
-      ) : (
-        <Spinner />
       )}
     </div>
   );

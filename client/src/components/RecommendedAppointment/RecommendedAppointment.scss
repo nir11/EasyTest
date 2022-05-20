@@ -15,6 +15,14 @@ button.accordion-button {
 .accordion > .card:hover {
   background-color: #00000059 !important;
 }
+
+.accordion > .card .card-body {
+  background-color: #00000059 !important;
+
+  form {
+    background-color: none !important;
+  }
+}
 .customToggle-button {
   display: flex;
   justify-content: center;

@@ -17,11 +17,12 @@
 .react-datepicker-wrapper i {
   margin-right: 15px;
 }
-form {
-  background-color: #00000059 !important;
-  padding: 40px;
+.home-form {
+  form {
+    background-color: #00000059;
+    padding: 40px;
+  }
 }
-
 .garage-select {
   &.disabled {
     pointer-events: none;
@@ -30,4 +31,17 @@ form {
 
 .react-datepicker__time-list-item--disabled {
   // display: none;
+  .question-circle-container {
+    position: absolute;
+    left: 0;
+  }
+}
+.home-form {
+  i.fas.fa-question-circle {
+    font-size: 1.5em;
+    margin-top: 5px;
+    position: relative;
+    right: 98% !important;
+    top: -35px !important;
+  }
 }

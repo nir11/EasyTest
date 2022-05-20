@@ -26,14 +26,16 @@ import { useNavigate } from "react-router-dom";
 import Spinner from "../Spinner.js/Spinner";
 import PersonalDetails from "../AppointmentForm/PersonalDetails";
 
+import Modal from "../Modal/Modal";
+
 const RecommendedAppointment = ({
   lat,
   lng,
   isUserAllowedLocation,
   isSharingLocationTested,
 }) => {
-  const dispatch = useDispatch();
-  // const [city, setCity] = useState('')
+
+  //form states
   const [id, setId] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -42,12 +44,17 @@ const RecommendedAppointment = ({
   const [carNumber, setCarNumber] = useState("");
   const [isToggleOpen, setIsToggleOpen] = useState(false);
 
+  //helper fields
+  const [modalShow, setModalShow] = React.useState(false);
   const [showSpinner, setShowSpinner] = useState(true);
-  const appointments = useSelector(
-    (state) => state.appointmentReducer.appointments
-  );
+  const [selectedGarages, setSelectedGarages] = useState([])
   const moment = extendMoment(Moment);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  //redux states
+  const appointments = useSelector((state) => state.appointmentReducer.appointments);
+  const garages = useSelector((state) => state.garagesReducer.garages);
 
   useEffect(() => {
     console.log("lat", lat);
@@ -117,11 +124,51 @@ const RecommendedAppointment = ({
     }
   };
 
+  const handleSelectedGarages = e => {
+    e.preventDefault();
+
+    const { id } = e.target
+
+    console.log(id);
+
+    let updatedSelectedGarages = selectedGarages;
+
+    if (updatedSelectedGarages.some(u => u == id.toString())) {
+      console.log("has");
+      updatedSelectedGarages = updatedSelectedGarages.filter(u => u != id.toString())
+    }
+    else
+      updatedSelectedGarages.push(id.toString())
+
+    console.log('updatedSelectedGarages', updatedSelectedGarages);
+
+    setSelectedGarages(updatedSelectedGarages)
+  }
+
+  const getReccomendedOfSelected = e => {
+    e.preventDefault();
+    console.log(selectedGarages);
+  }
   return (
     <div>
       <div className="row">
-        {!showSpinner ? (
+        {!showSpinner && garages.length > 0 ? (
           <MDBAnimation type="fadeIn" delay="0.5s">
+
+            <div className="flex">
+              {
+                garages.map(garage => {
+                  return <Button
+                    className="btn btn-white"
+                    key={garage._id}
+                    id={garage._id}
+                    value={garage.Name}
+                    onClick={handleSelectedGarages}>{garage.Name}
+                  </Button>
+                })
+              }
+            </div>
+            <Button onClick={getReccomendedOfSelected}>שליחה</Button>
             {appointments.map((appointment, index) => {
               // console.log("appointment.Datetime", appointment.Datetime);
               let dateOfAppointment = new Date(appointment.Datetime);
@@ -162,7 +209,7 @@ const RecommendedAppointment = ({
                 <Accordion
                   key={index}
                   className="accordion-card"
-                  //   defaultActiveKey="1"
+                //   defaultActiveKey="1"
                 >
                   <Card>
                     <Card.Header>
@@ -178,6 +225,17 @@ const RecommendedAppointment = ({
                             <div className="nine">
                               <h2>
                                 {appointment.Name}
+
+
+
+                                <i className="fas fa-question-circle" onClick={() => setModalShow(true)} style={{ fontSize: '20pt', paddingRight: '10px' }}></i>
+                                <Modal
+                                  show={modalShow}
+                                  onHide={() => setModalShow(false)}
+                                  idOfGarage={garages.filter(g => g.Name == appointment.Name)[0]._id}
+                                  garages={garages}
+                                />
+
                                 <span>
                                   {appointment.Address}, {appointment.City}
                                 </span>
@@ -208,6 +266,8 @@ const RecommendedAppointment = ({
                                 >
                                   {isToggleOpen ? "סגור" : "הזמן עכשיו!"}
                                 </CustomToggle>
+
+
                               </div>
                               <div className="customToggle-button col-sm-4"></div>
                             </div>
@@ -263,7 +323,7 @@ const RecommendedAppointment = ({
           <Spinner text="מחשב את התור הקרוב ביותר" />
         )}
       </div>
-    </div>
+    </div >
   );
 };
 

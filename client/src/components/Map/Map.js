@@ -9,7 +9,7 @@ const containerStyle = {
     height: '600px'
 };
 
-const MyMap = ({ lat, setLat, lng, setLng, center, setCenter, idOfGarage, zoom, setZoom }) => {
+const MyMap = ({ lat, setLat, lng, setLng, idOfGarage, zoom, setZoom, showInfoWindow, containerStyleModal }) => {
 
     const [isGargeSelected, setIsGargeSelected] = useState(false)
     const garages = useSelector((state) => state.garagesReducer.garages)
@@ -56,7 +56,7 @@ const MyMap = ({ lat, setLat, lng, setLng, center, setCenter, idOfGarage, zoom, 
     return isLoaded && selectedGarage.length > 0 ?
         (
             <GoogleMap
-                mapContainerStyle={containerStyle}
+                mapContainerStyle={containerStyleModal != undefined ? containerStyleModal : containerStyle}
                 // onLoad={onLoad}
                 onUnmount={onUnmount}
                 dire
@@ -86,8 +86,8 @@ const MyMap = ({ lat, setLat, lng, setLng, center, setCenter, idOfGarage, zoom, 
 
                                 onClick={() => {
                                     // setSelectedATM(result)
-                                    setLat(garage.Latitude)
-                                    setLng(garage.Longitude)
+                                    setLat(Number(garage.Latitude))
+                                    setLng(Number(garage.Longitude))
                                     setIsGargeSelected(true)
                                     setZoom(18)
                                 }}
@@ -100,7 +100,7 @@ const MyMap = ({ lat, setLat, lng, setLng, center, setCenter, idOfGarage, zoom, 
 
 
                             {
-                                isGargeSelected &&
+                                (isGargeSelected || showInfoWindow) &&
                                 <InfoWindow
                                     position={{
                                         // lat: Number(garage.Latitude),

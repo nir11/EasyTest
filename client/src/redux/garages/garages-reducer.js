@@ -1,5 +1,5 @@
 const initialState = {
-    garages: [],
+    garages: JSON.parse(sessionStorage.getItem("garages")) != null ? JSON.parse(sessionStorage.getItem("garages")) : []
 };
 
 export default function garagesReducer(state = initialState, action) {
