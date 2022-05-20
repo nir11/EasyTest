@@ -59,6 +59,12 @@ const RecommendedAppointment = ({
   const appointments = useSelector((state) => state.appointmentReducer.appointments);
   const garages = useSelector((state) => state.garagesReducer.garages);
 
+
+  useEffect(() => {
+    if (garages.length == 0)
+      navigate('/')
+  }, [garages])
+
   useEffect(() => {
     console.log("lat", lat);
     console.log("lng", lng);
@@ -251,7 +257,7 @@ const RecommendedAppointment = ({
       }
       <br />
       <div className="row">
-        {!showSpinner && garages.length > 0 ? (
+        {(!showSpinner && garages.length > 0) ? (
           <div>
 
             {appointments.map((appointment, index) => {
@@ -370,7 +376,7 @@ const RecommendedAppointment = ({
                             setCarNumber={setCarNumber}
                           />
                           <div style={{ textAlign: "center" }}>
-                            <Button type="submit">שלח</Button>
+                            <Button type="submit">שליחה</Button>
                           </div>
                         </Form>
                       </Card.Body>
