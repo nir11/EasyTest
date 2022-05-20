@@ -56,6 +56,11 @@ const MyDatePicker = ({
   };
 
   const changeHandler = (date) => {
+    // const dddd = excludeDatetimes.filter(
+    //   (e) => moment(e, "DD/MM/YYYY HH:mm").date() == moment(date).date()
+    // );
+
+    // console.log({ dddd });
     setIndexOfDay(moment(date).weekday());
     setAppointmentDateTime(date);
     setIsUserSelectedDate(true);
@@ -128,6 +133,8 @@ const MyDatePicker = ({
                 .add(-15, "minutes")
                 .toDate()
             )
+
+        // disabled ? new Date() : new Date(moment().add(-15, "minutes").toDate())
       }
       // minTime={new Date(`08/05/2022 07:00`)}
       // maxTime={new Date(`08/05/2022 16:00`)}
@@ -135,7 +142,9 @@ const MyDatePicker = ({
         disabled
           ? []
           : excludeDatetimes.filter(
-              (e) => moment(e, "DD/MM/YYYY HH:mm").weekday() == indexOfDay
+              (e) =>
+                moment(e, "DD/MM/YYYY HH:mm").date() ==
+                moment(appointmentDateTime).date()
             )
       }
       customInput={<DatePickerButton />}
