@@ -27,12 +27,9 @@ const Summary = () => {
 
         if (Object.values(selectedGarageToUpdate).length == 0)
             navigate("/")
-
         else {
-
             setLat(selectedGarageToUpdate[0].Latitude)
             setLng(selectedGarageToUpdate[0].Longitude)
-
             setShowSpinner(false)
         }
     }, [appointment, garages])
@@ -59,7 +56,7 @@ const Summary = () => {
     return (
         <div className='container-fluid'>
             <div className='container'>
-                <h1>פרטי התור</h1>
+                <h1>תור חדש נשמר בהצלחה!</h1>
 
                 <div>
                     {

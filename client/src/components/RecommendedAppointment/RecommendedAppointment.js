@@ -70,12 +70,20 @@ const RecommendedAppointment = ({
           Latitude: lat,
           Longitude: lng,
         })
-      );
+      )
+        .catch(err => {
+          setShowSpinner(false)
+          alert(err)
+        })
     }
 
     //when didn't allow - get first free Appointment
     else {
-      dispatch(getFirstFreeAppointment({ Garages: selectedGarages }));
+      dispatch(getFirstFreeAppointment({ Garages: selectedGarages }))
+        .catch(err => {
+          setShowSpinner(false)
+          alert(err)
+        })
     }
   }, [isSharingLocationTested]);
 
@@ -154,7 +162,7 @@ const RecommendedAppointment = ({
   }
 
 
-  //Serach after 0.5 second of typing
+  //Serach after 1 second of typing
   const debounceFindFind = _.debounce((updatedSelectedGarages) => {
     setShowSpinner(true)
 
@@ -183,8 +191,8 @@ const RecommendedAppointment = ({
 
       <div className="flex">
         {showGarages &&
-          <div className="flex-column">
-            <h2 className="text-center">סינון תורים קרובים לפי מוסכים</h2>
+          <div className="flex">
+            <p style={{ paddingLeft: "20px", fontSize: "large", margin: "0" }}>סינון לפי מוסך:</p>
 
             {
               garages.map(garage => {
@@ -192,24 +200,32 @@ const RecommendedAppointment = ({
                 let border = "";
                 let color = "";
                 let background = "";
-
+                let classNameOfButton = ""
                 if (selectedGarages.some(s => s == garage._id)) {
-                  border = "3px solid black"
-                  color = 'black';
-                  background = "#c5a9a9"
+                  classNameOfButton = "recommended-button selected-recommended-button"
                 }
                 else
-                  background = "#fff"
+                  classNameOfButton = "recommended-button"
 
-                return <Button
-                  variant="white"
-                  style={{ border, color, background }}
-                  className="btn"
-                  key={garage._id}
-                  id={garage._id}
-                  value={garage.Name}
-                  onClick={handleSelectedGarages}>{garage.Name}
-                </Button>
+                return <div className={classNameOfButton}
+                >
+                  <button
+                    style={{ border, color, background }}
+                    key={garage._id}
+                    id={garage._id}
+                    value={garage.Name}
+                    onClick={handleSelectedGarages}>{garage.Name}
+
+                  </button>
+                  <i className="fas fa-question-circle" onClick={() => setModalShow(true)} style={{ paddingRight: '10px' }}></i>
+
+                  <Modal
+                    show={modalShow}
+                    onHide={() => setModalShow(false)}
+                    idOfGarage={garage._id}
+                    garages={garages}
+                  />
+                </div>
               })
             }
 
@@ -268,25 +284,9 @@ const RecommendedAppointment = ({
                       <div>
                         <div className="row">
                           <div className="col-sm-12">
-                            {/* <Card.Title>{appointment.Name}</Card.Title>
-                            <Card.Subtitle className="mb-2 font-weight-bold">
-
-                              מרחק: {appointment.Distance} ק"מ
-                            </Card.Subtitle> */}
-
                             <div className="nine">
                               <h2>
                                 {appointment.Name}
-
-
-
-                                <i className="fas fa-question-circle" onClick={() => setModalShow(true)} style={{ fontSize: '20pt', paddingRight: '10px' }}></i>
-                                <Modal
-                                  show={modalShow}
-                                  onHide={() => setModalShow(false)}
-                                  idOfGarage={garages.filter(g => g.Name == appointment.Name)[0]._id}
-                                  garages={garages}
-                                />
 
                                 <span>
                                   {appointment.Address}, {appointment.City}
@@ -296,9 +296,12 @@ const RecommendedAppointment = ({
 
                             <div className="row">
                               <div className="col-sm-4">
-                                <div className="mb-2 font-weight-bold">
-                                  מרחק: {appointment.Distance} ק"מ
-                                </div>
+                                {
+                                  isUserAllowedLocation &&
+                                  <div className="mb-2 font-weight-bold">
+                                    מרחק: {appointment.Distance} ק"מ
+                                  </div>
+                                }
                                 יום&nbsp;
                                 {getDayNameInHebrew(
                                   moment(appointment.Datetime).format("dddd")

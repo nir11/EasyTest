@@ -208,3 +208,36 @@ button.accordion-button {
   bottom: 30px;
   transform: rotate(-225deg);
 }
+
+.recommended-button {
+  margin: 0 5px;
+  cursor: pointer;
+  display: block;
+  padding: 1px 7px 3px;
+  text-align: center;
+  border: 1px solid #ddd;
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 5px;
+  button {
+    background: none;
+    border: none;
+    color: #fff;
+  }
+  i.fas.fa-question-circle:hover {
+    cursor: pointer;
+    opacity: 0.7;
+  }
+}
+
+.recommended-button:hover,
+.selected-recommended-button {
+  background-color: #fff;
+  button {
+    color: black !important;
+  }
+  i.fas.fa-question-circle {
+    color: black !important;
+  }
+}
