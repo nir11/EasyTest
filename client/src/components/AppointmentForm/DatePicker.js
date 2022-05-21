@@ -21,7 +21,6 @@ const MyDatePicker = ({
   isUserSelectedDate,
   disabled,
 }) => {
-
   const [indexOfDay, setIndexOfDay] = useState(moment().weekday());
   const [excludeDatetimes, setExcludeDatetimes] = useState([]);
   const [minTime, setMinTime] = useState(new Date());
@@ -64,7 +63,8 @@ const MyDatePicker = ({
       // console.log("found startTime in day");
       setMinTime(
         new Date(
-          `08/05/2022 ${selectedGagrage[0].WorkDays[moment(date).weekday()].StartTime
+          `08/05/2022 ${
+            selectedGagrage[0].WorkDays[moment(date).weekday()].StartTime
           }`
         )
       );
@@ -77,7 +77,8 @@ const MyDatePicker = ({
       // console.log("found endTime in day");
       setMaxTime(
         moment(
-          `08/05/2022 ${selectedGagrage[0].WorkDays[moment(date).weekday()].EndTime
+          `08/05/2022 ${
+            selectedGagrage[0].WorkDays[moment(date).weekday()].EndTime
           }`
         )
           .add(-15, "minutes")
@@ -99,7 +100,6 @@ const MyDatePicker = ({
 
   //when user changed a month
   const changeMonthHandler = (date) => {
-
     const garageId = selectedGagrage[0]._id;
     const month = moment(date).month() + 1;
     const year = moment(date).year();
@@ -108,7 +108,7 @@ const MyDatePicker = ({
       .then((res) => {
         let results = [];
         results = res.ExcludeDatetime.map(
-          (e) => new Date(moment(e, "DD/MM/YYYY HH:mm"))
+          (e) => new Date(moment(e, "DD/MM/YYYY HH:mm").local().format())
         );
         setExcludeDatetimes(results);
       })
@@ -139,10 +139,10 @@ const MyDatePicker = ({
         disabled
           ? []
           : excludeDatetimes.filter(
-            (e) =>
-              moment(e, "DD/MM/YYYY HH:mm").date() ==
-              moment(appointmentDateTime).date()
-          )
+              (e) =>
+                moment(e, "DD/MM/YYYY HH:mm").date() ==
+                moment(appointmentDateTime).date()
+            )
       }
       customInput={<DatePickerButton />}
     />
