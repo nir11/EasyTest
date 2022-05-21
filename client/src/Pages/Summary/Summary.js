@@ -1,30 +1,43 @@
-import { MDBCard, MDBCol, MDBRow } from 'mdbreact';
-import moment from 'moment';
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import Map from '../Map/Map';
-import Spinner from '../Spinner.js/Spinner';
+import { MDBCol, MDBRow } from 'mdbreact';
+import moment from 'moment';
+
+//redux
+import { useSelector } from 'react-redux';
+
+//components
+import Spinner from '../../components/Spinner.js/Spinner';
+import Map from '../../components/Map/Map';
+
+//scss
 import './summary.scss'
+
 const Summary = () => {
 
-    const appointment = useSelector((state) => state.appointmentReducer.appointment)
-    const garages = useSelector((state) => state.garagesReducer.garages)
     const [showSpinner, setShowSpinner] = useState(true)
-    const navigate = useNavigate()
     const [lat, setLat] = useState(null)
     const [lng, setLng] = useState(null)
     const [selectedGarage, setSelectedGarage] = useState([])
+    const [zoom, setZoom] = useState(7.5)
     const [center, setCenter] = useState({
         lat,
         lng
     })
-    const [zoom, setZoom] = useState(7.5)
+
+    //redux fields
+    const appointment = useSelector((state) => state.appointmentReducer.appointment)
+    const garages = useSelector((state) => state.garagesReducer.garages)
+
+    const navigate = useNavigate()
+
+    //when user goes to this page - initial selected garage and lat&lng
     useEffect(() => {
+
         const selectedGarageToUpdate = garages.filter(g => g._id == appointment.Garage)
-        console.log('selectedGarage', selectedGarage);
         setSelectedGarage(selectedGarageToUpdate)
 
+        //if user load this page directly - go to home page
         if (Object.values(selectedGarageToUpdate).length == 0)
             navigate("/")
         else {
@@ -34,43 +47,25 @@ const Summary = () => {
         }
     }, [appointment, garages])
 
-
-
-
-    // const appointment = {
-    //     "_id": "627e283973cac6b4c2a19414",
-    //     "User": {
-    //         "FirstName": "Nir",
-    //         "LastName": "Almog",
-    //         "Phone": "0502820404",
-    //         "Email": "nir.almog90@gmail.com",
-    //         "TZ": "1212121212",
-    //         "_id": { "$oid": "627e283973cac6b4c2a19415" }
-    //     },
-    //     "CarNumber": "80269451",
-    //     "Datetime": "2022-05-13T08:15:00.466+00:00",
-    //     "Garage": "627e21090e5f3b0a0df6d274",
-    //     "__v": 0
-    // }
-
     return (
         <div className='container-fluid'>
             <div className='container'>
+
                 <h1>תור חדש נשמר בהצלחה!</h1>
 
                 <div>
                     {
                         !showSpinner ?
                             <MDBRow>
-
                                 <MDBCol sm='6' className="summary-card">
-
                                     <h2 className='text-center'>{appointment.User.FirstName} {appointment.User.LastName}</h2>
                                     <h3 className='text-center'> {moment(appointment.Datetime).format("DD/MM/YYYY HH:mm")}</h3>
                                     <br />
+
                                     <h4 className='text-center'>{garages.filter(g => g._id == appointment.Garage)[0].Name}</h4>
                                     <h5 className='text-center'> {selectedGarage[0].Address} | {selectedGarage[0].City}</h5>
                                     <br />
+
                                     <div className='row text-center'>
                                         <div className='col-sm-6'>
                                             <p>טלפון: {appointment.User.Phone} </p>
@@ -82,9 +77,6 @@ const Summary = () => {
                                             <p>מספר רכב: {appointment.CarNumber} </p>
                                         </div>
                                     </div>
-
-
-
                                 </MDBCol>
 
                                 <MDBCol sm='6' className='flex map-container' >
@@ -102,7 +94,6 @@ const Summary = () => {
                                     />
                                 </MDBCol>
                             </MDBRow>
-
                             : <Spinner />
                     }
 
@@ -111,5 +102,4 @@ const Summary = () => {
         </div >
     )
 }
-
 export default Summary

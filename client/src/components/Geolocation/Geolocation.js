@@ -9,7 +9,6 @@ function useForceUpdate() {
 const Geolocation = ({
   setLat,
   setLng,
-  isUserAllowedLocation,
   setIsUserAllowedLocation,
   setIsSharingLocationTested,
 }) => {
@@ -22,7 +21,6 @@ const Geolocation = ({
   }, []);
 
   const geoFindMe = async () => {
-    console.log("go");
     const status = document.querySelector("#status");
     const mapLink = document.querySelector("#map-link");
 

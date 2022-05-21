@@ -1,11 +1,14 @@
-import moment from "moment";
 import React, { forwardRef, useEffect, useState } from "react";
 import DatePicker, { registerLocale } from "react-datepicker";
+import moment from "moment";
+
+//css
 import "react-datepicker/dist/react-datepicker.css";
-import { useDispatch } from "react-redux";
-//redux
-import { getAppointments } from "../../redux/appointment/appointment-actions";
 import "./form.scss";
+
+//redux
+import { useDispatch } from "react-redux";
+import { getAppointments } from "../../redux/appointment/appointment-actions";
 
 import he from "date-fns/locale/he";
 registerLocale("he", he);
@@ -18,12 +21,14 @@ const MyDatePicker = ({
   isUserSelectedDate,
   disabled,
 }) => {
-  const dispatch = useDispatch();
+
   const [indexOfDay, setIndexOfDay] = useState(moment().weekday());
   const [excludeDatetimes, setExcludeDatetimes] = useState([]);
   const [minTime, setMinTime] = useState(new Date());
   const [maxTime, setMaxTime] = useState(new Date());
   const [isInit, setIsInit] = useState(false);
+
+  const dispatch = useDispatch();
 
   const DatePickerButton = forwardRef(({ value, onClick }, ref) => (
     <>
@@ -38,40 +43,28 @@ const MyDatePicker = ({
       </button>
     </>
   ));
-  // const appointmentTimes = useSelector(
-  //   (state) => state.appointmentReducer.appointmentTimes
-  // );
 
-  // let handleColor = (time) => {
-  //     return time.getHours() > 7.5 && time.getHours() < 16.5 ? "text-error" : "text-success";
-  // };
-
-  useEffect(() => {
-    console.log("STARTTTTTTTTTTTTTTTT");
-  }, []);
-
+  //when user selected a garage - initial datepicker input
   useEffect(() => {
     if (!disabled) {
       const today = new Date();
       changeMonthHandler(today);
-      // setIndexOfDay(moment(today).weekday());
     }
   }, [selectedGagrage]);
 
+  //check if chosen day is part of avaiable days
   const isWeekday = (date) => {
     const day = date.getDay() + 1;
     return selectedGagrage[0].WorkDays.some((w) => w.DayIndex == day);
   };
 
+  //when user selcted a day - update available times (min & max)
   const updateMinMaxDayTimes = (date) => {
-    // console.log("is Init", isInit);
-    // console.log("MIN MAX");
     if (selectedGagrage[0].WorkDays[moment(date).weekday()]?.StartTime) {
       // console.log("found startTime in day");
       setMinTime(
         new Date(
-          `08/05/2022 ${
-            selectedGagrage[0].WorkDays[moment(date).weekday()].StartTime
+          `08/05/2022 ${selectedGagrage[0].WorkDays[moment(date).weekday()].StartTime
           }`
         )
       );
@@ -84,8 +77,7 @@ const MyDatePicker = ({
       // console.log("found endTime in day");
       setMaxTime(
         moment(
-          `08/05/2022 ${
-            selectedGagrage[0].WorkDays[moment(date).weekday()].EndTime
+          `08/05/2022 ${selectedGagrage[0].WorkDays[moment(date).weekday()].EndTime
           }`
         )
           .add(-15, "minutes")
@@ -97,6 +89,7 @@ const MyDatePicker = ({
     }
   };
 
+  //when user selected a day
   const changeHandler = (date) => {
     updateMinMaxDayTimes(date);
     setIndexOfDay(moment(date).weekday());
@@ -104,17 +97,15 @@ const MyDatePicker = ({
     setIsUserSelectedDate(true);
   };
 
+  //when user changed a month
   const changeMonthHandler = (date) => {
-    console.log({ indexOfDay });
-    console.log("date", date);
-    console.log({ selectedGagrage });
+
     const garageId = selectedGagrage[0]._id;
     const month = moment(date).month() + 1;
     const year = moment(date).year();
 
     dispatch(getAppointments(garageId, year, month))
       .then((res) => {
-        console.log("res", res);
         let results = [];
         results = res.ExcludeDatetime.map(
           (e) => new Date(moment(e, "DD/MM/YYYY HH:mm"))
@@ -123,17 +114,6 @@ const MyDatePicker = ({
       })
       .catch((error) => alert(error));
   };
-
-  // useEffect(() => {
-  //     console.log('excludeDatetimes 0', moment(excludeDatetimes[0], "DD/MM/YYYY HH:mm").weekday());
-  //     console.log('indexOfDay', indexOfDay);
-  //     console.log(excludeDatetimes.filter(e => moment(e, "DD/MM/YYYY HH:mm").weekday() == indexOfDay));
-
-  // }, [excludeDatetimes, indexOfDay])
-
-  // useEffect(() => {
-  //     console.log("selectedGagrage", selectedGagrage);
-  // }, [selectedGagrage])
 
   return (
     <DatePicker
@@ -144,49 +124,27 @@ const MyDatePicker = ({
         }
       }}
       locale="he"
-      // className="form-control"
-      // placeholderText="בחר/י תאריך פנוי"
       selected={appointmentDateTime}
       dateFormat="HH:mm  dd/MM/yyyy"
-      // timeClassName={handleColor}
       onChange={changeHandler}
       onMonthChange={changeMonthHandler}
-      // onYearChange
-      // onMonthChange
-      // shouldCloseOnSelect={false}
       timeFormat="HH:mm"
       showTimeSelect
       filterDate={isWeekday}
       timeIntervals={15}
       minDate={new Date()}
-      // minDate={moment().toDate()}
-      minTime={
-        // disabled
-        //   ? new Date()
-        //   : new Date(
-        //       `08/05/2022 ${selectedGagrage[0].WorkDays[indexOfDay].StartTime}`
-        //     )
-        disabled ? new Date() : minTime
-      }
-      maxTime={
-        disabled ? new Date() : maxTime
-
-        // disabled ? new Date() : new Date(moment().add(-15, "minutes").toDate())
-      }
-      // minTime={new Date(`08/05/2022 07:00`)}
-      // maxTime={new Date(`08/05/2022 16:00`)}
+      minTime={disabled ? new Date() : minTime}
+      maxTime={disabled ? new Date() : maxTime}
       excludeTimes={
         disabled
           ? []
           : excludeDatetimes.filter(
-              (e) =>
-                moment(e, "DD/MM/YYYY HH:mm").date() ==
-                moment(appointmentDateTime).date()
-            )
+            (e) =>
+              moment(e, "DD/MM/YYYY HH:mm").date() ==
+              moment(appointmentDateTime).date()
+          )
       }
       customInput={<DatePickerButton />}
-
-      // excludeTimes={appointmentTimes.map(a => moment(a, 'YYYY-MM-DD')._i)}
     />
   );
 };

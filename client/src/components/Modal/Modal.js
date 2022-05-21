@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Modal } from 'react-bootstrap'
+
+//components
 import Map from '../Map/Map'
+
+//scss
 import './modal.scss'
 
 const MyModal = (props) => {
@@ -12,8 +16,8 @@ const MyModal = (props) => {
     const [garageName, setGarageName] = useState("")
     const [selectedGarage, setSelectedGarage] = useState([])
 
+    //when user selected a garage - initial map fields of it
     useEffect(() => {
-        console.log('in useEffect', props.idOfGarage);
         props.garages.filter(g => g._id == props.idOfGarage).map(s => {
             setLat(Number(s.Latitude))
             setLng(Number(s.Longitude))
@@ -21,8 +25,6 @@ const MyModal = (props) => {
             setSelectedGarage(s)
         })
     }, [props.garages, props.idOfGarage])
-
-
 
     return (
         <Modal
@@ -35,6 +37,7 @@ const MyModal = (props) => {
                 {
                     selectedGarage.Name != undefined &&
                     <Modal.Title id="contained-modal-title-vcenter" style={{ color: "black" }}>
+
                         <div className="nine">
                             <h2>
                                 {selectedGarage.Name}
@@ -80,7 +83,6 @@ const MyModal = (props) => {
                         }}
                     />
                 </div>
-
 
             </Modal.Body>
             <Modal.Footer>

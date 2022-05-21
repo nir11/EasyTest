@@ -1,24 +1,27 @@
 import React, { useEffect, useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { getGarages } from "../../redux/garages/garages-actions";
-import MyDatePicker from "./DatePicker";
-import PersonalDetails from "./PersonalDetails";
+import { useNavigate } from "react-router-dom"
 import moment from "moment";
 
-import { MDBInput } from "mdbreact";
-
+//redux
 import { createAppointment } from "../../redux/appointment/appointment-actions";
-import { useNavigate } from "react-router-dom";
-import Spinner from "../Spinner.js/Spinner";
+import { getGarages } from "../../redux/garages/garages-actions";
 
-import "./form.scss";
+//components
+import Spinner from "../Spinner.js/Spinner";
+import MyDatePicker from "./DatePicker";
+import PersonalDetails from "./PersonalDetails";
 import Modal from "../Modal/Modal";
 
+//scss
+import "./form.scss";
+
 const AppointmentForm = () => {
+
   //form fields
   const [city, setCity] = useState("");
-  const [selectedGagrage, setSelectedGagrage] = useState("");
+  const [selectedGagrageId, setSelectedGagrageId] = useState("");
   const [id, setId] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -27,18 +30,20 @@ const AppointmentForm = () => {
   const [carNumber, setCarNumber] = useState("");
   const [isGarageSelected, setIsGarageSelected] = useState(false);
 
+  //helper fields
   const [appointmentDateTime, setAppointmentDateTime] = useState(new Date());
   const [load, setLoad] = useState(true);
-  const [showSpinner, setShowSpinner] = useState(true);
+  const [showSpinner, setShowSpinner] = useState(false);
   const [isUserSelectedDate, setIsUserSelectedDate] = useState(false);
   const [modalShow, setModalShow] = React.useState(false);
-  const [errorMessage, seterrorMessage] = useState("")
-
+  const [errorMessage, setErrorMessage] = useState("")
+  const [selectedGagrage, setSelectedGagrage] = useState([]);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const garages = useSelector((state) => state.garagesReducer.garages);
 
+  //load garaged when page rendered
   useEffect(() => {
     dispatch(getGarages())
       .then((res) => {
@@ -48,10 +53,11 @@ const AppointmentForm = () => {
         );
       })
       .catch(() => {
-        seterrorMessage("אירעה שגיאה!")
+        setErrorMessage("אירעה שגיאה!")
       })
   }, []);
 
+  //get garages from serevr and remove loading state
   useEffect(() => {
     if (garages.length > 0) setLoad(false);
   }, [garages]);
@@ -80,7 +86,7 @@ const AppointmentForm = () => {
         },
         CarNumber: carNumber,
         Datetime: appointmentDateTime,
-        GarageId: selectedGagrage,
+        GarageId: selectedGagrageId,
       };
       // console.log("data", data);
       dispatch(createAppointment(data))
@@ -89,18 +95,16 @@ const AppointmentForm = () => {
           navigate("/appointment-saved");
         })
         .catch((error) => {
-          seterrorMessage("אירעה שגיאה!")
-          // alert(error)
+          setErrorMessage("אירעה שגיאה!")
         });
     }
   };
 
   return (
     <div>
-      {/* <h2>בחירת מוסך</h2> */}
       {errorMessage != "" && <p className="errror-message" >{errorMessage}</p>}
 
-      {!load && (
+      {(!load && !showSpinner) ? (
         <>
           <Form onSubmit={submitForm}>
 
@@ -115,6 +119,7 @@ const AppointmentForm = () => {
                 <option value={"ירושלים"}>ירושלים</option>
               </select>
             </Form.Group>
+
             <label>בחר/י מוסך</label>
             <Form.Group className="mb-3" controlId="formBasicCheckbox">
               <select
@@ -122,7 +127,8 @@ const AppointmentForm = () => {
                 className="form-control"
                 onChange={(e) => {
                   if (e.target.value != 0) {
-                    setSelectedGagrage(e.target.value);
+                    setSelectedGagrageId(e.target.value);
+                    setSelectedGagrage(garages.filter((g) => g._id == e.target.value))
                     if (!isGarageSelected) setIsGarageSelected(true);
                   }
                 }}
@@ -138,7 +144,7 @@ const AppointmentForm = () => {
                     );
                   })}
               </select>
-              {selectedGagrage.length > 0 && (
+              {selectedGagrageId.length > 0 && (
                 <>
                   <i
                     className="fas fa-question-circle"
@@ -147,7 +153,7 @@ const AppointmentForm = () => {
                   <Modal
                     show={modalShow}
                     onHide={() => setModalShow(false)}
-                    idOfGarage={selectedGagrage}
+                    idOfGarage={selectedGagrageId}
                     garages={garages}
                   />
                 </>
@@ -156,16 +162,16 @@ const AppointmentForm = () => {
 
             <label>בחר/י מועד תור</label>
             <MyDatePicker
-              selectedGagrage={garages.filter((g) => g._id == selectedGagrage)}
+              selectedGagrage={selectedGagrage}
               setAppointmentDateTime={setAppointmentDateTime}
               appointmentDateTime={appointmentDateTime}
               setIsUserSelectedDate={setIsUserSelectedDate}
               isUserSelectedDate={isUserSelectedDate}
               disabled={!isGarageSelected}
             />
-            {/* <br /> <br /> */}
-            {/* <p>{`${appointmentDateTime}`}</p> */}
+
             <hr />
+
             <PersonalDetails
               id={id}
               setId={setId}
@@ -184,9 +190,12 @@ const AppointmentForm = () => {
             <Button variant="white" type="submit">
               סיום
             </Button>
+
           </Form>
         </>
-      )}
+      )
+        : <Spinner />
+      }
     </div>
   );
 };

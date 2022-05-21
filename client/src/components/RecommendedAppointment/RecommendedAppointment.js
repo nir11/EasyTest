@@ -1,4 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import _ from "lodash";
+import moment from "moment";
+import { MDBAnimation } from "mdbreact";
+import { Card, Accordion, Button, Form, useAccordionButton, } from "react-bootstrap";
 
 //redux
 import { useDispatch, useSelector } from "react-redux";
@@ -8,26 +13,13 @@ import {
   getRecommendedAppointments,
 } from "../../redux/appointment/appointment-actions";
 
-import Moment from "moment";
-import { extendMoment } from "moment-range";
-
-import { MDBAnimation } from "mdbreact";
-import {
-  Card,
-  Accordion,
-  Button,
-  Form,
-  useAccordionButton,
-} from "react-bootstrap";
-
+//scss
 import "./RecommendedAppointment.scss";
 
-import { useNavigate } from "react-router-dom";
+//components
 import Spinner from "../Spinner.js/Spinner";
 import PersonalDetails from "../AppointmentForm/PersonalDetails";
-
 import Modal from "../Modal/Modal";
-import _ from "lodash";
 
 const RecommendedAppointment = ({
   lat,
@@ -36,7 +28,7 @@ const RecommendedAppointment = ({
   isSharingLocationTested,
 }) => {
 
-  //form states
+  //form fields
   const [id, setId] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -53,24 +45,21 @@ const RecommendedAppointment = ({
   const [selectedGarages, setSelectedGarages] = useState([])
   const [selectedGarage, setSelectedGarage] = useState([])
 
-  const moment = extendMoment(Moment);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  //redux states
+  //redux fields
   const appointments = useSelector((state) => state.appointmentReducer.appointments);
   const garages = useSelector((state) => state.garagesReducer.garages);
 
 
+  //when user goes directly to this page - redircet to home page
   useEffect(() => {
     if (garages.length == 0)
       navigate('/')
   }, [garages])
 
   useEffect(() => {
-    console.log("lat", lat);
-    console.log("lng", lng);
-    console.log({ isUserAllowedLocation });
 
     //when user allowed location on browser - get Appointments based on location
     if (isUserAllowedLocation) {
@@ -81,7 +70,6 @@ const RecommendedAppointment = ({
         })
       )
         .catch(err => {
-          // setShowSpinner(false)
           alert(err)
         })
     }
@@ -90,12 +78,12 @@ const RecommendedAppointment = ({
     else {
       dispatch(getFirstFreeAppointment({ Garages: selectedGarages }))
         .catch(err => {
-          // setShowSpinner(false)
           alert(err)
         })
     }
   }, [isSharingLocationTested]);
 
+  //when recommended appointments returns from server
   useEffect(() => {
     if (appointments.length) {
       setShowSpinner(false)
@@ -108,7 +96,6 @@ const RecommendedAppointment = ({
     setShowSpinner(true)
     setIsUserSubmittedForm(true)
 
-    // console.log(id);
     const data = {
       User: {
         FirstName: firstName,
@@ -160,33 +147,31 @@ const RecommendedAppointment = ({
     e.preventDefault();
     const { id } = e.target
 
-    //html button tag
+    //html button tag of selected garage
     let tagOfParent = document.getElementsByClassName(`button${id}`)[0];
 
-    //when button was unmarked - mark it
+    //when button was marked - unmarked it
     if (tagOfParent.className.includes("selected-recommended-button"))
       tagOfParent.classList.remove("selected-recommended-button")
-    //when button was marked - umnarked it
+    //when button was unmarked - marked it
     else
       tagOfParent.classList.add("selected-recommended-button")
 
     let updatedSelectedGarages = selectedGarages;
 
-    //when user marked a grarage name
+    //when user unmarked a grarage name - remove it from array
     if (updatedSelectedGarages.some(u => u == id.toString()))
       updatedSelectedGarages = updatedSelectedGarages.filter(u => u != id.toString())
-    //when user unmarked a grarage name 
+    //when user marked a grarage name - add it to array
     else
       updatedSelectedGarages.push(id.toString())
 
     setSelectedGarages(updatedSelectedGarages)
-
     debounceFindFind(updatedSelectedGarages)
 
   }
 
-
-  //Serach after 1 second of typing
+  //get recommended after 1 second of clicking on buttons
   const debounceFindFind = _.debounce((updatedSelectedGarages) => {
     setShowSpinner(true)
 
@@ -200,9 +185,7 @@ const RecommendedAppointment = ({
         })
       )
         .then(() => setShowSpinner(false))
-
     }
-
     // when didn't allow - get first free Appointment
     else {
       dispatch(getFirstFreeAppointment({ Garages: updatedSelectedGarages }))
@@ -226,7 +209,6 @@ const RecommendedAppointment = ({
             {
               garages.map(garage => {
 
-
                 let classNameOfButton = ""
                 if (selectedGarages.some(s => s == garage._id))
                   classNameOfButton = "recommended-button selected-recommended-button"
@@ -234,22 +216,17 @@ const RecommendedAppointment = ({
                   classNameOfButton = "recommended-button"
 
                 return <React.Fragment key={garage._id}>
+                  <div className={`button${garage._id} ${classNameOfButton}`}>
 
-                  <div
-                    className={`button${garage._id} ${classNameOfButton}`}
-                  >
                     <button
                       // style={{ border, color, background }}
                       id={garage._id}
                       value={garage.Name}
                       onClick={handleSelectedGarages}>{garage.Name}
-
                     </button>
-
 
                   </div>
                   <i className="fas fa-question-circle" onClick={() => handleModalShow(garage._id)}></i>
-
                 </React.Fragment>
               })
             }
@@ -257,7 +234,6 @@ const RecommendedAppointment = ({
           </div>
         }
       </div>
-      {console.log('selectedGarage', selectedGarage)}
       {
         modalShow &&
         <Modal
@@ -273,14 +249,13 @@ const RecommendedAppointment = ({
           <div>
 
             {appointments.map((appointment, index) => {
-              // console.log("appointment.Datetime", appointment.Datetime);
+
               let dateOfAppointment = new Date(appointment.Datetime);
               let todayDate = new Date();
-              let difference =
-                dateOfAppointment.getTime() - todayDate.getTime();
+              let difference = dateOfAppointment.getTime() - todayDate.getTime();
               let TotalDays = Math.ceil(difference / (1000 * 3600 * 24)) - 1;
-              // console.log({ TotalDays });
               let daysLeftText = null;
+
               switch (TotalDays) {
                 case 0:
                   if (dateOfAppointment.getDate() === todayDate.getDate()) {
@@ -312,7 +287,6 @@ const RecommendedAppointment = ({
                 <Accordion
                   key={index}
                   className="accordion-card"
-                //   defaultActiveKey="1"
                 >
                   <Card>
                     <Card.Header>
@@ -322,7 +296,6 @@ const RecommendedAppointment = ({
                             <div className="nine">
                               <h2>
                                 {appointment.Name}
-
                                 <span>
                                   {appointment.Address}, {appointment.City}
                                 </span>
@@ -356,10 +329,10 @@ const RecommendedAppointment = ({
                                 >
                                   {isToggleOpen ? "סגור" : "הזמן עכשיו!"}
                                 </CustomToggle>
-
-
                               </div>
+
                               <div className="customToggle-button col-sm-4"></div>
+
                             </div>
                           </div>
                         </div>
@@ -373,6 +346,7 @@ const RecommendedAppointment = ({
                     <Accordion.Collapse eventKey="0">
                       <Card.Body>
                         <Form onSubmit={(e) => submitForm(e, appointment)}>
+
                           <PersonalDetails
                             id={id}
                             setId={setId}
@@ -387,22 +361,15 @@ const RecommendedAppointment = ({
                             carNumber={carNumber}
                             setCarNumber={setCarNumber}
                           />
+
                           <div style={{ textAlign: "center" }}>
                             <Button type="submit">שליחה</Button>
                           </div>
+
                         </Form>
                       </Card.Body>
                     </Accordion.Collapse>
                   </Card>
-                  {/* <Accordion.Item eventKey="0">
-                    <Accordion.Header>
-                  
-                    </Accordion.Header>
-                    <Accordion.Body>
-                     
-                      </Form>
-                    </Accordion.Body>
-                  </Accordion.Item> */}
                 </Accordion>
               );
             })}
@@ -427,7 +394,6 @@ function CustomToggle({ children, eventKey, setIsToggleOpen }) {
   return (
     <button
       type="button"
-      //   style={{ backgroundColor: "pink" }}
       onClick={decoratedOnClick}
     >
       {children}

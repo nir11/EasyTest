@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { GoogleMap, InfoWindow, Marker, useJsApiLoader } from '@react-google-maps/api';
 import { useSelector } from 'react-redux';
-
 import './map.css'
 
 const containerStyle = {
@@ -15,20 +14,18 @@ const MyMap = ({ lat, setLat, lng, setLng, idOfGarage, zoom, setZoom, showInfoWi
     const [showInfoWindowState, setShowInfoWindowState] = useState(false)
     const garages = useSelector((state) => state.garagesReducer.garages)
     const [selectedGarage, setSelectedGarage] = useState([])
+    const [map, setMap] = useState(null)
 
+    //initial map by garage selected
     useEffect(() => {
-        console.log('garages', garages);
-
         let selectedGarageToUpdate = garages.filter(g => g._id == idOfGarage)
         setLat(Number(selectedGarageToUpdate[0].Latitude))
         setLng(Number(selectedGarageToUpdate[0].Longitude))
         setZoom(12)
         setSelectedGarage(selectedGarageToUpdate)
-
-
-
     }, [idOfGarage])
 
+    //show/ hide info window
     useEffect(() => {
         if (showInfoWindow)
             setShowInfoWindowState(true)
@@ -36,15 +33,12 @@ const MyMap = ({ lat, setLat, lng, setLng, idOfGarage, zoom, setZoom, showInfoWi
             setShowInfoWindowState(false)
     }, [showInfoWindow])
 
-    // useEffect(() => {
-    //     setZoom(7.5)
-    // }, [map])
+    //initial google map keys
     const { isLoaded } = useJsApiLoader({
         id: 'google-map-script',
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_KEY
     })
 
-    const [map, setMap] = React.useState(null)
 
     // const onLoad = React.useCallback(function callback(map) {
     //     const bounds = new window.google.maps.LatLngBounds(Number(center));
@@ -52,14 +46,10 @@ const MyMap = ({ lat, setLat, lng, setLng, idOfGarage, zoom, setZoom, showInfoWi
     //     setMap(map)
     // }, [])
 
+    //clear map when compnents unmounted
     const onUnmount = React.useCallback(function callback(map) {
         setMap(null)
     }, [])
-
-    // useEffect(() => {
-    //     console.log("lng", lng);
-    //     console.log("lat", lat);
-    // }, [lat, lng])
 
     return isLoaded && selectedGarage.length > 0 ?
         (
@@ -81,7 +71,6 @@ const MyMap = ({ lat, setLat, lng, setLng, idOfGarage, zoom, setZoom, showInfoWi
                         // console.log('garage', garage);
 
                         return <React.Fragment key={garage._id} >
-
 
                             <Marker
                                 animation={window.google.maps.Animation.DROP}
@@ -107,7 +96,6 @@ const MyMap = ({ lat, setLat, lng, setLng, idOfGarage, zoom, setZoom, showInfoWi
                             // }}
                             />
 
-
                             {
                                 (isGargeSelected || showInfoWindowState) &&
                                 <InfoWindow
@@ -121,7 +109,6 @@ const MyMap = ({ lat, setLat, lng, setLng, idOfGarage, zoom, setZoom, showInfoWi
                                         setIsGargeSelected(false)
                                         setShowInfoWindowState(false)
                                     }}
-
                                 >
                                     <div className='infoWindow'>
 
@@ -153,7 +140,6 @@ const MyMap = ({ lat, setLat, lng, setLng, idOfGarage, zoom, setZoom, showInfoWi
 
                                 </InfoWindow>
                             }
-
                         </React.Fragment>
 
                     })
@@ -164,5 +150,4 @@ const MyMap = ({ lat, setLat, lng, setLng, idOfGarage, zoom, setZoom, showInfoWi
         ) : <>
         </>
 }
-
 export default React.memo(MyMap)
