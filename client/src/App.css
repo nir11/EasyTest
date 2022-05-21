@@ -103,3 +103,19 @@ i {
   font-weight: bold;
   font-size: 16pt;
 }
+
+@media only screen and (max-width: 800px) {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    font-size: large !important;
+  }
+  .container {
+    padding: 0 !important;
+  }
+  .flex {
+    flex-direction: column;
+  }
+}

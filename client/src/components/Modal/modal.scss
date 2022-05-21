@@ -57,3 +57,13 @@ button.btn-close {
 .modal-footer {
   justify-content: center !important;
 }
+@media only screen and (max-width: 800px) {
+  .modal-header {
+    .nine h2 {
+      width: 100% !important;
+    }
+    .flex {
+      flex-direction: row !important;
+    }
+  }
+}

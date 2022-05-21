@@ -17,3 +17,26 @@
   font-weight: bold;
   font-size: xxx-large;
 }
+@media only screen and (max-width: 800px) {
+  .nav {
+    padding-right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: self-end;
+  }
+  .nav h2 {
+    /* position: relative; */
+    top: 15px;
+    left: 50%;
+    color: #fff;
+    text-align: center;
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%);
+
+    font-size: large;
+  }
+  .nav a {
+    color: #fff !important;
+    font-size: small;
+  }
+}

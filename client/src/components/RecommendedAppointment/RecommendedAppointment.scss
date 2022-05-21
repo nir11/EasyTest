@@ -241,3 +241,19 @@ i.fas.fa-question-circle:hover {
   cursor: pointer;
   opacity: 0.7;
 }
+@media only screen and (max-width: 800px) {
+  .recommended-appointment-wrapper {
+    .flex {
+      .flex {
+        flex-direction: row !important;
+      }
+    }
+    .recommended-button {
+      width: 150px;
+      margin: 5px;
+    }
+  }
+  .card {
+    width: 100% !important;
+  }
+}

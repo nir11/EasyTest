@@ -44,3 +44,16 @@
     left: 0;
   }
 }
+
+@media only screen and (max-width: 800px) {
+  .home-form {
+    margin: 0 !important;
+
+    form {
+      padding: 5px !important;
+    }
+    i.fas.fa-question-circle {
+      right: 92% !important;
+    }
+  }
+}
