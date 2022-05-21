@@ -332,7 +332,7 @@ const calculateBestRecommendedAppointments = (garagesRecs) => {
   // console.log({ secondBestAppointment });
   // if (bestAppointment) result.push(bestAppointment);
   // if (secondBestAppointment) result.push(secondBestAppointment);
-  console.log({ scores });
+  // console.log({ scores });
   return result;
 };
 
