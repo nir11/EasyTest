@@ -12,6 +12,7 @@ const containerStyle = {
 const MyMap = ({ lat, setLat, lng, setLng, idOfGarage, zoom, setZoom, showInfoWindow, containerStyleModal }) => {
 
     const [isGargeSelected, setIsGargeSelected] = useState(false)
+    const [showInfoWindowState, setShowInfoWindowState] = useState(false)
     const garages = useSelector((state) => state.garagesReducer.garages)
     const [selectedGarage, setSelectedGarage] = useState([])
 
@@ -27,6 +28,13 @@ const MyMap = ({ lat, setLat, lng, setLng, idOfGarage, zoom, setZoom, showInfoWi
 
 
     }, [idOfGarage])
+
+    useEffect(() => {
+        if (showInfoWindow)
+            setShowInfoWindowState(true)
+        else
+            setShowInfoWindowState(false)
+    }, [showInfoWindow])
 
     // useEffect(() => {
     //     setZoom(7.5)
@@ -90,6 +98,7 @@ const MyMap = ({ lat, setLat, lng, setLng, idOfGarage, zoom, setZoom, showInfoWi
                                     setLng(Number(garage.Longitude))
                                     setIsGargeSelected(true)
                                     setZoom(18)
+                                    setShowInfoWindowState(true)
                                 }}
 
                             // icon={{
@@ -100,7 +109,7 @@ const MyMap = ({ lat, setLat, lng, setLng, idOfGarage, zoom, setZoom, showInfoWi
 
 
                             {
-                                (isGargeSelected || showInfoWindow) &&
+                                (isGargeSelected || showInfoWindowState) &&
                                 <InfoWindow
                                     position={{
                                         // lat: Number(garage.Latitude),
@@ -110,6 +119,7 @@ const MyMap = ({ lat, setLat, lng, setLng, idOfGarage, zoom, setZoom, showInfoWi
                                     }}
                                     onCloseClick={() => {
                                         setIsGargeSelected(false)
+                                        setShowInfoWindowState(false)
                                     }}
 
                                 >

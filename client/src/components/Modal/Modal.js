@@ -45,7 +45,7 @@ const MyModal = (props) => {
 
                             <div className='flex' style={{ justifyContent: " space-evenly" }}>
                                 <a
-                                    href={`https://www.google.com/search?q=${selectedGarage.Name.replace("", "+")}`}
+                                    href={selectedGarage.GoogleLink}
                                     target="_blank">
                                     <i className="fab fa-google" title={`https://www.google.com/search?q=${selectedGarage.Name.replace("", "+")}`}></i>
                                 </a>

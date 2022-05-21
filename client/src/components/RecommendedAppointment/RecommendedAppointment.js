@@ -47,10 +47,12 @@ const RecommendedAppointment = ({
 
   //helper fields
   const [modalShow, setModalShow] = React.useState(false);
+  const [isUserSubmittedForm, setIsUserSubmittedForm] = useState(false)
   const [showSpinner, setShowSpinner] = useState(true);
   const [showGarages, setShowGarages] = useState(false)
   const [selectedGarages, setSelectedGarages] = useState([])
   const [selectedGarage, setSelectedGarage] = useState([])
+
   const moment = extendMoment(Moment);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -79,7 +81,7 @@ const RecommendedAppointment = ({
         })
       )
         .catch(err => {
-          setShowSpinner(false)
+          // setShowSpinner(false)
           alert(err)
         })
     }
@@ -88,7 +90,7 @@ const RecommendedAppointment = ({
     else {
       dispatch(getFirstFreeAppointment({ Garages: selectedGarages }))
         .catch(err => {
-          setShowSpinner(false)
+          // setShowSpinner(false)
           alert(err)
         })
     }
@@ -103,6 +105,8 @@ const RecommendedAppointment = ({
 
   const submitForm = (e, appointment) => {
     e.preventDefault();
+    setShowSpinner(true)
+    setIsUserSubmittedForm(true)
 
     // console.log(id);
     const data = {
@@ -111,7 +115,7 @@ const RecommendedAppointment = ({
         LastName: lastName,
         Phone: phone,
         Email: email,
-        TZ: "123",
+        TZ: id
       },
       CarNumber: carNumber,
       Datetime: appointment.Datetime,
@@ -120,9 +124,17 @@ const RecommendedAppointment = ({
     // console.log("data", data);
     dispatch(createAppointment(data))
       .then(() => {
+        setShowSpinner(false)
+        setIsUserSubmittedForm(false)
+
         navigate("/appointment-saved");
       })
-      .catch((error) => alert(error));
+      .catch((error) => {
+        setShowSpinner(false)
+        setIsUserSubmittedForm(false)
+
+        alert(error)
+      });
   };
 
   const getDayNameInHebrew = (englishName) => {
@@ -396,9 +408,9 @@ const RecommendedAppointment = ({
             })}
           </div>
         ) : isUserAllowedLocation ? (
-          <Spinner text="מחשב תורים קרובים" />
+          <Spinner text={isUserSubmittedForm ? "" : "מחשב תורים קרובים"} />
         ) : (
-          <Spinner text="מחשב את התור הקרוב ביותר" />
+          <Spinner text={isUserSubmittedForm ? "" : "מחשב את התור הקרוב ביותר"} />
         )}
       </div>
     </MDBAnimation>

@@ -18,9 +18,17 @@
   margin-right: 15px;
 }
 .home-form {
+  margin-bottom: 50px;
   form {
     background-color: #00000059;
     padding: 40px;
+  }
+  i.fas.fa-question-circle {
+    font-size: 1.5em;
+    margin-top: 5px;
+    position: relative;
+    right: 98% !important;
+    top: -35px !important;
   }
 }
 .garage-select {
@@ -34,14 +42,5 @@
   .question-circle-container {
     position: absolute;
     left: 0;
-  }
-}
-.home-form {
-  i.fas.fa-question-circle {
-    font-size: 1.5em;
-    margin-top: 5px;
-    position: relative;
-    right: 98% !important;
-    top: -35px !important;
   }
 }
