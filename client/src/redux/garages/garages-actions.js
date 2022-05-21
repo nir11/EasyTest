@@ -11,6 +11,7 @@ export const getGarages = () => async (dispatch) => {
 
     return Promise.resolve(res.data);
   } catch (e) {
+    // console.log(e);
     return Promise.reject(e);
   }
 };

@@ -12,10 +12,10 @@ export const createAppointment = (data) => async (dispatch) => {
     if (res.status == 200) return Promise.resolve(res.data);
     else return Promise.reject(res.data);
   } catch (e) {
+    // console.log(e);
     return Promise.reject(e);
   }
 };
-
 export const getAppointments =
   (garageId, dateYear, dateNumber) => async (dispatch) => {
     try {
@@ -31,12 +31,14 @@ export const getAppointments =
       if (res.status == 200) return Promise.resolve(res.data);
       else Promise.reject(res.data);
     } catch (e) {
+      // console.log(e);
       return Promise.reject(e);
     }
   };
 
 export const getRecommendedAppointments = (userLoction) => async (dispatch) => {
   try {
+    // console.log("userLoction", userLoction)
     const res = await Api.put(`/appointments/recommended`, userLoction);
 
     dispatch({
@@ -47,6 +49,7 @@ export const getRecommendedAppointments = (userLoction) => async (dispatch) => {
     if (res.status == 200) return Promise.resolve(res.data);
     else Promise.reject(res.data);
   } catch (e) {
+    // console.log(e);
     return Promise.reject(e);
   }
 };

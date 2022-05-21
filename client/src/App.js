@@ -4,11 +4,9 @@ import { Routes, Route, Link } from "react-router-dom";
 //pages
 import Home from './Pages/Home/Home';
 import Location from './Pages/Location/Location';
-import Summary from './Pages/Summary/Summary';
 
-//components
 import Nav from './components/Nav/Nav'
-
+import Summary from './components/Summary/Summary';
 function App() {
   return (
     <div className='rootBackround'>
@@ -17,7 +15,6 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/location" element={<Location />} />
         <Route path="/appointment-saved" element={<Summary />} />
-        <Route path='*' element={<Home />} />
       </Routes>
     </div >
   );
