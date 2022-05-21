@@ -7,7 +7,11 @@ const moment = require("moment");
 exports.sendNewAppointmentEmail = async (appointment, garage) => {
   console.log({ appointment });
   const date = moment(appointment.Datetime).format("DD/MM/YYYY");
-  const time = moment(appointment.Datetime).format("HH:mm");
+  const time = moment
+    .utc(appointment.Datetime)
+    .local()
+    .add(3, "hours")
+    .format("HH:mm");
 
   const subject = `תור לטסט לרכב חדש נקבע עבור ${appointment.User.FirstName} ${appointment.User.LastName} `;
   const body = `
@@ -29,7 +33,7 @@ exports.sendNewAppointmentEmail = async (appointment, garage) => {
   this.sendEmail(
     subject,
     body,
-    "nir.almog90@gmail.com"
+    appointment.User.Email
     //  appointment.User.Email
   );
 };

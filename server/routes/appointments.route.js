@@ -39,15 +39,17 @@ router.get("/:garage/:year/:month", async (req, res) => {
       // $expr: { $eq: [{ $month: "$Datetime" }, req.params.month] },
       // $expr: { $eq: [{ $year: "$Datetime" }, req.params.year] },
     });
+    // console.log({ bookedAppointments });
 
     // console.log({ ll });
     let ExcludeDatetime = [
       ...new Set(
         bookedAppointments.map((app) =>
-          moment(app.Datetime).format("DD/MM/YYYY HH:mm")
+          moment.utc(app.Datetime).local().format("DD/MM/YYYY HH:mm")
         )
       ),
     ];
+    // console.log({ ExcludeDatetime });
 
     let todayPastTime = [];
     const minutesToAdd = 15;
@@ -214,7 +216,7 @@ const calculateBestRecommendedAppointments = (garagesRecs) => {
   garagesRecs.forEach((garage) => {
     // console.log({ garage });
     garage.Appointments.forEach((appointment) => {
-      console.log({ appointment });
+      // console.log({ appointment });
       const minutesToAppointment = parseInt(
         appointment.diff(moment(), "minutes")
       );
