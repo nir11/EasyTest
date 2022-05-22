@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Modal } from 'react-bootstrap'
+import { Modal } from 'react-bootstrap'
 
 //components
 import Map from '../Map/Map'
@@ -50,7 +50,9 @@ const MyModal = (props) => {
                                 <a
                                     href={selectedGarage.GoogleLink}
                                     target="_blank">
-                                    <i className="fab fa-google" title={`https://www.google.com/search?q=${selectedGarage.Name.replace("", "+")}`}></i>
+                                    <i className="fab fa-google"
+                                        title={selectedGarage.GoogleLink}
+                                    ></i>
                                 </a>
 
                                 <a
@@ -86,7 +88,7 @@ const MyModal = (props) => {
 
             </Modal.Body>
             <Modal.Footer>
-                <Button onClick={props.onHide}>סגירה</Button>
+                {/* <Button onClick={props.onHide}>סגירה</Button> */}
             </Modal.Footer>
         </Modal>
     )
