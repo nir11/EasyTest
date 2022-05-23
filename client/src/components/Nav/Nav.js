@@ -20,7 +20,7 @@ const MyNav = () => {
                 <Nav.Link onClick={() => {
                     setIsActive1(!isActive1)
                     setIsActive2(false)
-                    pushTo("/")
+                    pushTo("/home")
                 }} className={isActive1 ? "active-nav-item" : ""}>קביעת תור
                     &nbsp;<i className="fas fa-calendar-check"></i>
                 </Nav.Link>

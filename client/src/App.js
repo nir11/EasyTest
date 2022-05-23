@@ -1,5 +1,5 @@
 import './App.css';
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, HashRouter } from "react-router-dom";
 
 //pages
 import Home from './Pages/Home/Home';
@@ -14,11 +14,13 @@ function App() {
     <div className='rootBackround'>
       <Nav />
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/location" element={<Location />} />
-        <Route path="/appointment-saved" element={<Summary />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/location/" element={<Location />} />
+        <Route path="/appointment-saved/" element={<Summary />} />
         <Route path='*' element={<Home />} />
       </Routes>
+
+
     </div >
   );
 }
