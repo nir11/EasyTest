@@ -45,7 +45,7 @@ router.get("/:garage/:year/:month", async (req, res) => {
     let ExcludeDatetime = [
       ...new Set(
         bookedAppointments.map((app) =>
-          moment(app.Datetime).local().format("DD/MM/YYYY HH:mm")
+          moment(app.Datetime).format("DD/MM/YYYY HH:mm")
         )
       ),
     ];
