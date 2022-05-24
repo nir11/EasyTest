@@ -5,7 +5,6 @@ import Geolocation from "../../components/Geolocation/Geolocation";
 import RecommendedAppointment from "../../components/RecommendedAppointment/RecommendedAppointment";
 
 const Location = () => {
-
   const [isUserAllowedLocation, setIsUserAllowedLocation] = useState(false);
   const [isSharingLocationTested, setIsSharingLocationTested] = useState(false);
   const [lat, setLat] = useState(null);
@@ -14,11 +13,17 @@ const Location = () => {
   return (
     <div className="container-fluid">
       <div className="container">
-
         <h1> תורים מומלצים {isUserAllowedLocation && "על בסיס מיקומך"}</h1>
-
         {!isUserAllowedLocation && (
-          <p>אנא אפשר שיתוף מיקום לקבלת המלצות בהתאם למיקומך</p>
+          <>
+            <p>
+              לקבלת המלצות בהתאם למיקומך אנא אפשר שיתוף מיקום ולחץ לרענון{" "}
+              <i
+                className="fas fa-redo"
+                onClick={() => window.location.reload()}
+              ></i>
+            </p>
+          </>
         )}
 
         <Geolocation
@@ -37,7 +42,6 @@ const Location = () => {
             isSharingLocationTested={isSharingLocationTested}
           />
         )}
-
       </div>
     </div>
   );
