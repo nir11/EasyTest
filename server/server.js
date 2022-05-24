@@ -10,9 +10,7 @@ const app = express();
 env.config();
 
 // setting up cors config
-app.use(
-  cors()
-);
+app.use(cors());
 
 app.use(express.json());
 
@@ -27,7 +25,7 @@ mongoose
     console.log("Database connected");
   })
   .catch((err) => {
-    console.error(err);
+    // console.error(err);
   });
 
 // import routes
