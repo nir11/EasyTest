@@ -426,7 +426,7 @@ const findNextFreeAppointmentOfGarage = async (garageId) => {
       const reminder = 15 - (start.minute() % 15);
       startTimeOfDate = moment().add(30, "minutes").add(reminder, "minutes");
     }
-    console.log({ startTimeOfDate });
+    // console.log({ startTimeOfDate });
 
     const recommendedAppointmentsInDay = findFreeAppointmentsInDay(
       bookedAppointmentOfDate,

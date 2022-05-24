@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 import moment from "moment";
 
 //redux
@@ -18,7 +18,6 @@ import Modal from "../Modal/Modal";
 import "./form.scss";
 
 const AppointmentForm = () => {
-
   //form fields
   const [city, setCity] = useState("");
   const [selectedGagrageId, setSelectedGagrageId] = useState("");
@@ -36,7 +35,7 @@ const AppointmentForm = () => {
   const [showSpinner, setShowSpinner] = useState(false);
   const [isUserSelectedDate, setIsUserSelectedDate] = useState(false);
   const [modalShow, setModalShow] = React.useState(false);
-  const [errorMessage, setErrorMessage] = useState("")
+  const [errorMessage, setErrorMessage] = useState("");
   const [selectedGagrage, setSelectedGagrage] = useState([]);
 
   const dispatch = useDispatch();
@@ -49,12 +48,14 @@ const AppointmentForm = () => {
       .then((res) => {
         sessionStorage.setItem(
           "garages",
-          JSON.stringify(res.garages.sort((a, b) => a.Name.localeCompare(b.Name)))
+          JSON.stringify(
+            res.garages.sort((a, b) => a.Name.localeCompare(b.Name))
+          )
         );
       })
       .catch(() => {
-        setErrorMessage("אירעה שגיאה!")
-      })
+        setErrorMessage("אירעה שגיאה!");
+      });
   }, []);
 
   //get garages from serevr and remove loading state
@@ -74,40 +75,58 @@ const AppointmentForm = () => {
     if (!isUserSelectedDate) {
       alert("אנא בחר/י מועד תור");
       return;
-    } else {
-      setShowSpinner(true);
-      const data = {
-        User: {
-          FirstName: firstName,
-          LastName: lastName,
-          Phone: phone,
-          Email: email,
-          TZ: id,
-        },
-        CarNumber: carNumber,
-        Datetime: appointmentDateTime,
-        GarageId: selectedGagrageId,
-      };
-      // console.log("data", data);
-      dispatch(createAppointment(data))
-        .then(() => {
-          setShowSpinner(false);
-          navigate("/appointment-saved");
-        })
-        .catch((error) => {
-          setErrorMessage("אירעה שגיאה!")
-        });
     }
+    // if (!validatePhone(email)) {
+    //   alert("טלפון לא חוקי");
+    //   return;
+    // }
+    if (!validateEmail(email)) {
+      alert("אימייל לא חוקי");
+      return;
+    }
+
+    setShowSpinner(true);
+    const data = {
+      User: {
+        FirstName: firstName,
+        LastName: lastName,
+        Phone: phone,
+        Email: email,
+        TZ: id,
+      },
+      CarNumber: carNumber,
+      Datetime: appointmentDateTime,
+      GarageId: selectedGagrageId,
+    };
+    // console.log("data", data);
+    dispatch(createAppointment(data))
+      .then(() => {
+        setShowSpinner(false);
+        navigate("/appointment-saved");
+      })
+      .catch((error) => {
+        setErrorMessage("אירעה שגיאה!");
+      });
+  };
+
+  // const validatePhone = (phone) => {
+  //   const re = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+  //   return re.test(String(phone).toLowerCase());
+  // };
+
+  const validateEmail = (email) => {
+    const re =
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
   };
 
   return (
     <div>
-      {errorMessage != "" && <p className="errror-message" >{errorMessage}</p>}
+      {errorMessage != "" && <p className="errror-message">{errorMessage}</p>}
 
-      {(!load && !showSpinner) ? (
+      {!load && !showSpinner ? (
         <>
           <Form onSubmit={submitForm}>
-
             <label>בחר/י עיר</label>
             <Form.Group className="mb-3" controlId="formBasicCheckbox">
               <select
@@ -128,7 +147,9 @@ const AppointmentForm = () => {
                 onChange={(e) => {
                   if (e.target.value != 0) {
                     setSelectedGagrageId(e.target.value);
-                    setSelectedGagrage(garages.filter((g) => g._id == e.target.value))
+                    setSelectedGagrage(
+                      garages.filter((g) => g._id == e.target.value)
+                    );
                     if (!isGarageSelected) setIsGarageSelected(true);
                   }
                 }}
@@ -190,12 +211,11 @@ const AppointmentForm = () => {
             <Button variant="white" type="submit">
               סיום
             </Button>
-
           </Form>
         </>
-      )
-        : <Spinner />
-      }
+      ) : (
+        <Spinner />
+      )}
     </div>
   );
 };
