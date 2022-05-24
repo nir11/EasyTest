@@ -48,7 +48,7 @@ const Summary = () => {
     }, [appointment, garages])
 
     return (
-        <div className='container-fluid'>
+        <div className='container-fluid summary-wrapper'>
             <div className='container'>
 
                 <h1>תור חדש נשמר בהצלחה!</h1>

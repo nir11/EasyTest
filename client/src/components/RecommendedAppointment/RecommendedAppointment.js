@@ -201,7 +201,7 @@ const RecommendedAppointment = ({
   return (
     <MDBAnimation type="fadeIn" delay="0.5s">
 
-      <div className="flex">
+      <div className="flex recommended-appointment-wrapper">
         {showGarages &&
           <div className="flex">
             <p style={{ paddingLeft: "20px", fontSize: "large", margin: "0" }}>סינון לפי מוסך:</p>
@@ -215,7 +215,7 @@ const RecommendedAppointment = ({
                 else
                   classNameOfButton = "recommended-button"
 
-                return <React.Fragment key={garage._id}>
+                return <div key={garage._id}>
                   <div className={`button${garage._id} ${classNameOfButton}`}>
 
                     <button
@@ -227,7 +227,7 @@ const RecommendedAppointment = ({
 
                   </div>
                   <i className="fas fa-question-circle" onClick={() => handleModalShow(garage._id)}></i>
-                </React.Fragment>
+                </div>
               })
             }
 
