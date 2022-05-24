@@ -5,9 +5,9 @@ const env = require("dotenv");
 const moment = require("moment");
 
 exports.sendNewAppointmentEmail = async (appointment, garage) => {
-  console.log({ appointment });
+  // console.log({ appointment });
   const date = moment(appointment.Datetime).format("DD/MM/YYYY");
-  const time = moment.utc(appointment.Datetime).local().format("HH:mm");
+  const time = moment(appointment.Datetime).local().format("HH:mm");
 
   const subject = `תור למבחן רישוי חדש נקבע עבור ${appointment.User.FirstName} ${appointment.User.LastName} `;
   const body = `
