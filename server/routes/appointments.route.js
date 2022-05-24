@@ -57,8 +57,8 @@ router.get("/:garage/:year/:month", async (req, res) => {
     const currentMonth = moment().month() + 1;
     if (currentMonth === parseInt(req.params?.month)) {
       let time = moment().startOf("day");
-      const nowPlusTwoHours = moment().add(2, "hours");
-      while (nowPlusTwoHours.isAfter(time)) {
+      const nowPlus30Minutes = moment().add(30, "minutes");
+      while (nowPlus30Minutes.isAfter(time)) {
         todayPastTime.push(time.clone());
         time = time.add(minutesToAdd, "minutes");
       }
@@ -422,10 +422,11 @@ const findNextFreeAppointmentOfGarage = async (garageId) => {
     );
     // console.log({ isDayIsToday });
     if (isDateIsToday) {
-      const roundedUp = Math.ceil(moment().minute() / 15) * 15;
-      startTimeOfDate = moment().add(2, "hours").minute(roundedUp);
+      const start = moment();
+      const reminder = 15 - (start.minute() % 15);
+      startTimeOfDate = moment().add(30, "minutes").add(reminder, "minutes");
     }
-    // console.log({ startTimeOfDate });
+    console.log({ startTimeOfDate });
 
     const recommendedAppointmentsInDay = findFreeAppointmentsInDay(
       bookedAppointmentOfDate,
