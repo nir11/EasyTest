@@ -100,6 +100,10 @@ const AppointmentDatePicker = ({
 
   //when user changed a month
   const changeMonthHandler = (date) => {
+    updateMinMaxDayTimes(date);
+    setIndexOfDay(moment(date).weekday());
+    setAppointmentDateTime(date);
+
     const garageId = selectedGagrage[0]._id;
     const month = moment(date).month() + 1;
     const year = moment(date).year();

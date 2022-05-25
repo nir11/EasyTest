@@ -1,7 +1,8 @@
 const router = require("express").Router();
 const Appointment = require("../schemas/appointments/appointments.schema");
 const Garage = require("../schemas/garages/garages.schema");
-const moment = require("moment");
+// const moment = require("moment");
+const moment = require("moment-timezone");
 const { sendNewAppointmentEmail } = require("../utils/email");
 const geolib = require("geolib");
 
@@ -44,7 +45,7 @@ router.get("/:garage/:year/:month", async (req, res) => {
     let ExcludeDatetime = [
       ...new Set(
         bookedAppointments.map((app) =>
-          moment(app.Datetime).format("DD/MM/YYYY HH:mm")
+          moment(app.Datetime).tz("Asia/Jerusalem").format("DD/MM/YYYY HH:mm")
         )
       ),
     ];
@@ -53,10 +54,11 @@ router.get("/:garage/:year/:month", async (req, res) => {
     let todayPastTime = [];
     const minutesToAdd = 15;
 
-    const currentMonth = moment().month() + 1;
+    const currentMonth = moment().tz("Asia/Jerusalem").month() + 1;
     if (currentMonth === parseInt(req.params?.month)) {
-      let time = moment().startOf("day");
-      const nowPlus30Minutes = moment().add(30, "minutes");
+      let time = moment().tz("Asia/Jerusalem").startOf("day");
+      const nowPlus30Minutes = moment().tz("Asia/Jerusalem").add(30, "minutes");
+      // console.log({ nowPlus30Minutes });
       while (nowPlus30Minutes.isAfter(time)) {
         todayPastTime.push(time.clone());
         time = time.add(minutesToAdd, "minutes");
