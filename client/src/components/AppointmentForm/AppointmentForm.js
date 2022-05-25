@@ -16,7 +16,9 @@ import Modal from "../Modal/Modal";
 //scss
 import "./form.scss";
 import AppointmentDatePicker from "./AppointmentDatePicker";
-import { validateEmail } from "../../utils/validations";
+
+//utilis
+import { validateEmail, validatePhone, validateTz } from "../../utils/validations";
 
 const AppointmentForm = () => {
   //form fields
@@ -37,6 +39,7 @@ const AppointmentForm = () => {
   const [isUserSelectedDate, setIsUserSelectedDate] = useState(false);
   const [modalShow, setModalShow] = React.useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [validationError, setValidationError] = useState("")
   const [selectedGagrage, setSelectedGagrage] = useState([]);
 
   const dispatch = useDispatch();
@@ -66,25 +69,9 @@ const AppointmentForm = () => {
 
   const submitForm = (e) => {
     e.preventDefault();
-    const appointmentMinutes = parseInt(
-      moment(appointmentDateTime).format("mm")
-    );
-    if (![0, 15, 30, 45].includes(appointmentMinutes)) {
-      alert("לא נבחר תור");
+
+    if (!validation())
       return;
-    }
-    if (!isUserSelectedDate) {
-      alert("אנא בחר/י מועד תור");
-      return;
-    }
-    // if (!validatePhone(email)) {
-    //   alert("טלפון לא חוקי");
-    //   return;
-    // }
-    if (!validateEmail(email)) {
-      alert("אימייל לא חוקי");
-      return;
-    }
 
     setShowSpinner(true);
     const data = {
@@ -110,10 +97,41 @@ const AppointmentForm = () => {
       });
   };
 
-  // const validatePhone = (phone) => {
-  //   const re = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
-  //   return re.test(String(phone).toLowerCase());
-  // };
+  const validation = () => {
+
+    const appointmentMinutes = parseInt(
+      moment(appointmentDateTime).format("mm")
+    );
+
+    if (![0, 15, 30, 45].includes(appointmentMinutes)) {
+      // alert("לא נבח תור");
+      setValidationError("לא נבחר תור");
+      return;
+    }
+    if (!isUserSelectedDate) {
+      // alert("אנא בחר/י מועד תור");
+      setValidationError("אנא בחר/י מועד תור");
+      return;
+    }
+    if (!validateTz(id)) {
+      // alert("תעודת זהות חייבת להכיל 9 ספרות")
+      setValidationError("תעודת זהות חייבת להכיל 9 ספרות")
+      return;
+    }
+    if (!validatePhone(phone)) {
+      // alert("טלפון לא חוקי");
+      setValidationError("טלפון לא חוקי");
+      return;
+    }
+    if (!validateEmail(email)) {
+      // alert("אימייל לא חוקי");
+      setValidationError("אימייל לא חוקי");
+      return;
+    }
+
+    return true;
+
+  }
 
   return (
     <div>
@@ -203,10 +221,14 @@ const AppointmentForm = () => {
               setCarNumber={setCarNumber}
             />
 
-            <Button variant="white" type="submit">
-              סיום
+            <Button type="submit" className="submit-button">
+              שליחה
             </Button>
+
+            {validationError != "" && <p className="errror-message text-center" style={{ marginTop: "10px" }}>{validationError}</p>}
+
           </Form>
+
         </>
       ) : (
         <Spinner />

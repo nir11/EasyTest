@@ -43,6 +43,10 @@ body {
 h1 {
   text-align: center;
 }
+.submit-button {
+  margin: auto !important;
+  display: flex !important;
+}
 .flex {
   display: flex;
   justify-content: center;

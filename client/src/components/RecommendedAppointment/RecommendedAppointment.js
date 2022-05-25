@@ -26,7 +26,9 @@ import "./RecommendedAppointment.scss";
 import Spinner from "../Spinner.js/Spinner";
 import PersonalDetails from "../AppointmentForm/PersonalDetails";
 import Modal from "../Modal/Modal";
-import { validateEmail } from "../../utils/validations";
+
+//utilis
+import { validateEmail, validatePhone, validateTz } from "../../utils/validations";
 
 const RecommendedAppointment = ({
   lat,
@@ -50,6 +52,7 @@ const RecommendedAppointment = ({
   const [showGarages, setShowGarages] = useState(false);
   const [selectedGarages, setSelectedGarages] = useState([]);
   const [selectedGarage, setSelectedGarage] = useState([]);
+  const [validationError, setValidationError] = useState("")
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -99,14 +102,8 @@ const RecommendedAppointment = ({
   const submitForm = (e, appointment) => {
     e.preventDefault();
 
-    // if (!validatePhone(email)) {
-    //   alert("טלפון לא חוקי");
-    //   return;
-    // }
-    if (!validateEmail(email)) {
-      alert("אימייל לא חוקי");
+    if (!validation())
       return;
-    }
 
     setShowSpinner(true);
     setIsUserSubmittedForm(true);
@@ -211,6 +208,29 @@ const RecommendedAppointment = ({
     setSelectedGarage(garages.filter((g) => g._id == id));
     setModalShow(true);
   };
+
+
+  const validation = () => {
+
+    if (!validateTz(id)) {
+      // alert("תעודת זהות חייבת להכיל 9 ספרות")
+      setValidationError("תעודת זהות חייבת להכיל 9 ספרות")
+      return;
+    }
+    if (!validatePhone(phone)) {
+      // alert("טלפון לא חוקי");
+      setValidationError("טלפון לא חוקי");
+      return;
+    }
+    if (!validateEmail(email)) {
+      // alert("אימייל לא חוקי");
+      setValidationError("אימייל לא חוקי");
+      return;
+    }
+
+    return true;
+
+  }
 
   return (
     <MDBAnimation type="fadeIn" delay="0.5s">
@@ -371,8 +391,11 @@ const RecommendedAppointment = ({
                           />
 
                           <div style={{ textAlign: "center" }}>
-                            <Button type="submit">שליחה</Button>
+                            <Button type="submit" className="submit-button">שליחה</Button>
                           </div>
+
+                          {validationError != "" && <p className="errror-message text-center" style={{ marginTop: "10px" }}>{validationError}</p>}
+
                         </Form>
                       </Card.Body>
                     </Accordion.Collapse>

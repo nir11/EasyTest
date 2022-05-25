@@ -55,7 +55,8 @@ button.accordion-button {
   letter-spacing: 1px;
   font-family: "Playfair Display", serif;
   font-weight: 400;
-  width: 250px !important;
+  width: max-content !important;
+  max-width: 100%;
 }
 .nine h2 span {
   margin-top: 5px;

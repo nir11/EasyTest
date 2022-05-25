@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { MDBInput, MDBRow, MDBCol } from "mdbreact";
 
 const PersonalDetails = ({
@@ -9,6 +9,20 @@ const PersonalDetails = ({
     email, setEmail,
     carNumber, setCarNumber }) => {
 
+    useEffect(() => {
+
+        console.log('test');
+        //Validation fields
+        const tz = document.getElementById("tz");
+
+        tz.addEventListener("input", function (event) {
+            if (tz.length > 999999999 || tz.length < 10000000) {
+                tz.setCustomValidity("תעודת זהות חייבת להכיל 9 ספרות");
+            }
+        });
+
+    }, [id, setId])
+
     return (
         <MDBRow>
 
@@ -17,6 +31,7 @@ const PersonalDetails = ({
                 <MDBInput label="* תעודת זהות" outline
                     group type={"number"}
                     value={id}
+                    id="tz"
                     onChange={e => setId(e.target.value)}
                     icon="#"
                     required
