@@ -3,11 +3,11 @@ import { Routes, Route, HashRouter } from "react-router-dom";
 
 //pages
 import Home from "./Pages/Home/Home";
-import Location from "./Pages/Location/Location";
 import Summary from "./Pages/Summary/Summary";
 
 //components
 import Nav from "./components/Nav/Nav";
+import Recommended from "./Pages/Recommended/Recommended";
 
 function App() {
   return (
@@ -15,7 +15,7 @@ function App() {
       <Nav />
       <Routes>
         <Route path="/home" element={<Home />} />
-        <Route path="/recommended/" element={<Location />} />
+        <Route path="/recommended/" element={<Recommended />} />
         <Route path="/appointment-saved/" element={<Summary />} />
         <Route path="*" element={<Home />} />
       </Routes>

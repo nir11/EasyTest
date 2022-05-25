@@ -3,7 +3,13 @@ import { useNavigate } from "react-router-dom";
 import _ from "lodash";
 import moment from "moment";
 import { MDBAnimation } from "mdbreact";
-import { Card, Accordion, Button, Form, useAccordionButton, } from "react-bootstrap";
+import {
+  Card,
+  Accordion,
+  Button,
+  Form,
+  useAccordionButton,
+} from "react-bootstrap";
 
 //redux
 import { useDispatch, useSelector } from "react-redux";
@@ -20,6 +26,7 @@ import "./RecommendedAppointment.scss";
 import Spinner from "../Spinner.js/Spinner";
 import PersonalDetails from "../AppointmentForm/PersonalDetails";
 import Modal from "../Modal/Modal";
+import { validateEmail } from "../../utils/validations";
 
 const RecommendedAppointment = ({
   lat,
@@ -27,7 +34,6 @@ const RecommendedAppointment = ({
   isUserAllowedLocation,
   isSharingLocationTested,
 }) => {
-
   //form fields
   const [id, setId] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -39,28 +45,27 @@ const RecommendedAppointment = ({
 
   //helper fields
   const [modalShow, setModalShow] = React.useState(false);
-  const [isUserSubmittedForm, setIsUserSubmittedForm] = useState(false)
+  const [isUserSubmittedForm, setIsUserSubmittedForm] = useState(false);
   const [showSpinner, setShowSpinner] = useState(true);
-  const [showGarages, setShowGarages] = useState(false)
-  const [selectedGarages, setSelectedGarages] = useState([])
-  const [selectedGarage, setSelectedGarage] = useState([])
+  const [showGarages, setShowGarages] = useState(false);
+  const [selectedGarages, setSelectedGarages] = useState([]);
+  const [selectedGarage, setSelectedGarage] = useState([]);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   //redux fields
-  const appointments = useSelector((state) => state.appointmentReducer.appointments);
+  const appointments = useSelector(
+    (state) => state.appointmentReducer.appointments
+  );
   const garages = useSelector((state) => state.garagesReducer.garages);
-
 
   //when user goes directly to this page - redircet to home page
   useEffect(() => {
-    if (garages.length == 0)
-      navigate('/')
-  }, [garages])
+    if (garages.length == 0) navigate("/");
+  }, [garages]);
 
   useEffect(() => {
-
     //when user allowed location on browser - get Appointments based on location
     if (isUserAllowedLocation) {
       dispatch(
@@ -68,33 +73,43 @@ const RecommendedAppointment = ({
           Latitude: lat,
           Longitude: lng,
         })
-      )
-        .catch(err => {
-          alert(err)
-        })
+      ).catch((err) => {
+        alert(err);
+      });
     }
 
     //when didn't allow - get first free Appointment
     else {
-      dispatch(getFirstFreeAppointment({ Garages: selectedGarages }))
-        .catch(err => {
-          alert(err)
-        })
+      dispatch(getFirstFreeAppointment({ Garages: selectedGarages })).catch(
+        (err) => {
+          alert(err);
+        }
+      );
     }
   }, [isSharingLocationTested]);
 
   //when recommended appointments returns from server
   useEffect(() => {
     if (appointments.length) {
-      setShowSpinner(false)
-      setShowGarages(true)
+      setShowSpinner(false);
+      setShowGarages(true);
     }
   }, [appointments]);
 
   const submitForm = (e, appointment) => {
     e.preventDefault();
-    setShowSpinner(true)
-    setIsUserSubmittedForm(true)
+
+    // if (!validatePhone(email)) {
+    //   alert("טלפון לא חוקי");
+    //   return;
+    // }
+    if (!validateEmail(email)) {
+      alert("אימייל לא חוקי");
+      return;
+    }
+
+    setShowSpinner(true);
+    setIsUserSubmittedForm(true);
 
     const data = {
       User: {
@@ -102,7 +117,7 @@ const RecommendedAppointment = ({
         LastName: lastName,
         Phone: phone,
         Email: email,
-        TZ: id
+        TZ: id,
       },
       CarNumber: carNumber,
       Datetime: appointment.Datetime,
@@ -111,16 +126,16 @@ const RecommendedAppointment = ({
     // console.log("data", data);
     dispatch(createAppointment(data))
       .then(() => {
-        setShowSpinner(false)
-        setIsUserSubmittedForm(false)
+        setShowSpinner(false);
+        setIsUserSubmittedForm(false);
 
         navigate("/appointment-saved");
       })
       .catch((error) => {
-        setShowSpinner(false)
-        setIsUserSubmittedForm(false)
+        setShowSpinner(false);
+        setIsUserSubmittedForm(false);
 
-        alert(error)
+        alert(error);
       });
   };
 
@@ -143,37 +158,36 @@ const RecommendedAppointment = ({
     }
   };
 
-  const handleSelectedGarages = e => {
+  const handleSelectedGarages = (e) => {
     e.preventDefault();
-    const { id } = e.target
+    const { id } = e.target;
 
     //html button tag of selected garage
     let tagOfParent = document.getElementsByClassName(`button${id}`)[0];
 
     //when button was marked - unmarked it
     if (tagOfParent.className.includes("selected-recommended-button"))
-      tagOfParent.classList.remove("selected-recommended-button")
+      tagOfParent.classList.remove("selected-recommended-button");
     //when button was unmarked - marked it
-    else
-      tagOfParent.classList.add("selected-recommended-button")
+    else tagOfParent.classList.add("selected-recommended-button");
 
     let updatedSelectedGarages = selectedGarages;
 
     //when user unmarked a grarage name - remove it from array
-    if (updatedSelectedGarages.some(u => u == id.toString()))
-      updatedSelectedGarages = updatedSelectedGarages.filter(u => u != id.toString())
+    if (updatedSelectedGarages.some((u) => u == id.toString()))
+      updatedSelectedGarages = updatedSelectedGarages.filter(
+        (u) => u != id.toString()
+      );
     //when user marked a grarage name - add it to array
-    else
-      updatedSelectedGarages.push(id.toString())
+    else updatedSelectedGarages.push(id.toString());
 
-    setSelectedGarages(updatedSelectedGarages)
-    debounceFindFind(updatedSelectedGarages)
-
-  }
+    setSelectedGarages(updatedSelectedGarages);
+    debounceFindFind(updatedSelectedGarages);
+  };
 
   //get recommended after 1 second of clicking on buttons
   const debounceFindFind = _.debounce((updatedSelectedGarages) => {
-    setShowSpinner(true)
+    setShowSpinner(true);
 
     //when user allowed location on browser - get Appointments based on location
     if (isUserAllowedLocation) {
@@ -181,78 +195,78 @@ const RecommendedAppointment = ({
         getRecommendedAppointments({
           Latitude: lat,
           Longitude: lng,
-          Garages: updatedSelectedGarages
+          Garages: updatedSelectedGarages,
         })
-      )
-        .then(() => setShowSpinner(false))
+      ).then(() => setShowSpinner(false));
     }
     // when didn't allow - get first free Appointment
     else {
-      dispatch(getFirstFreeAppointment({ Garages: updatedSelectedGarages }))
-        .then(() => setShowSpinner(false))
+      dispatch(
+        getFirstFreeAppointment({ Garages: updatedSelectedGarages })
+      ).then(() => setShowSpinner(false));
     }
   }, 1000);
 
   const handleModalShow = (id) => {
-    setSelectedGarage(garages.filter(g => g._id == id))
-    setModalShow(true)
-  }
+    setSelectedGarage(garages.filter((g) => g._id == id));
+    setModalShow(true);
+  };
 
   return (
     <MDBAnimation type="fadeIn" delay="0.5s">
-
       <div className="flex recommended-appointment-wrapper">
-        {showGarages &&
+        {showGarages && (
           <div className="flex">
-            <p style={{ paddingLeft: "20px", fontSize: "large", margin: "0" }}>סינון לפי מוסך:</p>
+            <p style={{ paddingLeft: "20px", fontSize: "large", margin: "0" }}>
+              סינון לפי מוסך:
+            </p>
 
-            {
-              garages.map(garage => {
+            {garages.map((garage) => {
+              let classNameOfButton = "";
+              if (selectedGarages.some((s) => s == garage._id))
+                classNameOfButton =
+                  "recommended-button selected-recommended-button";
+              else classNameOfButton = "recommended-button";
 
-                let classNameOfButton = ""
-                if (selectedGarages.some(s => s == garage._id))
-                  classNameOfButton = "recommended-button selected-recommended-button"
-                else
-                  classNameOfButton = "recommended-button"
-
-                return <div key={garage._id}>
+              return (
+                <div key={garage._id}>
                   <div className={`button${garage._id} ${classNameOfButton}`}>
-
                     <button
                       // style={{ border, color, background }}
                       id={garage._id}
                       value={garage.Name}
-                      onClick={handleSelectedGarages}>{garage.Name}
+                      onClick={handleSelectedGarages}
+                    >
+                      {garage.Name}
                     </button>
-
                   </div>
-                  <i className="fas fa-question-circle" onClick={() => handleModalShow(garage._id)}></i>
+                  <i
+                    className="fas fa-question-circle"
+                    onClick={() => handleModalShow(garage._id)}
+                  ></i>
                 </div>
-              })
-            }
-
+              );
+            })}
           </div>
-        }
+        )}
       </div>
-      {
-        modalShow &&
+      {modalShow && (
         <Modal
           show={modalShow}
           onHide={() => setModalShow(false)}
           idOfGarage={selectedGarage[0]._id}
           garages={garages}
         />
-      }
+      )}
       <br />
       <div className="row">
-        {(!showSpinner && garages.length > 0) ? (
+        {!showSpinner && garages.length > 0 ? (
           <div>
-
             {appointments.map((appointment, index) => {
-
               let dateOfAppointment = new Date(appointment.Datetime);
               let todayDate = new Date();
-              let difference = dateOfAppointment.getTime() - todayDate.getTime();
+              let difference =
+                dateOfAppointment.getTime() - todayDate.getTime();
               let TotalDays = Math.ceil(difference / (1000 * 3600 * 24)) - 1;
               let daysLeftText = null;
 
@@ -284,10 +298,7 @@ const RecommendedAppointment = ({
               }
 
               return (
-                <Accordion
-                  key={index}
-                  className="accordion-card"
-                >
+                <Accordion key={index} className="accordion-card">
                   <Card>
                     <Card.Header>
                       <div>
@@ -304,12 +315,11 @@ const RecommendedAppointment = ({
 
                             <div className="row">
                               <div className="col-sm-4">
-                                {
-                                  isUserAllowedLocation &&
+                                {isUserAllowedLocation && (
                                   <div className="mb-2 font-weight-bold">
                                     מרחק: {appointment.Distance} ק"מ
                                   </div>
-                                }
+                                )}
                                 יום&nbsp;
                                 {getDayNameInHebrew(
                                   moment(appointment.Datetime).format("dddd")
@@ -332,7 +342,6 @@ const RecommendedAppointment = ({
                               </div>
 
                               <div className="customToggle-button col-sm-4"></div>
-
                             </div>
                           </div>
                         </div>
@@ -346,7 +355,6 @@ const RecommendedAppointment = ({
                     <Accordion.Collapse eventKey="0">
                       <Card.Body>
                         <Form onSubmit={(e) => submitForm(e, appointment)}>
-
                           <PersonalDetails
                             id={id}
                             setId={setId}
@@ -365,7 +373,6 @@ const RecommendedAppointment = ({
                           <div style={{ textAlign: "center" }}>
                             <Button type="submit">שליחה</Button>
                           </div>
-
                         </Form>
                       </Card.Body>
                     </Accordion.Collapse>
@@ -377,7 +384,9 @@ const RecommendedAppointment = ({
         ) : isUserAllowedLocation ? (
           <Spinner text={isUserSubmittedForm ? "" : "מחשב תורים קרובים"} />
         ) : (
-          <Spinner text={isUserSubmittedForm ? "" : "מחשב את התור הקרוב ביותר"} />
+          <Spinner
+            text={isUserSubmittedForm ? "" : "מחשב את התור הקרוב ביותר"}
+          />
         )}
       </div>
     </MDBAnimation>
@@ -392,10 +401,7 @@ function CustomToggle({ children, eventKey, setIsToggleOpen }) {
   );
 
   return (
-    <button
-      type="button"
-      onClick={decoratedOnClick}
-    >
+    <button type="button" onClick={decoratedOnClick}>
       {children}
     </button>
   );

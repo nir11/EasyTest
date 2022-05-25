@@ -10,12 +10,13 @@ import { getGarages } from "../../redux/garages/garages-actions";
 
 //components
 import Spinner from "../Spinner.js/Spinner";
-import MyDatePicker from "./DatePicker";
 import PersonalDetails from "./PersonalDetails";
 import Modal from "../Modal/Modal";
 
 //scss
 import "./form.scss";
+import AppointmentDatePicker from "./AppointmentDatePicker";
+import { validateEmail } from "../../utils/validations";
 
 const AppointmentForm = () => {
   //form fields
@@ -114,12 +115,6 @@ const AppointmentForm = () => {
   //   return re.test(String(phone).toLowerCase());
   // };
 
-  const validateEmail = (email) => {
-    const re =
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(String(email).toLowerCase());
-  };
-
   return (
     <div>
       {errorMessage != "" && <p className="errror-message">{errorMessage}</p>}
@@ -182,7 +177,7 @@ const AppointmentForm = () => {
             </Form.Group>
 
             <label>בחר/י מועד תור</label>
-            <MyDatePicker
+            <AppointmentDatePicker
               selectedGagrage={selectedGagrage}
               setAppointmentDateTime={setAppointmentDateTime}
               appointmentDateTime={appointmentDateTime}

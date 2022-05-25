@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Geolocation from "../../components/Geolocation/Geolocation";
 import RecommendedAppointment from "../../components/RecommendedAppointment/RecommendedAppointment";
 
-const Location = () => {
+const Recommended = () => {
   const [isUserAllowedLocation, setIsUserAllowedLocation] = useState(false);
   const [isSharingLocationTested, setIsSharingLocationTested] = useState(false);
   const [lat, setLat] = useState(null);
@@ -25,6 +25,8 @@ const Location = () => {
             </p>
           </>
         )}
+
+        <br />
 
         <Geolocation
           setLat={setLat}
@@ -47,4 +49,4 @@ const Location = () => {
   );
 };
 
-export default Location;
+export default Recommended;

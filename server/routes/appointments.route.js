@@ -41,7 +41,6 @@ router.get("/:garage/:year/:month", async (req, res) => {
     });
     // console.log({ bookedAppointments });
 
-    // console.log({ ll });
     let ExcludeDatetime = [
       ...new Set(
         bookedAppointments.map((app) =>
@@ -74,21 +73,6 @@ router.get("/:garage/:year/:month", async (req, res) => {
 });
 
 const calculateDistanceToGarage = (userLocation, garageLocation) => {
-  // console.log("userLocation", userLocation);
-  // console.log("garageLocation", garageLocation);
-  // const myLocation = {
-  //   latitude: 32.38996950755073,
-  //   longitude: 34.98740266931584,
-  // };
-  // const garageLocation = {
-  //   // hadera
-  //   // latitude: 32.43479838895164,
-  //   // longitude: 34.92068461774575,
-
-  //   // netanya
-  //   latitude: 32.32840407146948,
-  //   longitude: 34.864968630378215,
-  // };
   const distance =
     geolib.getPreciseDistance(userLocation, garageLocation) / 1000;
   const distanceInKm = parseFloat(distance.toFixed(1));
@@ -125,28 +109,7 @@ router.put("/free", async (req, res) => {
       console.log("error" + error);
     }
   }
-  // await Promise.all(
-  //   garages.map(async (garage, i) => {
-  //     try {
-  //       const recAppointments = await findNextFreeAppointmentOfGarage(
-  //         garage._id
-  //       );
-  //       // console.log({ recAppointments });
-  //       if (recAppointments.length > 0) {
-  //         allGaragesRecommendedAppointments.push({
-  //           Id: garage._id,
-  //           Name: garage.Name,
-  //           Appointments: recAppointments,
-  //           Address: garage.Address,
-  //           City: garage.City,
-  //         });
-  //         // console.log({ allGaragesRecommendedAppointments });
-  //       }
-  //     } catch (error) {
-  //       console.log("error" + error);
-  //     }
-  //   })
-  // );
+
   let bestAppointment = null;
   allGaragesRecommendedAppointments.forEach((garage) => {
     garage.Appointments.forEach((appointment) => {
@@ -218,32 +181,6 @@ router.put("/recommended", async (req, res) => {
     }
   }
 
-  // await Promise.all(
-  //   garages.map(async (garage, i) => {
-  //     try {
-  //       const recAppointments = await findNextFreeAppointmentOfGarage(
-  //         garage._id
-  //       );
-  //       // console.log({ recAppointments });
-  //       if (recAppointments.length > 0) {
-  //         allGaragesRecommendedAppointments.push({
-  //           Id: garage._id,
-  //           Name: garage.Name,
-  //           Distance: calculateDistanceToGarage(userLocation, {
-  //             latitude: garage.Latitude,
-  //             longitude: garage.Longitude,
-  //           }),
-  //           Appointments: recAppointments,
-  //           Address: garage.Address,
-  //           City: garage.City,
-  //         });
-  //         // console.log({ allGaragesRecommendedAppointments });
-  //       }
-  //     } catch (error) {
-  //       console.log("error" + error);
-  //     }
-  //   })
-  // );
   const Recommendations = calculateBestRecommendedAppointments(
     allGaragesRecommendedAppointments
   );
@@ -255,15 +192,12 @@ const calculateBestRecommendedAppointments = (garagesRecs) => {
   // console.log({ garagesRecs });
   const result = [];
   let scores = [];
-  let bestAppointment = null;
-  let secondBestAppointment = null;
 
   garagesRecs.forEach((garage) => {
     garage.Appointments.forEach((appointment) => {
       const appointmentScore = getAppointmenScore(garage, appointment);
 
       // console.log("garagesRec.Distance", garagesRec.Distance);
-      // const appointmentScore = garage.Distance + minutesToAppointment;
       // console.log({ appointmentScore });
       scores.push({
         name: garage.Name,
@@ -280,13 +214,12 @@ const calculateBestRecommendedAppointments = (garagesRecs) => {
       }
       if (!result[1]) {
         // console.log({ appointmentScore });
-        // console.log("bestAppointment.Score", bestAppointment.Score);
         if (
           appointmentScore < result[0].Score ||
           (appointmentScore === result[0].Score &&
             appointment.Distance < result[0].Distance)
         ) {
-          result[1] = { ...bestAppointment };
+          result[1] = { ...result[0] };
           result[0] = addNewRecommendedAppointment(
             garage,
             appointment,
@@ -328,10 +261,6 @@ const calculateBestRecommendedAppointments = (garagesRecs) => {
       }
     });
   });
-  // console.log({ bestAppointment });
-  // console.log({ secondBestAppointment });
-  // if (bestAppointment) result.push(bestAppointment);
-  // if (secondBestAppointment) result.push(secondBestAppointment);
   // console.log({ scores });
   return result;
 };
@@ -499,11 +428,6 @@ const findFreeAppointmentsInDay = (
   endTimeMoment
 ) => {
   const recommendedAppointments = [];
-
-  // const startTimeMoment = moment(date + " " + startTime);
-  // const endTimeMoment = moment(date + " " + endTime);
-  // console.log({ startTimeMoment });
-  // console.log({ endTimeMoment });
   // console.log({ bookedAppointments });
 
   let currentTime = startTimeMoment;

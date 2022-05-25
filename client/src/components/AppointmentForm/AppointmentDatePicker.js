@@ -13,7 +13,7 @@ import { getAppointments } from "../../redux/appointment/appointment-actions";
 import he from "date-fns/locale/he";
 registerLocale("he", he);
 
-const MyDatePicker = ({
+const AppointmentDatePicker = ({
   selectedGagrage,
   setAppointmentDateTime,
   appointmentDateTime,
@@ -149,4 +149,4 @@ const MyDatePicker = ({
   );
 };
 
-export default MyDatePicker;
+export default AppointmentDatePicker;
