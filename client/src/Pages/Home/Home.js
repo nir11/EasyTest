@@ -9,7 +9,7 @@ const Home = () => {
             <div className="container">
                 <MDBAnimation type="fadeIn" delay="0.5s">
                     <div className="row">
-                        <div className="col-lg-6 ">
+                        <div className="col-lg-7" style={{ margin: "auto" }}>
 
                             <h1>קביעת תור למבחן רישוי</h1>
                             <br />

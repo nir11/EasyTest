@@ -40,9 +40,9 @@ body {
   padding-top: 50px;
   max-width: 1800px !important;
 }
-/* h1 {
+h1 {
   text-align: center;
-} */
+}
 .flex {
   display: flex;
   justify-content: center;
