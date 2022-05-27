@@ -16,8 +16,8 @@ const Recommended = () => {
         <h1> תורים מומלצים {isUserAllowedLocation && "על בסיס מיקומך"}</h1>
         {!isUserAllowedLocation && (
           <>
-            <p>
-              לקבלת המלצות בהתאם למיקומך אנא אפשר שיתוף מיקום ולחץ לרענון{" "}
+            <p className="text-center">
+              לקבלת המלצות בהתאם למיקומך אנא אפשר/י שיתוף מיקום ולחצ/י לרענון&nbsp;
               <i
                 className="fas fa-redo"
                 onClick={() => window.location.reload()}

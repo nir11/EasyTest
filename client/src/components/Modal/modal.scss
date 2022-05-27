@@ -61,6 +61,9 @@ button.btn-close {
   .modal-header {
     .nine h2 {
       width: 100% !important;
+      span {
+        font-size: 9px;
+      }
     }
     .flex {
       flex-direction: row !important;
