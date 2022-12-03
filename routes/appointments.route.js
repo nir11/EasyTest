@@ -30,7 +30,7 @@ router.get("/:garage/:year/:month", async (req, res) => {
 
     let endDate = moment({
       year: parseInt(req.params.year),
-      month: month,
+      month: month === 12 ? 0 : month,
       day: 1,
     });
 
