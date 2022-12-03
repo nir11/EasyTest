@@ -3,7 +3,6 @@
 # dependencies
 node_modules
 /clinet/node_modules
-/clinet/build
 
 # testing
 /coverage
