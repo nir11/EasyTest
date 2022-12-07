@@ -28,7 +28,11 @@ import PersonalDetails from "../AppointmentForm/PersonalDetails";
 import Modal from "../Modal/Modal";
 
 //utilis
-import { validateEmail, validatePhone, validateTz } from "../../utils/validations";
+import {
+  validateEmail,
+  validatePhone,
+  validateTz,
+} from "../../utils/validations";
 
 const RecommendedAppointment = ({
   lat,
@@ -52,7 +56,7 @@ const RecommendedAppointment = ({
   const [showGarages, setShowGarages] = useState(false);
   const [selectedGarages, setSelectedGarages] = useState([]);
   const [selectedGarage, setSelectedGarage] = useState([]);
-  const [validationError, setValidationError] = useState("")
+  const [validationError, setValidationError] = useState("");
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -102,8 +106,7 @@ const RecommendedAppointment = ({
   const submitForm = (e, appointment) => {
     e.preventDefault();
 
-    if (!validation())
-      return;
+    if (!validation()) return;
 
     setShowSpinner(true);
     setIsUserSubmittedForm(true);
@@ -209,12 +212,10 @@ const RecommendedAppointment = ({
     setModalShow(true);
   };
 
-
   const validation = () => {
-
     if (!validateTz(id)) {
       // alert("תעודת זהות חייבת להכיל 9 ספרות")
-      setValidationError("תעודת זהות חייבת להכיל 9 ספרות")
+      setValidationError("תעודת זהות חייבת להכיל 9 ספרות");
       return;
     }
     if (!validatePhone(phone)) {
@@ -229,8 +230,7 @@ const RecommendedAppointment = ({
     }
 
     return true;
-
-  }
+  };
 
   return (
     <MDBAnimation type="fadeIn" delay="0.5s">
@@ -238,7 +238,7 @@ const RecommendedAppointment = ({
         {showGarages && (
           <div className="flex">
             <p style={{ paddingLeft: "20px", fontSize: "large", margin: "0" }}>
-              סינון לפי מוסך:
+              סינון לפי מכון:
             </p>
 
             {garages.map((garage) => {
@@ -391,11 +391,19 @@ const RecommendedAppointment = ({
                           />
 
                           <div style={{ textAlign: "center" }}>
-                            <Button type="submit" className="submit-button">שליחה</Button>
+                            <Button type="submit" className="submit-button">
+                              שליחה
+                            </Button>
                           </div>
 
-                          {validationError != "" && <p className="errror-message text-center" style={{ marginTop: "10px" }}>{validationError}</p>}
-
+                          {validationError != "" && (
+                            <p
+                              className="errror-message text-center"
+                              style={{ marginTop: "10px" }}
+                            >
+                              {validationError}
+                            </p>
+                          )}
                         </Form>
                       </Card.Body>
                     </Accordion.Collapse>

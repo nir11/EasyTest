@@ -18,7 +18,7 @@ exports.sendNewAppointmentEmail = async (appointment, garage) => {
   const body = `
   <h3>שלום ${appointment.User.FirstName} ${appointment.User.LastName},</h3>
   <h3>מבחן רישוי חדש נקבע עבורך לתאריך ${date} בשעה ${time}</h3>
-  <p style="font-weight: bold;">פרטי המוסך:</p>
+  <p style="font-weight: bold;">פרטי המכון:</p>
   <div style="margin-right: 5em;">
     <p>${garage.Name}, ${garage.Address}, ${garage.City}</p>
     <p>${garage.Phone}</p>

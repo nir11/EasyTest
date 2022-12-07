@@ -18,7 +18,11 @@ import "./form.scss";
 import AppointmentDatePicker from "./AppointmentDatePicker";
 
 //utilis
-import { validateEmail, validatePhone, validateTz } from "../../utils/validations";
+import {
+  validateEmail,
+  validatePhone,
+  validateTz,
+} from "../../utils/validations";
 
 const AppointmentForm = () => {
   //form fields
@@ -39,7 +43,7 @@ const AppointmentForm = () => {
   const [isUserSelectedDate, setIsUserSelectedDate] = useState(false);
   const [modalShow, setModalShow] = React.useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [validationError, setValidationError] = useState("")
+  const [validationError, setValidationError] = useState("");
   const [selectedGagrage, setSelectedGagrage] = useState([]);
 
   const dispatch = useDispatch();
@@ -70,8 +74,7 @@ const AppointmentForm = () => {
   const submitForm = (e) => {
     e.preventDefault();
 
-    if (!validation())
-      return;
+    if (!validation()) return;
 
     setShowSpinner(true);
     const data = {
@@ -98,7 +101,6 @@ const AppointmentForm = () => {
   };
 
   const validation = () => {
-
     const appointmentMinutes = parseInt(
       moment(appointmentDateTime).format("mm")
     );
@@ -115,7 +117,7 @@ const AppointmentForm = () => {
     }
     if (!validateTz(id)) {
       // alert("תעודת זהות חייבת להכיל 9 ספרות")
-      setValidationError("תעודת זהות חייבת להכיל 9 ספרות")
+      setValidationError("תעודת זהות חייבת להכיל 9 ספרות");
       return;
     }
     if (!validatePhone(phone)) {
@@ -130,8 +132,7 @@ const AppointmentForm = () => {
     }
 
     return true;
-
-  }
+  };
 
   return (
     <div>
@@ -152,7 +153,7 @@ const AppointmentForm = () => {
               </select>
             </Form.Group>
 
-            <label>בחר/י מוסך</label>
+            <label>בחר/י מכון</label>
             <Form.Group className="mb-3" controlId="formBasicCheckbox">
               <select
                 disabled={!city}
@@ -225,10 +226,15 @@ const AppointmentForm = () => {
               שליחה
             </Button>
 
-            {validationError != "" && <p className="errror-message text-center" style={{ marginTop: "10px" }}>{validationError}</p>}
-
+            {validationError != "" && (
+              <p
+                className="errror-message text-center"
+                style={{ marginTop: "10px" }}
+              >
+                {validationError}
+              </p>
+            )}
           </Form>
-
         </>
       ) : (
         <Spinner />
