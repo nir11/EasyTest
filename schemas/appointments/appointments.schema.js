@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const pkg = require("mongoose");
+const { PathSchema } = require("../garages/garages.schema");
 const {
   Types: { ObjectId },
   Schema,
@@ -22,15 +23,20 @@ const UserSchema = new Schema({
     type: String,
     required: true,
   },
-  TZ: {
-    type: String,
-    required: true,
-  },
 });
 
 const AppointmentSchema = new Schema({
   User: {
     type: UserSchema,
+  },
+  Path: {
+    type: Schema.Types.ObjectId,
+    ref: "Path",
+    required: true,
+  },
+  PathName: {
+    type: String,
+    required: true,
   },
   CarNumber: {
     type: String,
@@ -41,6 +47,10 @@ const AppointmentSchema = new Schema({
     required: true,
   },
   Garage: { type: Schema.Types.ObjectId, ref: "Garage" },
+  GarageName: {
+    type: String,
+    required: true,
+  },
 });
 
 // appointmentSchema.virtual("FullName").get(function () {
