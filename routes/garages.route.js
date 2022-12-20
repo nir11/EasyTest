@@ -29,4 +29,14 @@ router.put("/:id", async (req, res) => {
   await garage.save();
   res.send("Done");
 });
+
+router.put("/:id/paths", async (req, res) => {
+  const garage = await Garage.findById(req.params.id);
+  if (!garage) res.status(400).send("Garage not found");
+
+  garage.Paths = req.body.Paths;
+  await garage.save();
+  res.send("Done");
+});
+
 module.exports = router;
