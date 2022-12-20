@@ -5,6 +5,20 @@ const {
   Schema,
 } = pkg;
 
+const Path = new Schema(
+  {
+    Name: {
+      type: String,
+      require: true,
+    },
+    Active: {
+      type: Boolean,
+      default: true,
+    },
+  },
+  { _id: true }
+);
+
 const DayTime = new Schema({
   // 1-7 - sunday to saturday
   DayIndex: {
@@ -48,6 +62,10 @@ const GarageSchema = new Schema({
   },
   WorkDays: {
     type: [DayTime],
+    required: true,
+  },
+  Paths: {
+    type: [Path],
     required: true,
   },
 });
