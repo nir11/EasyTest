@@ -12,13 +12,15 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/email", (req, res) => {
-  e;
   sendNewAppointmentEmail({});
   res.send("done");
 });
 
 router.get("/:garage/:year/:month", async (req, res) => {
   try {
+    const garage = await Garage.findById(req.params.garage);
+    if (!garage) return res.status(400).send("Garage not exists");
+
     const month = parseInt(req.params?.month);
     if (month < 1 || month > 12) return res.status(400).send("Invalid month");
 
@@ -34,7 +36,7 @@ router.get("/:garage/:year/:month", async (req, res) => {
       day: 1,
     });
 
-    const bookedAppointments = await Appointment.find({
+    let bookedAppointments = await Appointment.find({
       Garage: req.params.garage,
       $and: [{ Datetime: { $gte: startDate } }, { Datetime: { $lt: endDate } }],
       // $expr: { $eq: [{ $month: "$Datetime" }, req.params.month] },
@@ -42,13 +44,27 @@ router.get("/:garage/:year/:month", async (req, res) => {
     });
     // console.log({ bookedAppointments });
 
-    let ExcludeDatetime = [
-      ...new Set(
-        bookedAppointments.map((app) =>
-          moment(app.Datetime).tz("Asia/Jerusalem").format("DD/MM/YYYY HH:mm")
-        )
-      ),
-    ];
+    bookedAppointments = bookedAppointments.map((app) =>
+      moment(app.Datetime).tz("Asia/Jerusalem").format("DD/MM/YYYY HH:mm")
+    );
+
+    const activePaths = garage.Paths.filter((path) => path.Active === true);
+    const allowedAppointmentsPerTime = activePaths.length * 2;
+
+    const uniueAppointemtnsTimes = [...new Set(bookedAppointments)];
+    let ExcludeDatetime = [];
+
+    for (const uniqueAppTime of uniueAppointemtnsTimes) {
+      const numOfAppointemtnsForCurrentTime = bookedAppointments.filter(
+        (app) => app === uniqueAppTime
+      );
+      if (
+        numOfAppointemtnsForCurrentTime.length >= allowedAppointmentsPerTime
+      ) {
+        ExcludeDatetime.push(uniqueAppTime);
+      }
+    }
+
     // console.log({ ExcludeDatetime });
 
     let todayPastTime = [];
@@ -450,12 +466,29 @@ router.post("/", async (req, res) => {
   const garage = await Garage.findById(req.body.GarageId);
   if (!garage) return res.status(400).send("Garage not exists");
 
-  const isAppointmentDatetimeExists = await Appointment.findOne({
+  const activePaths = garage.Paths.filter((path) => path.Active === true);
+
+  const numOfAllowedAppointmentsForEachTime = activePaths.length * 2; // every 30 minutes
+
+  const existsAppointments = await Appointment.find({
     Datetime: req.body.Datetime,
     Garage: req.body.GarageId,
   });
-  if (isAppointmentDatetimeExists)
-    return res.status(400).send("Appointment Datetime already exists");
+  if (existsAppointments.length >= numOfAllowedAppointmentsForEachTime)
+    return res.status(400).send("Appointment Datetime already booked");
+
+  let newAppointmentPath = null;
+  for (const path of activePaths) {
+    const numOfAppointmentsOfCurrentPath = existsAppointments.filter((ea) =>
+      ea.Path.equals(path._id)
+    ).length;
+    if (numOfAppointmentsOfCurrentPath !== 2) {
+      newAppointmentPath = path;
+      break;
+    }
+  }
+  if (!newAppointmentPath)
+    return res.status(400).send("No active path found for current appointment");
 
   const newAppointment = new Appointment({
     User: {
@@ -463,14 +496,16 @@ router.post("/", async (req, res) => {
       LastName: req.body.User.LastName,
       Phone: req.body.User.Phone,
       Email: req.body.User.Email,
-      TZ: req.body.User.TZ,
     },
     CarNumber: req.body.CarNumber,
     Datetime: req.body.Datetime,
     Garage: req.body.GarageId,
+    GarageName: garage.Name,
+    Path: newAppointmentPath._id,
+    PathName: newAppointmentPath.Name,
   });
   await newAppointment.save();
-  sendNewAppointmentEmail(newAppointment, garage);
+  // sendNewAppointmentEmail(newAppointment, garage);
   res.send({ Appointment: newAppointment });
 });
 
