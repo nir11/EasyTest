@@ -60,6 +60,11 @@ const GarageSchema = new Schema({
     type: String,
     required: true,
   },
+  Active: {
+    type: Boolean,
+    required: true,
+    default: true,
+  },
   WorkDays: {
     type: [DayTime],
     required: true,

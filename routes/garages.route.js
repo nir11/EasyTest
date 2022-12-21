@@ -1,6 +1,12 @@
 const router = require("express").Router();
 const Garage = require("../schemas/garages/garages.schema");
 
+// migration
+router.put("/", async (req, res) => {
+  await Garage.updateMany({}, { $set: { Active: true } });
+  res.send("Done");
+});
+
 router.post("/", async (req, res) => {
   const isNameExists = await Garage.findOne({ Name: req.body.Name });
   if (isNameExists) return res.status(400).send("Garage name already exists");
@@ -17,7 +23,7 @@ router.post("/", async (req, res) => {
 });
 
 router.get("/", async (req, res) => {
-  const garages = await Garage.find();
+  const garages = await Garage.find({ Active: true });
   res.send({ garages });
 });
 
