@@ -5,10 +5,20 @@ const Garage = require("../schemas/garages/garages.schema");
 const moment = require("moment-timezone");
 const { sendNewAppointmentEmail } = require("../utils/email");
 const geolib = require("geolib");
+var ObjectId = require("mongoose").Types.ObjectId;
 
 router.get("/", async (req, res) => {
   const appointments = await Appointment.find();
   res.send({ appointments });
+});
+
+router.get("/:id", async (req, res) => {
+  if (!ObjectId.isValid(req.params.id))
+    return res.status(400).send("Invalid appointemtn id");
+  const appointment = await Appointment.findById(req.params.id);
+  if (!appointment) return res.status(400).send("Appointment not exists");
+
+  res.send({ appointment });
 });
 
 router.post("/email", (req, res) => {
