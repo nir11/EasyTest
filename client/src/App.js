@@ -14,10 +14,10 @@ function App() {
     <div className="rootBackround">
       <Nav />
       <Routes>
-        <Route path="/home" element={<Home />} />
+        <Route path="*" element={<Home />} />
+        <Route path="/:appointmentId" element={<Home />} />
         <Route path="/recommended/" element={<Recommended />} />
         <Route path="/appointment-saved/" element={<Summary />} />
-        <Route path="*" element={<Home />} />
       </Routes>
     </div>
   );

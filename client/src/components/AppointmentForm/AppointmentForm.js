@@ -20,7 +20,7 @@ import AppointmentDatePicker from "./AppointmentDatePicker";
 //utilis
 import { validateEmail, validatePhone } from "../../utils/validations";
 
-const AppointmentForm = () => {
+const AppointmentForm = ({ appointmentId }) => {
   //form fields
   const [city, setCity] = useState("");
   const [selectedGagrageId, setSelectedGagrageId] = useState("");
@@ -83,6 +83,7 @@ const AppointmentForm = () => {
       CarNumber: carNumber,
       Datetime: appointmentDateTime,
       GarageId: selectedGagrageId,
+      OldAppointmentToDelete: appointmentId,
     };
     // console.log("data", data);
     dispatch(createAppointment(data))

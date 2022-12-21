@@ -19,7 +19,7 @@ const MyNav = () => {
           onClick={() => {
             setIsActive1(!isActive1);
             setIsActive2(false);
-            pushTo("/home");
+            pushTo("/");
           }}
           className={isActive1 ? "active-nav-item" : ""}
         >

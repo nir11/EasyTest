@@ -490,6 +490,10 @@ router.post("/", async (req, res) => {
   if (!newAppointmentPath)
     return res.status(400).send("No active path found for current appointment");
 
+  await Appointment.deleteOne({
+    _id: req.body.OldAppointmentToDelete,
+  });
+
   const newAppointment = new Appointment({
     User: {
       FirstName: req.body.User.FirstName,
