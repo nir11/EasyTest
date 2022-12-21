@@ -18,11 +18,7 @@ import "./form.scss";
 import AppointmentDatePicker from "./AppointmentDatePicker";
 
 //utilis
-import {
-  validateEmail,
-  validatePhone,
-  validateTz,
-} from "../../utils/validations";
+import { validateEmail, validatePhone } from "../../utils/validations";
 
 const AppointmentForm = () => {
   //form fields
@@ -83,7 +79,6 @@ const AppointmentForm = () => {
         LastName: lastName,
         Phone: phone,
         Email: email,
-        TZ: id,
       },
       CarNumber: carNumber,
       Datetime: appointmentDateTime,
@@ -113,11 +108,6 @@ const AppointmentForm = () => {
     if (!isUserSelectedDate) {
       // alert("אנא בחר/י מועד תור");
       setValidationError("אנא בחר/י מועד תור");
-      return;
-    }
-    if (!validateTz(id)) {
-      // alert("תעודת זהות חייבת להכיל 9 ספרות")
-      setValidationError("תעודת זהות חייבת להכיל 9 ספרות");
       return;
     }
     if (!validatePhone(phone)) {

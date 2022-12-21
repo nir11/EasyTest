@@ -505,7 +505,7 @@ router.post("/", async (req, res) => {
     PathName: newAppointmentPath.Name,
   });
   await newAppointment.save();
-  // sendNewAppointmentEmail(newAppointment, garage);
+  sendNewAppointmentEmail(newAppointment, garage);
   res.send({ Appointment: newAppointment });
 });
 
