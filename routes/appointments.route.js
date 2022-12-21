@@ -21,9 +21,26 @@ router.get("/:id", async (req, res) => {
   res.send({ appointment });
 });
 
+router.get("/garage/:id", async (req, res) => {
+  if (!ObjectId.isValid(req.params.id))
+    return res.status(400).send("Invalid garage id");
+  const appointments = await Appointment.find({ Garage: req.params.id });
+
+  res.send({ appointments });
+});
+
 router.post("/email", (req, res) => {
   sendNewAppointmentEmail({});
   res.send("done");
+});
+
+router.delete("/:id", async (req, res) => {
+  if (!ObjectId.isValid(req.params.id))
+    return res.status(400).send("Invalid appointemtn id");
+  await Appointment.deleteOne({
+    _id: req.params.id,
+  });
+  res.send("Appointment deleted successfully");
 });
 
 router.get("/:garage/:year/:month", async (req, res) => {
