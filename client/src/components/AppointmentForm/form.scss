@@ -51,6 +51,17 @@
   }
 }
 
+.confirm-form-container {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  input {
+    cursor: pointer;
+    margin-left: 20px;
+  }
+}
+
 @media only screen and (max-width: 800px) {
   .home-form {
     margin: 0 !important;

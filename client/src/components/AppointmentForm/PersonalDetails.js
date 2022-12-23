@@ -12,6 +12,8 @@ const PersonalDetails = ({
   setEmail,
   carNumber,
   setCarNumber,
+  confirmForm,
+  setConfirmForm,
 }) => {
   return (
     <MDBRow>
@@ -80,6 +82,17 @@ const PersonalDetails = ({
           icon="envelope"
           required
         />
+      </MDBCol>
+
+      <MDBCol sm="6" className="confirm-form-container">
+        <input
+          type="checkbox"
+          checked={confirmForm}
+          onChange={() => setConfirmForm((prevState) => !prevState)}
+        />{" "}
+        <span onClick={() => setConfirmForm((prevState) => !prevState)}>
+          אני מאשר/ת שמירה של פרטיי לצורך עדכונים
+        </span>
       </MDBCol>
     </MDBRow>
   );

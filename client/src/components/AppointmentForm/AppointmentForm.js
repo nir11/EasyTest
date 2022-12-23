@@ -51,6 +51,7 @@ const AppointmentForm = ({ editAppointmentId }) => {
   const [editAppointment, setEditAppointment] = useState({});
   const [deleteAppointmentModalOpen, setDeleteAppointmentModalOpen] =
     useState(false);
+  const [confirmForm, setConfirmForm] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -181,6 +182,11 @@ const AppointmentForm = ({ editAppointmentId }) => {
       setValidationError("אנא בחר/י מועד תור");
       return;
     }
+    if (!confirmForm) {
+      // alert("אנא אשר/י שמירה של פרטיי הטופס");
+      setValidationError("אנא אשר/י שמירה של פרטיי הטופס");
+      return;
+    }
     if (!validatePhone(phone)) {
       // alert("טלפון לא חוקי");
       setValidationError("טלפון לא חוקי");
@@ -298,6 +304,8 @@ const AppointmentForm = ({ editAppointmentId }) => {
               setEmail={setEmail}
               carNumber={carNumber}
               setCarNumber={setCarNumber}
+              confirmForm={confirmForm}
+              setConfirmForm={setConfirmForm}
             />
 
             {editAppointmentId ? (
