@@ -15,8 +15,8 @@ function App() {
       <Nav />
       <Routes>
         <Route path="*" element={<Home />} />
-        <Route path="/:appointmentId" element={<Home />} />
-        <Route path="/recommended/" element={<Recommended />} />
+        <Route path="/:editAppointmentId" element={<Home />} />
+        {/* <Route path="/recommended/" element={<Recommended />} /> */}
         <Route path="/appointment-saved/" element={<Summary />} />
       </Routes>
     </div>

@@ -20,12 +20,14 @@ const AppointmentDatePicker = ({
   setIsUserSelectedDate,
   isUserSelectedDate,
   disabled,
+  editAppointmentMode,
+  editAppointment,
 }) => {
   const [indexOfDay, setIndexOfDay] = useState(moment().weekday());
   const [excludeDatetimes, setExcludeDatetimes] = useState([]);
   const [minTime, setMinTime] = useState(new Date());
   const [maxTime, setMaxTime] = useState(new Date());
-  const [isInit, setIsInit] = useState(false);
+  const [isInit, setIsInit] = useState(editAppointmentMode);
 
   const dispatch = useDispatch();
 
@@ -46,25 +48,36 @@ const AppointmentDatePicker = ({
   //when user selected a garage - initial datepicker input
   useEffect(() => {
     if (!disabled) {
-      const today = new Date();
+      const today = editAppointmentMode
+        ? new Date(editAppointment.Datetime)
+        : new Date(`01/08/2023 08:00`);
       changeMonthHandler(today);
     }
   }, [selectedGagrage]);
 
   //check if chosen day is part of avaiable days
   const isWeekday = (date) => {
-    const day = date.getDay() + 1;
-    return selectedGagrage[0].WorkDays.some((w) => w.DayIndex == day);
+    if (!editAppointmentMode) {
+      const day = date.getDay() + 1;
+      return selectedGagrage[0].WorkDays.some((w) => w.DayIndex == day);
+    } else {
+      const day = date.getDay() + 1;
+      return editAppointment.Garage.WorkDays.some((w) => w.DayIndex == day);
+    }
   };
 
   //when user selcted a day - update available times (min & max)
   const updateMinMaxDayTimes = (date) => {
-    if (selectedGagrage[0].WorkDays[moment(date).weekday()]?.StartTime) {
+    const currentGarage = editAppointmentMode
+      ? editAppointment.Garage
+      : selectedGagrage[0];
+
+    if (currentGarage.WorkDays[moment(date).weekday()]?.StartTime) {
       // console.log("found startTime in day");
       setMinTime(
         new Date(
           `08/05/2022 ${
-            selectedGagrage[0].WorkDays[moment(date).weekday()].StartTime
+            currentGarage.WorkDays[moment(date).weekday()].StartTime
           }`
         )
       );
@@ -73,13 +86,11 @@ const AppointmentDatePicker = ({
       setMinTime(new Date(`08/05/2022 00:00`));
     }
 
-    if (selectedGagrage[0].WorkDays[moment(date).weekday()]?.EndTime) {
+    if (currentGarage.WorkDays[moment(date).weekday()]?.EndTime) {
       // console.log("found endTime in day");
       setMaxTime(
         moment(
-          `08/05/2022 ${
-            selectedGagrage[0].WorkDays[moment(date).weekday()].EndTime
-          }`
+          `08/05/2022 ${currentGarage.WorkDays[moment(date).weekday()].EndTime}`
         )
           .add(-15, "minutes")
           .toDate()
@@ -104,7 +115,9 @@ const AppointmentDatePicker = ({
     setIndexOfDay(moment(date).weekday());
     setAppointmentDateTime(date);
 
-    const garageId = selectedGagrage[0]._id;
+    const garageId = editAppointmentMode
+      ? editAppointment.Garage._id
+      : selectedGagrage[0]._id;
     const month = moment(date).month() + 1;
     const year = moment(date).year();
 
@@ -135,7 +148,7 @@ const AppointmentDatePicker = ({
       timeFormat="HH:mm"
       showTimeSelect
       filterDate={isWeekday}
-      timeIntervals={15}
+      timeIntervals={30}
       minDate={new Date()}
       minTime={disabled ? new Date() : minTime}
       maxTime={disabled ? new Date() : maxTime}
@@ -149,6 +162,8 @@ const AppointmentDatePicker = ({
             )
       }
       customInput={<DatePickerButton />}
+      includeDates={[moment("2023-01-08T07:30:00.121Z").toDate()]}
+      openToDate={new Date("2023/01/08")}
     />
   );
 };

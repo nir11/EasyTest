@@ -4,6 +4,77 @@ const Garage = require("../schemas/garages/garages.schema");
 // migration
 router.put("/", async (req, res) => {
   await Garage.updateMany({}, { $set: { Active: true } });
+
+  // update מ.מ.מ בדיקות רכב ורישוי
+  const mmmGarage = await Garage.findById("627e21090e5f3b0a0df6d274");
+  mmmGarage.Paths = [
+    {
+      Name: "מסלול 1",
+    },
+    {
+      Name: "מסלול 2",
+    },
+    {
+      Name: "מסלול 3",
+    },
+  ];
+
+  await mmmGarage.save();
+
+  // update בסט טסט בע"מ
+  const bestTestGarage = await Garage.findById("627e25e505b3fc112c864013");
+  bestTestGarage.Paths = [
+    {
+      Name: "מסלול 1",
+    },
+    {
+      Name: "מסלול 2",
+    },
+    {
+      Name: "מסלול 3",
+    },
+    {
+      Name: "מסלול 4",
+    },
+  ];
+  await bestTestGarage.save();
+
+  // update דינמומטר
+  const dinamometerGarage = await Garage.findById("627e264205b3fc112c86401c");
+  dinamometerGarage.Paths = [
+    {
+      Name: "מסלול 1",
+    },
+    {
+      Name: "מסלול 2",
+    },
+    {
+      Name: "מסלול 3",
+    },
+    {
+      Name: "מסלול 4",
+    },
+  ];
+  await dinamometerGarage.save();
+
+  // update טסט ליין בע"מ
+  const testLineGarage = await Garage.findById("627e243b05b3fc112c864005");
+  testLineGarage.Paths = [
+    {
+      Name: "מסלול 1",
+    },
+    {
+      Name: "מסלול 2",
+    },
+    {
+      Name: "מסלול 3",
+    },
+    {
+      Name: "מסלול 4",
+    },
+  ];
+  await testLineGarage.save();
+
   res.send("Done");
 });
 

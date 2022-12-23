@@ -15,7 +15,9 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   if (!ObjectId.isValid(req.params.id))
     return res.status(400).send("Invalid appointemtn id");
-  const appointment = await Appointment.findById(req.params.id);
+  const appointment = await Appointment.findById(req.params.id).populate(
+    "Garage"
+  );
   if (!appointment) return res.status(400).send("Appointment not exists");
 
   res.send({ appointment });
@@ -27,6 +29,13 @@ router.get("/garage/:id", async (req, res) => {
   const appointments = await Appointment.find({ Garage: req.params.id });
 
   res.send({ appointments });
+});
+
+router.delete("/garage/:id", async (req, res) => {
+  if (!ObjectId.isValid(req.params.id))
+    return res.status(400).send("Invalid garage id");
+  await Appointment.deleteOne({ Garage: req.params.id });
+  res.send("Done");
 });
 
 router.post("/email", (req, res) => {
@@ -517,10 +526,6 @@ router.post("/", async (req, res) => {
   if (!newAppointmentPath)
     return res.status(400).send("No active path found for current appointment");
 
-  await Appointment.deleteOne({
-    _id: req.body.OldAppointmentToDelete,
-  });
-
   const newAppointment = new Appointment({
     User: {
       FirstName: req.body.User.FirstName,
@@ -538,6 +543,57 @@ router.post("/", async (req, res) => {
   await newAppointment.save();
   sendNewAppointmentEmail(newAppointment, garage);
   res.send({ Appointment: newAppointment });
+});
+
+router.put("/:id", async (req, res) => {
+  if (!ObjectId.isValid(req.params.id))
+    return res.status(400).send("Invalid appointemtn id");
+  const appointment = await Appointment.findById(req.params.id);
+  if (!appointment) return res.status(400).send("Appointment not exists");
+
+  const garage = await Garage.findById(req.body.GarageId);
+  if (!garage) return res.status(400).send("Garage not exists");
+
+  const activePaths = garage.Paths.filter((path) => path.Active === true);
+
+  const numOfAllowedAppointmentsForEachTime = activePaths.length * 2; // every 30 minutes
+
+  const existsAppointments = await Appointment.find({
+    Datetime: req.body.Datetime,
+    Garage: req.body.GarageId,
+  });
+  if (existsAppointments.length >= numOfAllowedAppointmentsForEachTime)
+    return res.status(400).send("Appointment Datetime already booked");
+
+  let newAppointmentPath = null;
+  for (const path of activePaths) {
+    const numOfAppointmentsOfCurrentPath = existsAppointments.filter((ea) =>
+      ea.Path.equals(path._id)
+    ).length;
+    if (numOfAppointmentsOfCurrentPath !== 2) {
+      newAppointmentPath = path;
+      break;
+    }
+  }
+  if (!newAppointmentPath)
+    return res.status(400).send("No active path found for current appointment");
+
+  appointment.User = {
+    FirstName: req.body.User.FirstName,
+    LastName: req.body.User.LastName,
+    Phone: req.body.User.Phone,
+    Email: req.body.User.Email,
+  };
+  appointment.CarNumber = req.body.CarNumber;
+  appointment.Datetime = req.body.Datetime;
+  appointment.Garage = req.body.GarageId;
+  appointment.GarageName = garage.Name;
+  appointment.Path = newAppointmentPath._id;
+  appointment.PathName = newAppointmentPath.Name;
+
+  await appointment.save();
+  sendNewAppointmentEmail(newAppointment, garage);
+  res.send({ Appointment: appointment });
 });
 
 module.exports = router;

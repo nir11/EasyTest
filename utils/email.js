@@ -14,7 +14,7 @@ exports.sendNewAppointmentEmail = async (appointment, garage) => {
     .tz("Asia/Jerusalem")
     .format("HH:mm");
 
-  const editOrderLink =
+  const url =
     process.env.NODE_ENV === "development"
       ? "http://localhost:3000"
       : "https://easytest.onrender.com";
@@ -36,9 +36,7 @@ exports.sendNewAppointmentEmail = async (appointment, garage) => {
     <p>מספר רכב: ${appointment.CarNumber}</p>
   </div>
   <br/>
-  <a href="${editOrderLink}/${appointment._id}">למחיקת התור הקיים והזמנת תור חדש לחץ כאן</a>
-  <br/>
-  <a href="${editOrderLink}/remove/${appointment._id}">למחיקת התור לחץ כאן</a>
+  <a href="${url}/#//${appointment._id}">לעריכה / מחיקת התור הקיים לחץ כאן</a>
 `;
   this.sendEmail(
     subject,

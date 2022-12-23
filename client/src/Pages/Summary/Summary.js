@@ -12,8 +12,13 @@ import Map from "../../components/Map/Map";
 
 //scss
 import "./summary.scss";
+import { Button } from "react-bootstrap";
+import { DeleteAppointmentModal } from "../../components/DeleteAppointmentModal/delete-appointment-modal";
+import Api from "../../utils/Api";
 
 const Summary = () => {
+  const [deleteAppointmentModalOpen, setDeleteAppointmentModalOpen] =
+    useState(false);
   const [showSpinner, setShowSpinner] = useState(true);
   const [lat, setLat] = useState(null);
   const [lng, setLng] = useState(null);
@@ -50,6 +55,17 @@ const Summary = () => {
 
   return (
     <div className="container-fluid summary-wrapper">
+      {deleteAppointmentModalOpen && (
+        <DeleteAppointmentModal
+          show={deleteAppointmentModalOpen}
+          appointment={appointment}
+          confirm={() => {
+            setDeleteAppointmentModalOpen(false);
+            navigate("../");
+          }}
+          cancel={() => setDeleteAppointmentModalOpen(false)}
+        />
+      )}
       <div className="container">
         <h1>תור חדש נשמר בהצלחה!</h1>
 
@@ -76,14 +92,25 @@ const Summary = () => {
                 <br />
 
                 <div className="row text-center">
-                  <div className="col-sm-6">
-                    <p>טלפון: {appointment.User.Phone} </p>
-                    <p>דואר אלקטרוני: {appointment.User.Email} </p>
-                  </div>
-
-                  <div className="col-sm-6">
-                    <p>מספר רכב: {appointment.CarNumber} </p>
-                  </div>
+                  <p>טלפון: {appointment.User.Phone} </p>
+                  <p>דואר אלקטרוני: {appointment.User.Email} </p>
+                  <p>מספר רכב: {appointment.CarNumber} </p>
+                </div>
+                <div className="summary-buttons-container">
+                  <Button
+                    className="submit-button"
+                    onClick={() => navigate(`../${appointment._id}`)}
+                  >
+                    לעריכת התור
+                  </Button>
+                  <br />
+                  <Button
+                    className="submit-button"
+                    variant="danger"
+                    onClick={() => setDeleteAppointmentModalOpen(true)}
+                  >
+                    מחיקה
+                  </Button>
                 </div>
               </MDBCol>
 

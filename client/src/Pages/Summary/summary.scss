@@ -14,6 +14,11 @@
   margin: 0 !important;
   padding: 0;
 }
+.summary-buttons-container {
+  display: flex;
+  flex-direction: column;
+  padding: 60px 0;
+}
 @media only screen and (max-width: 800px) {
   .summary-wrapper {
     .summary-card {

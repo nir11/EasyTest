@@ -5,7 +5,10 @@ import { useNavigate } from "react-router-dom";
 import moment from "moment";
 
 //redux
-import { createAppointment } from "../../redux/appointment/appointment-actions";
+import {
+  createAppointment,
+  updateAppointment,
+} from "../../redux/appointment/appointment-actions";
 import { getGarages } from "../../redux/garages/garages-actions";
 
 //components
@@ -19,10 +22,12 @@ import AppointmentDatePicker from "./AppointmentDatePicker";
 
 //utilis
 import { validateEmail, validatePhone } from "../../utils/validations";
+import { DeleteAppointmentModal } from "../DeleteAppointmentModal/delete-appointment-modal";
+import Api from "../../utils/Api";
 
-const AppointmentForm = ({ appointmentId }) => {
+const AppointmentForm = ({ editAppointmentId }) => {
   //form fields
-  const [city, setCity] = useState("");
+  const [city, setCity] = useState("ירושלים");
   const [selectedGagrageId, setSelectedGagrageId] = useState("");
   const [id, setId] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -33,7 +38,9 @@ const AppointmentForm = ({ appointmentId }) => {
   const [isGarageSelected, setIsGarageSelected] = useState(false);
 
   //helper fields
-  const [appointmentDateTime, setAppointmentDateTime] = useState(new Date());
+  const [appointmentDateTime, setAppointmentDateTime] = useState(
+    new Date(2023, 0, 8)
+  );
   const [load, setLoad] = useState(true);
   const [showSpinner, setShowSpinner] = useState(false);
   const [isUserSelectedDate, setIsUserSelectedDate] = useState(false);
@@ -41,6 +48,9 @@ const AppointmentForm = ({ appointmentId }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [validationError, setValidationError] = useState("");
   const [selectedGagrage, setSelectedGagrage] = useState([]);
+  const [editAppointment, setEditAppointment] = useState({});
+  const [deleteAppointmentModalOpen, setDeleteAppointmentModalOpen] =
+    useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -50,6 +60,9 @@ const AppointmentForm = ({ appointmentId }) => {
   useEffect(() => {
     dispatch(getGarages())
       .then((res) => {
+        setSelectedGagrage(res.garages);
+        setSelectedGagrageId(res.garages[0]._id);
+        setIsGarageSelected(true);
         sessionStorage.setItem(
           "garages",
           JSON.stringify(
@@ -60,7 +73,38 @@ const AppointmentForm = ({ appointmentId }) => {
       .catch(() => {
         setErrorMessage("אירעה שגיאה!");
       });
+    if (editAppointmentId) {
+      getExistingAppointment();
+    }
   }, []);
+
+  const getExistingAppointment = async () => {
+    try {
+      setShowSpinner(true);
+      setLoad(true);
+      const res = await Api.get(`appointments/${editAppointmentId}`);
+      console.log({ res });
+      if (res.data) {
+        setEditAppointment(res.data.appointment);
+        setCarNumber(res.data.appointment.CarNumber);
+        setFirstName(res.data.appointment.User.FirstName);
+        setLastName(res.data.appointment.User.LastName);
+        setPhone(res.data.appointment.User.Phone);
+        setEmail(res.data.appointment.User.Email);
+        setIsGarageSelected(true);
+        setSelectedGagrage(res.data.appointment.Garage._id);
+        setSelectedGagrageId(res.data.appointment.Garage._id);
+        // setAppointmentDateTime(new Date(res.data.appointment.Datetime));
+        setIsUserSelectedDate(true);
+        setShowSpinner(false);
+        setLoad(false);
+      } else {
+        navigate("../");
+      }
+    } catch (e) {
+      navigate("../");
+    }
+  };
 
   //get garages from serevr and remove loading state
   useEffect(() => {
@@ -69,9 +113,12 @@ const AppointmentForm = ({ appointmentId }) => {
 
   const submitForm = (e) => {
     e.preventDefault();
-
     if (!validation()) return;
+    if (editAppointmentId) updateExistedAppointment();
+    else createNewAppointment();
+  };
 
+  const updateExistedAppointment = async () => {
     setShowSpinner(true);
     const data = {
       User: {
@@ -83,7 +130,30 @@ const AppointmentForm = ({ appointmentId }) => {
       CarNumber: carNumber,
       Datetime: appointmentDateTime,
       GarageId: selectedGagrageId,
-      OldAppointmentToDelete: appointmentId,
+    };
+    // console.log("data", data);
+    dispatch(updateAppointment(editAppointmentId, data))
+      .then(() => {
+        setShowSpinner(false);
+        navigate("/appointment-saved");
+      })
+      .catch((error) => {
+        setErrorMessage("אירעה שגיאה!");
+      });
+  };
+
+  const createNewAppointment = () => {
+    setShowSpinner(true);
+    const data = {
+      User: {
+        FirstName: firstName,
+        LastName: lastName,
+        Phone: phone,
+        Email: email,
+      },
+      CarNumber: carNumber,
+      Datetime: appointmentDateTime,
+      GarageId: selectedGagrageId,
     };
     // console.log("data", data);
     dispatch(createAppointment(data))
@@ -127,6 +197,19 @@ const AppointmentForm = ({ appointmentId }) => {
 
   return (
     <div>
+      {deleteAppointmentModalOpen && (
+        <DeleteAppointmentModal
+          show={deleteAppointmentModalOpen}
+          appointment={editAppointment}
+          confirm={() => {
+            setEditAppointment({});
+            setDeleteAppointmentModalOpen(false);
+            navigate("../");
+          }}
+          cancel={() => setDeleteAppointmentModalOpen(false)}
+        />
+      )}
+
       {errorMessage != "" && <p className="errror-message">{errorMessage}</p>}
 
       {!load && !showSpinner ? (
@@ -138,6 +221,7 @@ const AppointmentForm = ({ appointmentId }) => {
                 className="form-control"
                 required
                 onChange={(e) => setCity(e.target.value)}
+                value={"ירושלים"}
               >
                 <option value={""}></option>
                 <option value={"ירושלים"}>ירושלים</option>
@@ -158,6 +242,7 @@ const AppointmentForm = ({ appointmentId }) => {
                     if (!isGarageSelected) setIsGarageSelected(true);
                   }
                 }}
+                value={selectedGagrageId}
                 required
               >
                 <option value={0}></option>
@@ -194,6 +279,8 @@ const AppointmentForm = ({ appointmentId }) => {
               setIsUserSelectedDate={setIsUserSelectedDate}
               isUserSelectedDate={isUserSelectedDate}
               disabled={!isGarageSelected}
+              editAppointmentMode={editAppointmentId}
+              editAppointment={editAppointment}
             />
 
             <hr />
@@ -213,9 +300,24 @@ const AppointmentForm = ({ appointmentId }) => {
               setCarNumber={setCarNumber}
             />
 
-            <Button type="submit" className="submit-button">
-              שליחה
-            </Button>
+            {editAppointmentId ? (
+              <div className="appointment-form-buttons-container">
+                <Button type="submit" className="submit-button">
+                  שמירה
+                </Button>
+                <Button
+                  variant="danger"
+                  className="submit-button"
+                  onClick={() => setDeleteAppointmentModalOpen(true)}
+                >
+                  מחיקה
+                </Button>
+              </div>
+            ) : (
+              <Button type="submit" className="submit-button">
+                שליחה
+              </Button>
+            )}
 
             {validationError != "" && (
               <p

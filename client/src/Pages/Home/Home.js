@@ -5,7 +5,7 @@ import AppointmentForm from "../../components/AppointmentForm/AppointmentForm";
 import { useParams } from "react-router-dom";
 
 const Home = () => {
-  const { appointmentId } = useParams();
+  const { editAppointmentId } = useParams();
 
   return (
     <div className="container-fluid">
@@ -13,11 +13,14 @@ const Home = () => {
         <MDBAnimation type="fadeIn" delay="0.5s">
           <div className="row">
             <div className="col-lg-7" style={{ margin: "auto" }}>
-              <h1>קביעת תור למבחן רישוי</h1>
+              <h1>{editAppointmentId ? "עריכת" : "קביעת"} תור למבחן רישוי</h1>
               <br />
 
               <div className="home-form">
-                <AppointmentForm appointmentId={appointmentId} />
+                <AppointmentForm
+                  key={editAppointmentId ? editAppointmentId : "1"}
+                  editAppointmentId={editAppointmentId}
+                />
               </div>
             </div>
           </div>
