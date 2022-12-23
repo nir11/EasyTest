@@ -36,7 +36,7 @@ exports.sendNewAppointmentEmail = async (appointment, garage) => {
     <p>מספר רכב: ${appointment.CarNumber}</p>
   </div>
   <br/>
-  <a href="${url}/#//${appointment._id}">לעריכה / מחיקת התור הקיים לחץ כאן</a>
+  <a href="${url}/#/${appointment._id}">לעריכה / מחיקת התור הקיים לחץ כאן</a>
 `;
   this.sendEmail(
     subject,
