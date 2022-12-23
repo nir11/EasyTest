@@ -26,7 +26,9 @@ router.get("/:id", async (req, res) => {
 router.get("/garage/:id", async (req, res) => {
   if (!ObjectId.isValid(req.params.id))
     return res.status(400).send("Invalid garage id");
-  const appointments = await Appointment.find({ Garage: req.params.id });
+  const appointments = await Appointment.find({ Garage: req.params.id }).sort({
+    Datetime: 1,
+  });
 
   res.send({ appointments });
 });

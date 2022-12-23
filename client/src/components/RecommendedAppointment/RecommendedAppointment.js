@@ -23,7 +23,7 @@ import {
 import "./RecommendedAppointment.scss";
 
 //components
-import Spinner from "../Spinner.js/Spinner";
+import Spinner from "../Spinner/Spinner";
 import PersonalDetails from "../AppointmentForm/PersonalDetails";
 import Modal from "../Modal/Modal";
 

@@ -7,7 +7,7 @@ import moment from "moment";
 import { useSelector } from "react-redux";
 
 //components
-import Spinner from "../../components/Spinner.js/Spinner";
+import Spinner from "../../components/Spinner/Spinner";
 import Map from "../../components/Map/Map";
 
 //scss

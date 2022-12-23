@@ -12,7 +12,7 @@ import {
 import { getGarages } from "../../redux/garages/garages-actions";
 
 //components
-import Spinner from "../Spinner.js/Spinner";
+import Spinner from "../Spinner/Spinner";
 import PersonalDetails from "./PersonalDetails";
 import Modal from "../Modal/Modal";
 

@@ -8,6 +8,7 @@ import Summary from "./Pages/Summary/Summary";
 //components
 import Nav from "./components/Nav/Nav";
 import Recommended from "./Pages/Recommended/Recommended";
+import { Manager } from "./Pages/Manager/manager";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/:editAppointmentId" element={<Home />} />
         {/* <Route path="/recommended/" element={<Recommended />} /> */}
         <Route path="/appointment-saved/" element={<Summary />} />
+        <Route path="/manager" element={<Manager />} />
       </Routes>
     </div>
   );
