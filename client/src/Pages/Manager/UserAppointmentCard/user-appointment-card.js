@@ -18,6 +18,7 @@ export const UserAppointmentCard = ({ appointment, getGarageAppointments }) => {
             setDeleteAppointmentModalOpen(false);
             getGarageAppointments();
           }}
+          onHide={() => setDeleteAppointmentModalOpen(false)}
           cancel={() => setDeleteAppointmentModalOpen(false)}
         />
       )}

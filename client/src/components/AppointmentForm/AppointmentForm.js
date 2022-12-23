@@ -212,6 +212,7 @@ const AppointmentForm = ({ editAppointmentId }) => {
             setDeleteAppointmentModalOpen(false);
             navigate("../");
           }}
+          onHide={() => setDeleteAppointmentModalOpen(false)}
           cancel={() => setDeleteAppointmentModalOpen(false)}
         />
       )}
