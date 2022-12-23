@@ -46,3 +46,13 @@
     }
   }
 }
+
+@media (max-width: 400px) {
+  .manager-container {
+    .appointments-header-container {
+      .appointments-header {
+        margin-right: 0;
+      }
+    }
+  }
+}
