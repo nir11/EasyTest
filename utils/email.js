@@ -14,6 +14,11 @@ exports.sendNewAppointmentEmail = async (appointment, garage) => {
     .tz("Asia/Jerusalem")
     .format("HH:mm");
 
+  const url =
+    process.env.NODE_ENV === "development"
+      ? "http://localhost:3000"
+      : "https://easytest.onrender.com";
+
   const subject = `תור למבחן רישוי חדש נקבע עבור ${appointment.User.FirstName} ${appointment.User.LastName} `;
   const body = `
   <h3>שלום ${appointment.User.FirstName} ${appointment.User.LastName},</h3>
@@ -26,11 +31,12 @@ exports.sendNewAppointmentEmail = async (appointment, garage) => {
   <p style="font-weight: bold;">פרטי המזמין:</p>
   <div style="margin-right: 5em;">
     <p>שם מלא: ${appointment.User.FirstName} ${appointment.User.LastName}</p>
-    <p>מספר זהות: ${appointment.User.TZ}</p>
     <p>טלפון: ${appointment.User.Phone}</p>
     <p>דואר אלקטרוני: ${appointment.User.Email}</p>
     <p>מספר רכב: ${appointment.CarNumber}</p>
   </div>
+  <br/>
+  <a href="${url}/#//${appointment._id}">לעריכה / מחיקת התור הקיים לחץ כאן</a>
 `;
   this.sendEmail(
     subject,

@@ -37,6 +37,12 @@
   }
 }
 
+.appointment-form-buttons-container {
+  display: flex;
+  flex-direction: column;
+  height: 150px;
+}
+
 .react-datepicker__time-list-item--disabled {
   // display: none;
   .question-circle-container {

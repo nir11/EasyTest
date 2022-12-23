@@ -28,11 +28,7 @@ import PersonalDetails from "../AppointmentForm/PersonalDetails";
 import Modal from "../Modal/Modal";
 
 //utilis
-import {
-  validateEmail,
-  validatePhone,
-  validateTz,
-} from "../../utils/validations";
+import { validateEmail, validatePhone } from "../../utils/validations";
 
 const RecommendedAppointment = ({
   lat,
@@ -117,7 +113,6 @@ const RecommendedAppointment = ({
         LastName: lastName,
         Phone: phone,
         Email: email,
-        TZ: id,
       },
       CarNumber: carNumber,
       Datetime: appointment.Datetime,
@@ -213,11 +208,6 @@ const RecommendedAppointment = ({
   };
 
   const validation = () => {
-    if (!validateTz(id)) {
-      // alert("תעודת זהות חייבת להכיל 9 ספרות")
-      setValidationError("תעודת זהות חייבת להכיל 9 ספרות");
-      return;
-    }
     if (!validatePhone(phone)) {
       // alert("טלפון לא חוקי");
       setValidationError("טלפון לא חוקי");

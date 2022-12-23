@@ -19,14 +19,14 @@ const MyNav = () => {
           onClick={() => {
             setIsActive1(!isActive1);
             setIsActive2(false);
-            pushTo("/home");
+            pushTo("/");
           }}
           className={isActive1 ? "active-nav-item" : ""}
         >
           קביעת תור &nbsp;<i className="fas fa-calendar-check"></i>
         </Nav.Link>
       </Nav.Item>
-
+      {/* 
       <Nav.Item>
         <Nav.Link
           onClick={() => {
@@ -39,7 +39,7 @@ const MyNav = () => {
           {" "}
           המלצה לפי מיקום &nbsp;<i className="fas fa-map-marker-alt"></i>
         </Nav.Link>
-      </Nav.Item>
+      </Nav.Item> */}
 
       <h2>EasyTest</h2>
     </Nav>
