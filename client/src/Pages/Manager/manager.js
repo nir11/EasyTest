@@ -7,6 +7,7 @@ import "./manager.scss";
 import { UserAppointmentCard } from "./UserAppointmentCard/user-appointment-card";
 
 export const Manager = () => {
+  const [rememberMe, setRememberMe] = useState(false);
   const [loginDetails, setLoginDetails] = useState({
     username: "",
     password: "",
@@ -34,10 +35,20 @@ export const Manager = () => {
     ) {
       if (wrongLoginDetails) setWrongLoginDetails(false);
       setIsLoggedIn(true);
-      localStorage.setItem("loginDetails", JSON.stringify(details));
+      if (rememberMe)
+        localStorage.setItem("loginDetails", JSON.stringify(details));
     } else {
       setWrongLoginDetails(true);
     }
+  };
+
+  const logout = () => {
+    setLoginDetails({
+      username: "",
+      password: "",
+    });
+    setIsLoggedIn(false);
+    localStorage.removeItem("loginDetails");
   };
 
   const getGarageAppointments = async () => {
@@ -93,9 +104,24 @@ export const Manager = () => {
                 onChange={(e) =>
                   setLoginDetails({ ...loginDetails, password: e.target.value })
                 }
-                icon="user"
+                icon="lock"
                 required
               />
+            </MDBCol>
+          </MDBRow>
+          <MDBRow>
+            <MDBCol sm="15" className="remember-me-container">
+              <input
+                type="checkbox"
+                checked={rememberMe}
+                onChange={() => setRememberMe((prevState) => !prevState)}
+              />{" "}
+              <span
+                className="text"
+                onClick={() => setRememberMe((prevState) => !prevState)}
+              >
+                זכור אותי
+              </span>
             </MDBCol>
           </MDBRow>
           <Button type="submit" className="submit-button">
@@ -113,26 +139,34 @@ export const Manager = () => {
       )}
 
       {isLoggedIn && (
-        <h2 className="appointments-header">
-          מ.מ.מ בדיקות רכב ורישוי - תורים קרובים
-        </h2>
-      )}
+        <>
+          <div className="appointments-header-container">
+            <span className="appointments-header">
+              מ.מ.מ בדיקות רכב ורישוי - תורים קרובים
+            </span>
 
-      {showSpinner && <Spinner />}
+            <Button variant="dark" className="logout" onClick={logout}>
+              התנתקות
+            </Button>
+          </div>
 
-      {!showSpinner &&
-        garageAppointments.length > 0 &&
-        garageAppointments.map((appointment) => {
-          return (
-            <UserAppointmentCard
-              appointment={appointment}
-              getGarageAppointments={getGarageAppointments}
-            />
-          );
-        })}
+          {showSpinner && <Spinner />}
 
-      {!showSpinner && garageAppointments.length === 0 && (
-        <h5>לא קיימים תורים</h5>
+          {!showSpinner &&
+            garageAppointments.length > 0 &&
+            garageAppointments.map((appointment) => {
+              return (
+                <UserAppointmentCard
+                  appointment={appointment}
+                  getGarageAppointments={getGarageAppointments}
+                />
+              );
+            })}
+
+          {!showSpinner && garageAppointments.length === 0 && (
+            <h5 className="no-appointments">לא קיימים תורים</h5>
+          )}
+        </>
       )}
     </div>
   );

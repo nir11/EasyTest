@@ -84,7 +84,7 @@ const PersonalDetails = ({
         />
       </MDBCol>
 
-      <MDBCol sm="6" className="confirm-form-container">
+      <MDBCol className="confirm-form-container">
         <input
           type="checkbox"
           checked={confirmForm}

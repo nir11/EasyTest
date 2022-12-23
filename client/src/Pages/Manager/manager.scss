@@ -8,13 +8,41 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    margin-top: 100px;
     .submit-button {
       width: 250px;
       display: flex !important;
       justify-content: center;
     }
   }
-  .appointments-header {
-    margin: 20px 0;
+  .appointments-header-container {
+    margin-top: 20px;
+    width: 100%;
+    // justify-content: center;
+    text-align: center;
+    .appointments-header {
+      line-height: 1.7;
+      font-size: 28px;
+      margin-right: 100px;
+    }
+    .logout {
+      float: left;
+    }
+  }
+  .no-appointments {
+    margin-top: 30px;
+  }
+  .remember-me-container {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    input {
+      cursor: pointer;
+      margin-left: 20px;
+    }
+    .text {
+      width: 200px;
+    }
   }
 }
