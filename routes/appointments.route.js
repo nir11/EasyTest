@@ -592,7 +592,7 @@ router.put("/:id", async (req, res) => {
   appointment.PathName = newAppointmentPath.Name;
 
   await appointment.save();
-  sendNewAppointmentEmail(newAppointment, garage);
+  sendNewAppointmentEmail(appointment, garage);
   res.send({ Appointment: appointment });
 });
 

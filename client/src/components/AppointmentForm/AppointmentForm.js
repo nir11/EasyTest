@@ -183,8 +183,8 @@ const AppointmentForm = ({ editAppointmentId }) => {
       return;
     }
     if (!confirmForm) {
-      // alert("אנא אשר/י שמירה של פרטיי הטופס");
-      setValidationError("אנא אשר/י שמירה של פרטיי הטופס");
+      // alert("אנא אשר/י שמירה של פרטי הטופס");
+      setValidationError("אנא אשר/י שמירה של פרטי הטופס");
       return;
     }
     if (!validatePhone(phone)) {
@@ -308,6 +308,15 @@ const AppointmentForm = ({ editAppointmentId }) => {
               setConfirmForm={setConfirmForm}
             />
 
+            {validationError != "" && (
+              <p
+                className="errror-message text-center"
+                style={{ marginTop: "10px" }}
+              >
+                {validationError}
+              </p>
+            )}
+
             {editAppointmentId ? (
               <div className="appointment-form-buttons-container">
                 <Button type="submit" className="submit-button">
@@ -325,15 +334,6 @@ const AppointmentForm = ({ editAppointmentId }) => {
               <Button type="submit" className="submit-button">
                 שליחה
               </Button>
-            )}
-
-            {validationError != "" && (
-              <p
-                className="errror-message text-center"
-                style={{ marginTop: "10px" }}
-              >
-                {validationError}
-              </p>
             )}
           </Form>
         </>

@@ -25,33 +25,38 @@ const UserSchema = new Schema({
   },
 });
 
-const AppointmentSchema = new Schema({
-  User: {
-    type: UserSchema,
+const AppointmentSchema = new Schema(
+  {
+    User: {
+      type: UserSchema,
+    },
+    Path: {
+      type: Schema.Types.ObjectId,
+      ref: "Path",
+      required: true,
+    },
+    PathName: {
+      type: String,
+      required: true,
+    },
+    CarNumber: {
+      type: String,
+      required: true,
+    },
+    Datetime: {
+      type: Date,
+      required: true,
+    },
+    Garage: { type: Schema.Types.ObjectId, ref: "Garage" },
+    GarageName: {
+      type: String,
+      required: true,
+    },
   },
-  Path: {
-    type: Schema.Types.ObjectId,
-    ref: "Path",
-    required: true,
-  },
-  PathName: {
-    type: String,
-    required: true,
-  },
-  CarNumber: {
-    type: String,
-    required: true,
-  },
-  Datetime: {
-    type: Date,
-    required: true,
-  },
-  Garage: { type: Schema.Types.ObjectId, ref: "Garage" },
-  GarageName: {
-    type: String,
-    required: true,
-  },
-});
+  {
+    timestamps: true,
+  }
+);
 
 // appointmentSchema.virtual("FullName").get(function () {
 //   return `${this.FirstName} ${this.LastName}`;
