@@ -35,7 +35,7 @@ const MyNav = () => {
           }}
           className={isActive2 ? "active-nav-item" : ""}
         >
-          פנאל מנהל &nbsp;<i class="fas fa-user-cog"></i>
+          פאנל מנהל &nbsp;<i class="fas fa-user-cog"></i>
         </Nav.Link>
       </Nav.Item>
       {/* 
