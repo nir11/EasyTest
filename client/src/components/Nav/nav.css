@@ -12,6 +12,7 @@
   font-weight: bold;
 }
 .nav h2 {
+  margin: 0;
   position: absolute;
   left: 70px;
   font-weight: bold;
