@@ -134,12 +134,12 @@ const AppointmentDatePicker = ({
 
   return (
     <DatePicker
-      onCalendarOpen={() => {
-        if (!isInit) {
-          updateMinMaxDayTimes(new Date());
-          setIsInit(true);
-        }
-      }}
+      // onCalendarOpen={() => {
+      //   if (!isInit) {
+      //     updateMinMaxDayTimes(new Date());
+      //     setIsInit(true);
+      //   }
+      // }}
       locale="he"
       selected={appointmentDateTime}
       dateFormat="HH:mm  dd/MM/yyyy"

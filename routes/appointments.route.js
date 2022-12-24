@@ -556,29 +556,46 @@ router.put("/:id", async (req, res) => {
   const garage = await Garage.findById(req.body.GarageId);
   if (!garage) return res.status(400).send("Garage not exists");
 
-  const activePaths = garage.Paths.filter((path) => path.Active === true);
+  const appointmentPath = garage.Paths.find(
+    (path) => path._id.toString() === appointment.Path._id.toString()
+  );
+  if (!appointmentPath) return res.status(400).send("Path not exists");
 
-  const numOfAllowedAppointmentsForEachTime = activePaths.length * 2; // every 30 minutes
+  let newAppointmentPath = appointmentPath;
+  if (
+    moment(appointment.Datetime).toISOString() !==
+    moment(req.body.Datetime).toISOString()
+  ) {
+    const activePaths = garage.Paths.filter((path) => path.Active === true);
 
-  const existsAppointments = await Appointment.find({
-    Datetime: req.body.Datetime,
-    Garage: req.body.GarageId,
-  });
-  if (existsAppointments.length >= numOfAllowedAppointmentsForEachTime)
-    return res.status(400).send("Appointment Datetime already booked");
+    const numOfAllowedAppointmentsForEachTime = activePaths.length * 2; // every 30 minutes
 
-  let newAppointmentPath = null;
-  for (const path of activePaths) {
-    const numOfAppointmentsOfCurrentPath = existsAppointments.filter((ea) =>
-      ea.Path.equals(path._id)
-    ).length;
-    if (numOfAppointmentsOfCurrentPath !== 2) {
-      newAppointmentPath = path;
-      break;
+    const existsAppointments = await Appointment.find({
+      Datetime: req.body.Datetime,
+      Garage: req.body.GarageId,
+    });
+
+    if (
+      existsAppointments.length >= numOfAllowedAppointmentsForEachTime &&
+      moment(appointment.Datetime).toISOString() !==
+        moment(req.body.Datetime).toISOString()
+    )
+      return res.status(400).send("Appointment Datetime already booked");
+
+    for (const path of activePaths) {
+      const numOfAppointmentsOfCurrentPath = existsAppointments.filter((ea) =>
+        ea.Path.equals(path._id)
+      ).length;
+      if (numOfAppointmentsOfCurrentPath !== 2) {
+        newAppointmentPath = path;
+        break;
+      }
     }
+    if (!newAppointmentPath)
+      return res
+        .status(400)
+        .send("No active path found for current appointment");
   }
-  if (!newAppointmentPath)
-    return res.status(400).send("No active path found for current appointment");
 
   appointment.User = {
     FirstName: req.body.User.FirstName,
