@@ -7,8 +7,7 @@
   overflow: hidden;
   //   border: solid 1px #2a265f;
   width: 50%;
-  height: 300px;
-
+  height: 330px;
   p {
     margin: 0;
   }
@@ -131,8 +130,9 @@
   }
 }
 
-@media (max-width: 400px) {
+@media (min-width: 360px) {
   .user-appointment-card-container {
     width: 90%;
+    height: 400px;
   }
 }

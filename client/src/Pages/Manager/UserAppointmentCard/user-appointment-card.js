@@ -50,6 +50,18 @@ export const UserAppointmentCard = ({ appointment, getGarageAppointments }) => {
             <td>מספר רכב:</td>
             <td>{appointment.CarNumber}</td>
           </tr>
+          <tr>
+            <td>תאריך הזמנה:</td>
+            <td>
+              {moment(appointment.createdAt).format("HH:mm DD/MM/YYYY")}{" "}
+              {appointment.createdAt !== appointment.updatedAt && (
+                <span>
+                  (עודכן ב-
+                  {moment(appointment.updatedAt).format("HH:mm DD/MM/YYYY")})
+                </span>
+              )}{" "}
+            </td>
+          </tr>
         </table>
         <br />
 
