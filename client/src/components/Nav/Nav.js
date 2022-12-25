@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Nav } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import logo from "../../assets/images/EasyTestLogo - white.png";
 import "./nav.css";
 
 const MyNav = () => {
@@ -52,8 +53,9 @@ const MyNav = () => {
           המלצה לפי מיקום &nbsp;<i className="fas fa-map-marker-alt"></i>
         </Nav.Link>
       </Nav.Item> */}
+      <img className="nav-logo" src={logo} onClick={() => navigate("/")} />
 
-      <h2>EasyTest</h2>
+      {/* <h2>EasyTest</h2> */}
     </Nav>
   );
 };

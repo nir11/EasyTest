@@ -1,12 +1,20 @@
 .nav {
   box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%) !important;
-  height: 70px;
+  height: 160px;
   align-items: center;
-  padding-right: 50px;
+  padding-right: 160px;
+  justify-content: center;
+  align-items: center;
+}
+.nav-logo {
+  height: 150px;
+  margin-right: auto;
+  margin-left: 200px;
+  cursor: pointer;
 }
 .nav a {
   color: #fff !important;
-  font-size: large;
+  font-size: 24px;
 }
 .nav .active-nav-item {
   font-weight: bold;
@@ -18,13 +26,21 @@
   font-weight: bold;
   font-size: xxx-large;
 }
+
 @media only screen and (max-width: 800px) {
   .nav {
     padding-right: 0;
     display: flex;
     justify-content: center;
-    align-items: self-end;
+    align-items: center;
+    height: 90px;
+    padding: 0 30px;
   }
+  .nav-logo {
+    height: 80px;
+    margin-left: 20px;
+  }
+
   .nav h2 {
     /* position: relative; */
     top: 15px;

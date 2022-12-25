@@ -7,6 +7,11 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+.site-logo {
+  height: 150px;
+  margin-right: auto;
+  margin-left: 150px;
+}
 #root {
   /* background-image: url("./utilis/Background.png"); */
   background-image: url("./assets/images/bg.jpeg");
