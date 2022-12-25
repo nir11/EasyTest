@@ -221,7 +221,7 @@ const AppointmentForm = ({ editAppointmentId }) => {
 
       {!load && !showSpinner ? (
         <>
-          <div style={{ textAlign: "center" }}>
+          <div className="welcome-text-form-container">
             <p className="welcome-text-form">
               ברוכים הבאים למהפכה בתחום מבחני הרישוי לרכב.
             </p>
