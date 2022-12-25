@@ -19,6 +19,10 @@
 }
 .home-form {
   margin-bottom: 50px;
+
+  .welcome-text-form {
+    font-weight: bold;
+  }
   form {
     background-color: #00000059;
     padding: 40px;
@@ -71,6 +75,9 @@
     }
     i.fas.fa-question-circle {
       right: 92% !important;
+    }
+    .welcome-text-form {
+      display: none;
     }
   }
 }
