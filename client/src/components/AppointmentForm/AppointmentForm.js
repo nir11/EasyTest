@@ -221,6 +221,21 @@ const AppointmentForm = ({ editAppointmentId }) => {
 
       {!load && !showSpinner ? (
         <>
+          <div style={{ textAlign: "center" }}>
+            <p style={{ fontWeight: "bold" }}>
+              ברוכים הבאים למהפכה בתחום מבחני הרישוי לרכב.
+            </p>
+            <p>
+              אם אתם צריכים לעשות טסט לרכב בינואר הקרוב – הגעתם למקום הנכון.
+            </p>
+            <p>
+              במערכת זו תוכלו לקבוע תור למכון רישוי בירושלים ולהגיע לבצע טסט
+              ביום הפיילוט שלנו, ב-8 לינואר.
+            </p>
+            <p style={{ fontStyle: "italic", fontSize: "14px" }}>
+              *שימו לב ביצוע מבחן רישוי כרוך בהרשמה מראש בטופס זה.
+            </p>
+          </div>
           <Form onSubmit={submitForm}>
             <label>בחר/י עיר</label>
             <Form.Group className="mb-3" controlId="formBasicCheckbox">
