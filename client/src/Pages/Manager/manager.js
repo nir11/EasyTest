@@ -18,8 +18,8 @@ export const Manager = () => {
   const [showSpinner, setShowSpinner] = useState(false);
 
   useEffect(() => {
-    const savedLoginDetails = JSON.parse(localStorage.getItem("loginDetails"));
-    if (savedLoginDetails) login(savedLoginDetails);
+    const savedLoginDetails = localStorage.getItem("autologin");
+    if (savedLoginDetails) autoLogin();
   }, []);
 
   useEffect(() => {
@@ -28,16 +28,37 @@ export const Manager = () => {
     }
   }, [isLoggedIn]);
 
-  const login = (details) => {
-    if (
-      details.username.toLocaleLowerCase() === "admin" &&
-      details.password.toLocaleLowerCase() === "pilot2023"
-    ) {
-      if (wrongLoginDetails) setWrongLoginDetails(false);
-      setIsLoggedIn(true);
-      if (rememberMe)
-        localStorage.setItem("loginDetails", JSON.stringify(details));
-    } else {
+  const login = async (details) => {
+    try {
+      setShowSpinner(true);
+      const data = {
+        username: details.username,
+        password: details.password,
+      };
+      const res = await Api.post(`/users/login`, data);
+      if (res.data) {
+        if (wrongLoginDetails) setWrongLoginDetails(false);
+        setIsLoggedIn(true);
+        if (rememberMe) localStorage.setItem("autologin", true);
+      } else {
+        setWrongLoginDetails(true);
+      }
+    } catch (e) {
+      setWrongLoginDetails(true);
+    }
+  };
+
+  const autoLogin = async () => {
+    try {
+      const res = await Api.post(`/users/login/auto`);
+      if (res.data) {
+        if (wrongLoginDetails) setWrongLoginDetails(false);
+        setIsLoggedIn(true);
+        if (rememberMe) localStorage.setItem("autologin", true);
+      } else {
+        setWrongLoginDetails(true);
+      }
+    } catch (e) {
       setWrongLoginDetails(true);
     }
   };
@@ -48,7 +69,7 @@ export const Manager = () => {
       password: "",
     });
     setIsLoggedIn(false);
-    localStorage.removeItem("loginDetails");
+    localStorage.removeItem("autologin");
   };
 
   const getGarageAppointments = async () => {
