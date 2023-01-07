@@ -13,8 +13,4 @@ router.post("/login", async (req, res) => {
   if (isNameExists) return res.status(400).send("Garage name already exists");
 });
 
-router.post("/login/auto", async (req, res) => {
-  return res.send("Login success");
-});
-
 module.exports = router;

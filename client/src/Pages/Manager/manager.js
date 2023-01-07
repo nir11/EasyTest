@@ -19,7 +19,7 @@ export const Manager = () => {
 
   useEffect(() => {
     const savedLoginDetails = localStorage.getItem("autologin");
-    if (savedLoginDetails) autoLogin();
+    if (savedLoginDetails) setIsLoggedIn(true);
   }, []);
 
   useEffect(() => {
@@ -36,21 +36,6 @@ export const Manager = () => {
         password: details.password,
       };
       const res = await Api.post(`/users/login`, data);
-      if (res.data) {
-        if (wrongLoginDetails) setWrongLoginDetails(false);
-        setIsLoggedIn(true);
-        if (rememberMe) localStorage.setItem("autologin", true);
-      } else {
-        setWrongLoginDetails(true);
-      }
-    } catch (e) {
-      setWrongLoginDetails(true);
-    }
-  };
-
-  const autoLogin = async () => {
-    try {
-      const res = await Api.post(`/users/login/auto`);
       if (res.data) {
         if (wrongLoginDetails) setWrongLoginDetails(false);
         setIsLoggedIn(true);
