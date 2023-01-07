@@ -32,10 +32,12 @@ mongoose
 // import routes
 const appointmentsRoute = require("./routes/appointments.route");
 const garagesRoute = require("./routes/garages.route");
+const usersRoute = require("./routes/user.route");
 
 // API
 app.use("/appointments", appointmentsRoute);
 app.use("/garages", garagesRoute);
+app.use("/users", usersRoute);
 
 const port = process.env.PORT || 4000;
 
