@@ -27,7 +27,7 @@ import Api from "../../utils/Api";
 
 const AppointmentForm = ({ editAppointmentId }) => {
   //form fields
-  const [city, setCity] = useState("ירושלים");
+  const [city, setCity] = useState("");
   const [selectedGagrageId, setSelectedGagrageId] = useState("");
   const [id, setId] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -61,9 +61,6 @@ const AppointmentForm = ({ editAppointmentId }) => {
   useEffect(() => {
     dispatch(getGarages())
       .then((res) => {
-        setSelectedGagrage(res.garages);
-        setSelectedGagrageId(res.garages[0]._id);
-        setIsGarageSelected(true);
         sessionStorage.setItem(
           "garages",
           JSON.stringify(
@@ -243,7 +240,7 @@ const AppointmentForm = ({ editAppointmentId }) => {
                 className="form-control"
                 required
                 onChange={(e) => setCity(e.target.value)}
-                value={"ירושלים"}
+                value={city}
               >
                 <option value={""}></option>
                 <option value={"ירושלים"}>ירושלים</option>

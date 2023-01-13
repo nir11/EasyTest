@@ -50,7 +50,7 @@ const AppointmentDatePicker = ({
     if (!disabled) {
       const today = editAppointmentMode
         ? new Date(editAppointment.Datetime)
-        : new Date(`01/08/2023 08:00`);
+        : new Date();
       changeMonthHandler(today);
     }
   }, [selectedGagrage]);
@@ -162,8 +162,8 @@ const AppointmentDatePicker = ({
             )
       }
       customInput={<DatePickerButton />}
-      includeDates={[moment("2023-01-08T07:30:00.121Z").toDate()]}
-      openToDate={new Date("2023/01/08")}
+      // includeDates={[moment("2023-01-08T07:30:00.121Z").toDate()]}
+      // openToDate={new Date()}
     />
   );
 };

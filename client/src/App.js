@@ -17,7 +17,7 @@ function App() {
       <Routes>
         <Route path="*" element={<Home />} />
         <Route path="/:editAppointmentId" element={<Home />} />
-        {/* <Route path="/recommended/" element={<Recommended />} /> */}
+        <Route path="/recommended/" element={<Recommended />} />
         <Route path="/appointment-saved/" element={<Summary />} />
         <Route path="/manager" element={<Manager />} />
       </Routes>

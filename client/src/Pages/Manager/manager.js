@@ -1,12 +1,15 @@
 import { MDBCol, MDBInput, MDBRow } from "mdbreact";
 import React, { useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
+import { useSelector } from "react-redux";
 import Spinner from "../../components/Spinner/Spinner";
 import Api from "../../utils/Api";
 import "./manager.scss";
 import { UserAppointmentCard } from "./UserAppointmentCard/user-appointment-card";
+import Modal from "../../components/Modal/Modal";
 
 export const Manager = () => {
+  const garages = useSelector((state) => state.garagesReducer.garages);
   const [rememberMe, setRememberMe] = useState(false);
   const [loginDetails, setLoginDetails] = useState({
     username: "",
@@ -16,6 +19,11 @@ export const Manager = () => {
   const [wrongLoginDetails, setWrongLoginDetails] = useState(false);
   const [garageAppointments, setGarageAppointments] = useState([]);
   const [showSpinner, setShowSpinner] = useState(false);
+  const [selectedGarage, setSelectedGarage] = useState(null);
+  const [garageModal, setGarageModal] = useState({
+    open: false,
+    id: "",
+  });
 
   useEffect(() => {
     const savedLoginDetails = localStorage.getItem("autologin");
@@ -24,9 +32,15 @@ export const Manager = () => {
 
   useEffect(() => {
     if (isLoggedIn) {
-      getGarageAppointments();
+      setSelectedGarage(
+        garages.find((g) => g._id == "627e25e505b3fc112c864013") // בסט טסט
+      );
     }
   }, [isLoggedIn]);
+
+  useEffect(() => {
+    if (isLoggedIn && selectedGarage) getGarageAppointments();
+  }, [selectedGarage]);
 
   const login = async (details) => {
     try {
@@ -58,10 +72,9 @@ export const Manager = () => {
   };
 
   const getGarageAppointments = async () => {
-    const garageId = "627e21090e5f3b0a0df6d274";
     try {
       setShowSpinner(true);
-      const res = await Api.get(`/appointments/garage/${garageId}`);
+      const res = await Api.get(`/appointments/garage/${selectedGarage._id}`);
       if (res.data) {
         setGarageAppointments(res.data.appointments);
         setShowSpinner(false);
@@ -146,10 +159,68 @@ export const Manager = () => {
 
       {isLoggedIn && (
         <>
+          {garageModal.open && (
+            <Modal
+              show={garageModal.open}
+              onHide={() =>
+                setGarageModal({
+                  open: false,
+                  id: "",
+                })
+              }
+              idOfGarage={garageModal.id}
+              garages={garages}
+            />
+          )}
+          <div className="flex recommended-appointment-wrapper">
+            <div className="flex">
+              <p
+                style={{
+                  paddingLeft: "20px",
+                  fontSize: "large",
+                  margin: "0",
+                }}
+              >
+                סינון לפי מכון:
+              </p>
+
+              {selectedGarage &&
+                garages.map((garage) => {
+                  return (
+                    <div key={garage._id}>
+                      <div
+                        className={`button${garage._id} ${
+                          selectedGarage._id === garage._id
+                            ? "recommended-button selected-recommended-button"
+                            : "recommended-button"
+                        }`}
+                      >
+                        <button
+                          id={garage._id}
+                          value={garage.Name}
+                          onClick={() => setSelectedGarage(garage)}
+                        >
+                          {garage.Name}
+                        </button>
+                      </div>
+                      <i
+                        className="fas fa-question-circle"
+                        onClick={() =>
+                          setGarageModal({
+                            open: true,
+                            id: garage._id,
+                          })
+                        }
+                      ></i>
+                    </div>
+                  );
+                })}
+            </div>
+          </div>
           <div className="appointments-header-container">
-            <span className="appointments-header">
-              מ.מ.מ בדיקות רכב ורישוי - תורים קרובים
-            </span>
+            {selectedGarage && (
+              <span className="appointments-header">{selectedGarage.Name}</span>
+            )}
 
             <Button variant="dark" className="logout" onClick={logout}>
               התנתקות
@@ -163,6 +234,7 @@ export const Manager = () => {
             garageAppointments.map((appointment) => {
               return (
                 <UserAppointmentCard
+                  key={appointment._id}
                   appointment={appointment}
                   getGarageAppointments={getGarageAppointments}
                 />

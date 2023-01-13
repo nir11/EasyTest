@@ -5,8 +5,7 @@ import logo from "../../assets/images/EasyTestLogo - white.png";
 import "./nav.css";
 
 const MyNav = () => {
-  const [isActive1, setIsActive1] = useState(false);
-  const [isActive2, setIsActive2] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const navigate = useNavigate();
 
@@ -18,41 +17,40 @@ const MyNav = () => {
       <Nav.Item>
         <Nav.Link
           onClick={() => {
-            setIsActive1((prevState) => !prevState);
-            setIsActive2(false);
+            setActiveIndex(0);
             pushTo("/");
           }}
-          className={isActive1 ? "active-nav-item" : ""}
+          className={activeIndex === 0 ? "active-nav-item" : ""}
         >
-          קביעת תור &nbsp;<i className="fas fa-calendar-check"></i>
+          <span>קביעת תור </span>
+          <i className="fas fa-calendar-check"></i>
         </Nav.Link>
       </Nav.Item>
       <Nav.Item>
         <Nav.Link
           onClick={() => {
-            setIsActive1(false);
-            setIsActive2((prevState) => !prevState);
+            setActiveIndex(1);
             pushTo("/manager");
           }}
-          className={isActive2 ? "active-nav-item" : ""}
+          className={activeIndex === 1 ? "active-nav-item" : ""}
         >
-          פאנל מנהל &nbsp;<i class="fas fa-user-cog"></i>
+          <span>פאנל מנהל </span>
+          <i class="fas fa-user-cog"></i>
         </Nav.Link>
       </Nav.Item>
-      {/* 
+
       <Nav.Item>
         <Nav.Link
           onClick={() => {
-            setIsActive1(false);
-            setIsActive2(!isActive2);
+            setActiveIndex(2);
             pushTo("/recommended");
           }}
-          className={isActive2 ? "active-nav-item" : ""}
+          className={activeIndex === 2 ? "active-nav-item" : ""}
         >
-          {" "}
-          המלצה לפי מיקום &nbsp;<i className="fas fa-map-marker-alt"></i>
+          <span>תור לפי המלצה </span>
+          <i className="fas fa-map-marker-alt"></i>
         </Nav.Link>
-      </Nav.Item> */}
+      </Nav.Item>
       <img className="nav-logo" src={logo} onClick={() => navigate("/")} />
 
       {/* <h2>EasyTest</h2> */}
