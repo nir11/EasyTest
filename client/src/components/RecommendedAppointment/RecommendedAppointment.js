@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import _ from "lodash";
-import moment from "moment";
+import moment from "moment-timezone";
 import { MDBAnimation } from "mdbreact";
 import {
   Card,
@@ -335,11 +335,15 @@ const RecommendedAppointment = ({
                                   moment(appointment.Datetime).format("dddd")
                                 )}{" "}
                                 | &nbsp;
-                                {moment(appointment.Datetime).format("HH:mm")} |
-                                &nbsp;
-                                {moment(appointment.Datetime).format(
-                                  "DD/MM/YYYY"
-                                )}
+                                {moment
+                                  .utc(appointment.Datetime)
+                                  .tz("Asia/Jerusalem")
+                                  .format("HH:mm")}{" "}
+                                | &nbsp;
+                                {moment
+                                  .utc(appointment.Datetime)
+                                  .tz("Asia/Jerusalem")
+                                  .format("DD/MM/YYYY")}
                               </div>
 
                               <div className="customToggle-button col-sm-4">
