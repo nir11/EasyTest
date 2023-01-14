@@ -475,7 +475,36 @@ const getBookedAppointmentsOfDay = async (date, garageId) => {
     // moment.utc(app.Datetime).format("HH:mm")
     moment(app.Datetime).format("HH:mm")
   );
-  return bookedAppointmentsForDate;
+
+  let uniqueBookedAppointmentsForDate = [];
+
+  var bookedAppointmentsSortedByTimeAndCount = bookedAppointmentsForDate.reduce(
+    function (p, c) {
+      if (c in p) {
+        p[c]++;
+      } else {
+        p[c] = 1;
+      }
+      return p;
+    },
+    {}
+  );
+
+  // console.log(bookedAppointmentsSortedByTimeAndCount);
+  const garage = await Garage.findById(garageId);
+  if (!garage) return [];
+  let numOfAllowedAppointmentsPerTime =
+    garage.Paths.filter((path) => path.Active === true).length * 2;
+
+  for (var key of Object.keys(bookedAppointmentsSortedByTimeAndCount)) {
+    if (
+      bookedAppointmentsSortedByTimeAndCount[key] >=
+      numOfAllowedAppointmentsPerTime
+    )
+      uniqueBookedAppointmentsForDate.push(key);
+  }
+
+  return uniqueBookedAppointmentsForDate;
 };
 
 const findFreeAppointmentsInDay = (
