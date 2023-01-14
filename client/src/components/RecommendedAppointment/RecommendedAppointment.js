@@ -335,13 +335,11 @@ const RecommendedAppointment = ({
                                   moment(appointment.Datetime).format("dddd")
                                 )}{" "}
                                 | &nbsp;
-                                {moment
-                                  .utc(appointment.Datetime)
+                                {moment(appointment.Datetime)
                                   .tz("Asia/Jerusalem")
                                   .format("HH:mm")}{" "}
                                 | &nbsp;
-                                {moment
-                                  .utc(appointment.Datetime)
+                                {moment(appointment.Datetime)
                                   .tz("Asia/Jerusalem")
                                   .format("DD/MM/YYYY")}
                               </div>
