@@ -408,7 +408,7 @@ const findNextFreeAppointmentOfGarage = async (garageId) => {
     // console.log({ isDayIsToday });
     if (isDateIsToday) {
       const start = moment();
-      const reminder = 15 - (start.minute() % 15);
+      const reminder = 30 - (start.minute() % 30);
       startTimeOfDate = moment().add(30, "minutes").add(reminder, "minutes");
     }
     // console.log({ startTimeOfDate });
@@ -524,7 +524,7 @@ const findFreeAppointmentsInDay = (
       recommendedAppointments.push(addDate);
       if (recommendedAppointments.length === 2) return recommendedAppointments;
     }
-    currentTime.add(15, "minutes");
+    currentTime.add(30, "minutes");
   }
   return recommendedAppointments;
 };
